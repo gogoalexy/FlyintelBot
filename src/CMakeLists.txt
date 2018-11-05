@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
+project (flypixy CXX)
 
-aux_source_directory(. DIR_LIB_SRCS)
+set (CMAKE_EXECUTABLE_SUFFIX ".out")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake" )
+
+add_executable (flypixy flypixy.cpp)
 
 add_library(sensefilter sensefilter.cpp)
 add_library(DCmotor DCmotor.cpp)
@@ -24,7 +28,6 @@ add_definitions(-D__LIBPIXY_VERSION__="${LIBPIXY_VERSION}")
 
 include_directories (.
                      include
-                     ../../common
                      ${Boost_INCLUDE_DIR}
                      ${LIBUSB_1_INCLUDE_DIRS})
 
