@@ -1,5 +1,7 @@
 #include "attention.h"
 
+using namespace std;
+
 Attention::Attention () {
     this->FOOD = 1;
     this->TOXIC = 2;

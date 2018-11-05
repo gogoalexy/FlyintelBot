@@ -9,7 +9,7 @@
 
 #define BLOCK_BUFFER_SIZE 25
 
-typedef pair<int, int> obj;
+typedef std::pair<int, int> obj;
 /*
 struct Object {
     float key_area;
@@ -29,9 +29,9 @@ private:
     int FOOD;
     int TOXIC;
     struct Block blocks[BLOCK_BUFFER_SIZE];
-    std::priority_queue< obj, vector<obj>, greater<obj> > foodQ;
-    std::priority_queue< obj, vector<obj>, greater<obj> > toxicQ;
-    std::priority_queue< obj, vector<obj>, greater<obj> > clearQ;
+    std::priority_queue< obj, std::vector<obj>, std::greater<obj> > foodQ;
+    std::priority_queue< obj, std::vector<obj>, std::greater<obj> > toxicQ;
+    std::priority_queue< obj, std::vector<obj>, std::greater<obj> > clearQ;
 };
 
 #define ATTENTION_H
