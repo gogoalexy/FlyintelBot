@@ -23,7 +23,7 @@ class Flyintel {
 public:
 Flyintel();
 int cstoi(char*);
-char motorNeuron();
+char motorNeuron(int);
 void refresh();
 
 private:

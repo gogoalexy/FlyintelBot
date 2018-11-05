@@ -11,5 +11,5 @@ inline float LinearFilter::slope(){
 }
 
 float LinearFilter::FilterGen(int obj_x){
-	return max - ( abs(obj_x - mean) * slope() );
+	return max - ( std::abs(obj_x - mean) * slope() );
 }
