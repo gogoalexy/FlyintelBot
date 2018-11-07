@@ -50,3 +50,6 @@ include_directories (.
                      ${LIBUSB_1_INCLUDE_DIRS})
 
 target_link_libraries (DCmotor wiringPi)
+target_link_libraries (Sharp_IR wiringPi)
+target_link_libraries (HC_SR04 wiringPi)
+target_link_libraries (flypixy wiringPi DCmotor Sharp_IR HC_SR04 attention sensefilter flyintel)

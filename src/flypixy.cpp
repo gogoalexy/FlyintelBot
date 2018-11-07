@@ -56,10 +56,10 @@ int main(int argc, char *argv[]){
 	pinMode(5, OUTPUT);
 	pinMode(6, OUTPUT);
 	pinMode(10, OUTPUT);
-**********************************************************************
-	HCSR04 rescue0(,,);
+
+	HCSR04 rescue0(8, 10, 10000);
 	SharpIR rescue1(0, 1);
-	SharpIR rescue2(0, 2)
+	SharpIR rescue2(0, 2);
 	DCmotor front(8, 9, 7, 0, 1, 26);
 	DCmotor rear(2, 3, 12, 13, 23, 24);
 	Attention pixy;
@@ -100,7 +100,6 @@ int main(int argc, char *argv[]){
 
 	while(run_flag){
 
-		
 
 		pixy.capture();
 	  	array<obj, 2> see;
@@ -120,7 +119,7 @@ int main(int argc, char *argv[]){
         }
         float sensor = see[0].first/center;
 
-		SendDist(rescue0.Usoundrange(), 5);
+		SendDist(rescue0.UsoundRange(), 5);
 		SendDist(rescue1.IRrange(), 6);
 		SendDist(rescue2.IRrange(), 7);
 		SendDist(abs( lfc.FilterGen(center)*sensor ), 1);
@@ -131,7 +130,7 @@ int main(int argc, char *argv[]){
 		cout
 		<<"receving\n"
 		<<"Spikes:"<<endl<<Spikes<<endl;
-		
+
 		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
 			case 'F':
 				cout<<'F'<<endl;

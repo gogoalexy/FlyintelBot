@@ -5,3 +5,4 @@ syntax: glob
 CMakeCache.txt
 *.bin
 **/CMakeFiles/**
+build/**
