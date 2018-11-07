@@ -18,6 +18,8 @@
 
 #include "Sharp_IR.h"
 
+using namespace std;
+
 SharpIR::SharpIR(short spi_chan = 0, int ic_chan = 0){
     this->spi_chan = spi_chan;
     this->ic_chan = ic_chan;
