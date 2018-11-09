@@ -55,13 +55,13 @@ int main(int argc, char *argv[]){
 	pinMode(4, OUTPUT);
 	pinMode(5, OUTPUT);
 	pinMode(6, OUTPUT);
-	pinMode(10, OUTPUT);
+	pinMode(27, OUTPUT);
 
 	HCSR04 rescue0(8, 10, 10000);
 	SharpIR rescue1(0, 1);
 	SharpIR rescue2(0, 2);
 	DCmotor front(8, 9, 7, 0, 1, 26);
-	DCmotor rear(2, 3, 12, 13, 23, 24);
+	DCmotor rear(22, 21, 3, 2, 23, 24);
 	Attention pixy;
 	Flyintel flyintel;
 	string conf_file = "../network/network12_filter.conf", pro_file = "../network/network12_filter.pro";
@@ -91,12 +91,12 @@ int main(int argc, char *argv[]){
 	digitalWrite(4, HIGH);
 	digitalWrite(5, HIGH);
 	digitalWrite(6, HIGH);
-	digitalWrite(10, HIGH);
+	digitalWrite(27, HIGH);
 	delay(1500);
 	digitalWrite(4, LOW);
 	digitalWrite(5, LOW);
 	digitalWrite(6, LOW);
-	digitalWrite(10, LOW);
+	digitalWrite(27, LOW);
 
 	while(run_flag){
 
@@ -119,9 +119,12 @@ int main(int argc, char *argv[]){
         }
         float sensor = see[0].first/center;
 
-		SendDist(rescue0.UsoundRange(), 9);
-		SendDist(rescue1.IRrange(), 10);
-		SendDist(rescue2.IRrange(), 11);
+		float sound = 2018 * exp(-pow((rescue0.UsoundRange()-1000), 2)/150);
+		SendDist(sound, 9);
+		float ir1 = 2018 * exp(-pow((rescue0.UsoundRande()-1000), 2)/150);
+		float ir2 = 2018 * exp(-pow((rescue0.UsoundRande()-1000), 2)/150);
+		SendDist(ir1, 10);
+		SendDist(ir2.IRrange(), 11);
 		SendDist(abs( lfc.FilterGen(center)*sensor ), 5);
 		SendDist(abs( lfl.FilterGen(center)*sensor ), 6);
 		SendDist(abs( lfr.FilterGen(center)*sensor ), 7);
