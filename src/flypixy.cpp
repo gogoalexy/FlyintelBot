@@ -68,6 +68,14 @@ int main(int argc, char *argv[]){
 	fstream fp;
 	fp.open("Spikeslog.txt", ios::out);
 
+/*
+OutFile protocol:
+frame: <int>
+Ultra: <float>; IR: <float>, <float>
+Pixy: <float>, <float>, <float>
+<char>
+*/
+
 	//argument
 	if(argc == 1){
 	}else if(argc >= 2 && argv[1] == "-f"){
@@ -105,6 +113,7 @@ int main(int argc, char *argv[]){
 	  	array<obj, 2> see;
 	  	see = pixy.pick();
 		cout<<"frame: "<<frame<<endl;
+		fp<<"frame: "<<frame<<endl;
 
 		front.velocity(500, 500);
 		rear.velocity(500, 500);
@@ -121,13 +130,19 @@ int main(int argc, char *argv[]){
 
 		float sound = 2018 * exp(-pow((rescue0.UsoundRange()-1000), 2)/150);
 		SendDist(sound, 9);
-		float ir1 = 2018 * exp(-pow((rescue0.UsoundRande()-1000), 2)/150);
-		float ir2 = 2018 * exp(-pow((rescue0.UsoundRande()-1000), 2)/150);
+		fp<<"Ultra: "<<sound<<"; ";
+		float ir1 = 2018 * exp(-pow((rescue1.IRrange()-1000), 2)/150);
+		float ir2 = 2018 * exp(-pow((rescue2.IRrange()-1000), 2)/150);
 		SendDist(ir1, 10);
-		SendDist(ir2.IRrange(), 11);
-		SendDist(abs( lfc.FilterGen(center)*sensor ), 5);
-		SendDist(abs( lfl.FilterGen(center)*sensor ), 6);
-		SendDist(abs( lfr.FilterGen(center)*sensor ), 7);
+		SendDist(ir2, 11);
+		fp<<"IR: "<<ir1<<", "<<ir2<<endl;
+		float objC = abs (lfc.FilterGen(center)*sensor);
+		float objL = abs (lfl.FilterGen(center)*sensor);
+		float objR = abs (lfr.FilterGen(center)*sensor);
+		SendDist(objC, 5);
+		SendDist(objL, 6);
+		SendDist(objR, 7);
+		fp<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
 		Spikes=ActiveSimGetSpike("500");
 		//-3: connect error
 		cout
@@ -143,8 +158,9 @@ int main(int argc, char *argv[]){
 				front.forward();
 				rear.forward();
 				delay(150);
-				digitalWrite(4, LOW);	
-				break;	
+				digitalWrite(4, LOW);
+				fp<<'F'<<endl;
+				break;
 			case 'B':
 				cout<<'B'<<endl;
 				digitalWrite(5, HIGH);
@@ -154,6 +170,7 @@ int main(int argc, char *argv[]){
 				rear.backward();
 				delay(150);
 				digitalWrite(5, LOW);
+				fp<<'B'<<endl;
 				break;
 			case 'L':
 				cout<<'L'<<endl;
@@ -164,6 +181,7 @@ int main(int argc, char *argv[]){
 				rear.left();
 				delay(200);
 				digitalWrite(6, LOW);
+				fp<<'L'<<endl;
 				break;
 			case 'R':
 				cout<<'R'<<endl;
@@ -174,12 +192,14 @@ int main(int argc, char *argv[]){
 				rear.right();
 				delay(200);
 				digitalWrite(10, LOW);
+				fp<<'R'<<endl;
 				break;
 			default:
 				cout<<'S'<<endl;
 				front.stop();
 				rear.stop();
 				delay(150);
+				fp<<'S'<<endl;
 		}
 
 		frame++;
