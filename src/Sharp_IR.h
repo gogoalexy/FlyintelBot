@@ -24,6 +24,8 @@
 #include <iostream>
 #include "sensor.h"
 
+extern bool chkSPI;
+
 class SharpIR : public Sensor {
 public:
 	SharpIR(short, int);
@@ -34,6 +36,7 @@ private:
 	short spi_chan;
 	const int BASE = 100;
 	int ic_chan;
+	bool SPIinit = false;
 };
 
 #define SHARP_IR_H

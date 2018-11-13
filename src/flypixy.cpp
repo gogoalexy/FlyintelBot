@@ -34,6 +34,8 @@
 #define LEFT_X 0
 #define RIGHT_X 319
 
+bool chkSPI = false;
+
 using namespace std;
 
 static bool run_flag = true;
@@ -57,14 +59,14 @@ int main(int argc, char *argv[]){
 	pinMode(6, OUTPUT);
 	pinMode(27, OUTPUT);
 
-	HCSR04 rescue0(8, 10, 10000);
-	SharpIR rescue1(0, 1);
-	SharpIR rescue2(0, 2);
+	HCSR04 rescue0(15, 16, 10000);
+	SharpIR rescue1(0, 0);
+	SharpIR rescue2(0, 1);
 	DCmotor front(8, 9, 7, 0, 1, 26);
 	DCmotor rear(22, 21, 3, 2, 23, 24);
 	Attention pixy;
 	Flyintel flyintel;
-	string conf_file = "../network/network12_filter.conf", pro_file = "../network/network12_filter.pro";
+	string conf_file = "./network/network12_filter.conf", pro_file = "./network/network12_filter.pro";
 	fstream fp;
 	fp.open("Spikeslog.txt", ios::out);
 
@@ -127,15 +129,19 @@ Pixy: <float>, <float>, <float>
         	center = 1;
         }
         float sensor = see[0].first/center;
-
+/*Note: try operator overload to output file and console in the same line*/
+		cout<<rescue0.UsoundRange()<<";";
 		float sound = 2018 * exp(-pow((rescue0.UsoundRange()-1000), 2)/150);
 		SendDist(sound, 9);
 		fp<<"Ultra: "<<sound<<"; ";
+		cout<<rescue1.IRrange()<<' '<<rescue2.IRrange()<<endl;
+		cout<<"Ultra: "<<sound<<"; ";
 		float ir1 = 2018 * exp(-pow((rescue1.IRrange()-1000), 2)/150);
 		float ir2 = 2018 * exp(-pow((rescue2.IRrange()-1000), 2)/150);
 		SendDist(ir1, 10);
 		SendDist(ir2, 11);
 		fp<<"IR: "<<ir1<<", "<<ir2<<endl;
+		cout<<"IR: "<<ir1<<", "<<ir2<<endl;
 		float objC = abs (lfc.FilterGen(center)*sensor);
 		float objL = abs (lfl.FilterGen(center)*sensor);
 		float objR = abs (lfr.FilterGen(center)*sensor);
@@ -143,6 +149,7 @@ Pixy: <float>, <float>, <float>
 		SendDist(objL, 6);
 		SendDist(objR, 7);
 		fp<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
+		cout<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
 		Spikes=ActiveSimGetSpike("500");
 		//-3: connect error
 		cout
