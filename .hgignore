@@ -6,3 +6,6 @@ CMakeCache.txt
 *.bin
 **/CMakeFiles/**
 build/**
+*.log
+Spikeslog.txt
+*.save

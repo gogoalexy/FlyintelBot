@@ -73,10 +73,14 @@ char Flyintel::motorNeuron(int max) {
 	if(decision.denom == 0)
 		decision.denom = 1;
 	if(decision.denom){
-    	decision.rforward = motor.forward/decision.denom;
+	    	decision.rforward = motor.forward/decision.denom;
+		std::cout<<decision.rforward<<";";
 		decision.rbackward = motor.backward/decision.denom;
+		std::cout<<decision.rbackward<<";";
 	   	decision.rleft = motor.left/decision.denom;
+		std::cout<<decision.rleft<<";";
 	   	decision.rright = motor.right/decision.denom;
+		std::cout<<decision.rright<<";"<<endl;
 	}
 	
 	if(decision.rforward<=0.5 && decision.rbackward<=0.5 && decision.rleft<=0.5 && decision.rright<=0.5){

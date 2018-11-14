@@ -18,15 +18,16 @@
 
 #ifndef FLYINTEL_H
 
+#include <iostream>
 #include <cstring>
 
 struct Container{
-	short forward;
-	short backward;
-	short left;
-	short right;
-	short noise;
-	short conflict;
+	float forward;
+	float backward;
+	float left;
+	float right;
+	float noise;
+	float conflict;
 };
 
 struct Ratio{
@@ -47,7 +48,7 @@ void refresh();
 private:
 Container motor;
 Ratio decision;
-int spiketrain[300];
+int spiketrain[500];
 
 };
 
