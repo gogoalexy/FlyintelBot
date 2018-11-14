@@ -119,10 +119,10 @@ Pixy: <float>, <float>, <float>
 
 		front.velocity(500, 500);
 		rear.velocity(500, 500);
-
-		LinearFilter lfc(CENTER_X, 2, 130);
-		LinearFilter lfl(LEFT_X, 3, 90);
-		LinearFilter lfr(RIGHT_X, 3, 90);
+		flyintel.refresh();
+		LinearFilter lfc(CENTER_X, 20, 130);
+		LinearFilter lfl(LEFT_X, 8, 90);
+		LinearFilter lfr(RIGHT_X, 8, 90);
 
         float center = abs(see[0].second - CENTER_X);
         if (!center){
@@ -131,7 +131,7 @@ Pixy: <float>, <float>, <float>
         float sensor = see[0].first/center;
 /*Note: try operator overload to output file and console in the same line*/
 		cout<<rescue0.UsoundRange()<<";";
-		float sound = 2018 * exp(-pow((rescue0.UsoundRange()-1000), 2)/150);
+		float sound = 2018 * exp(-pow((rescue0.UsoundRange()-1000), 2)/300);
 		SendDist(sound, 9);
 		fp<<"Ultra: "<<sound<<"; ";
 		cout<<rescue1.IRrange()<<' '<<rescue2.IRrange()<<endl;
@@ -150,7 +150,7 @@ Pixy: <float>, <float>, <float>
 		SendDist(objR, 7);
 		fp<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
 		cout<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
-		Spikes=ActiveSimGetSpike("500");
+		Spikes=ActiveSimGetSpike("800");
 		//-3: connect error
 		cout
 		<<"receving\n"
