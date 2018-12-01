@@ -43,16 +43,16 @@ int Flyintel::cstoi(char* Spikes) {
 char Flyintel::motorNeuron(int max) {
 	for(int i=2; i<max; i+=3){
 		switch(spiketrain[i]){
-			case 0:
+			case 5:
 				motor.forward++;
 				break;
-			case 1:
+			case 11:
 				motor.backward++;
 				break;
-			case 2:
+			case 17:
 				motor.left++;
 				break;
-			case 3:
+			case 23:
 				motor.right++;
 				break;
 			default:
