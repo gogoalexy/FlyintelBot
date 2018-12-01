@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 	DCmotor rear(22, 21, 3, 2, 23, 24);
 	Attention pixy;
 	Flyintel flyintel;
-	string conf_file = "./network/network12_filter.conf", pro_file = "./network/network12_filter.pro";
+	string conf_file = "./network/network20.conf", pro_file = "./network/network20.pro";
 	fstream fp;
 	fp.open("Spikeslog.txt", ios::out);
 
@@ -102,7 +102,7 @@ Pixy: <float>, <float>, <float>
 	digitalWrite(5, HIGH);
 	digitalWrite(6, HIGH);
 	digitalWrite(27, HIGH);
-	delay(1500);
+	delay(500);
 	digitalWrite(4, LOW);
 	digitalWrite(5, LOW);
 	digitalWrite(6, LOW);
@@ -110,6 +110,11 @@ Pixy: <float>, <float>, <float>
 
 	while(run_flag){
 
+	//baseline stimuli
+	SendDist(2000, 1);
+	SendDist(2000, 2);
+	SendDist(2000, 3);
+	SendDist(2000, 4);
 
 		pixy.capture();
 	  	array<obj, 2> see;
@@ -132,22 +137,23 @@ Pixy: <float>, <float>, <float>
 /*Note: try operator overload to output file and console in the same line*/
 		cout<<rescue0.UsoundRange()<<";";
 		float sound = 2018 * exp(-pow((rescue0.UsoundRange()-1000), 2)/300);
-		SendDist(sound, 9);
+		//SendDist(sound, 5);
 		fp<<"Ultra: "<<sound<<"; ";
 		cout<<rescue1.IRrange()<<' '<<rescue2.IRrange()<<endl;
 		cout<<"Ultra: "<<sound<<"; ";
 		float ir1 = 2018 * exp(-pow((rescue1.IRrange()-1000), 2)/150);
 		float ir2 = 2018 * exp(-pow((rescue2.IRrange()-1000), 2)/150);
-		SendDist(ir1, 10);
-		SendDist(ir2, 11);
+		//SendDist(ir1, 6);
+		//SendDist(ir2, 7);
 		fp<<"IR: "<<ir1<<", "<<ir2<<endl;
 		cout<<"IR: "<<ir1<<", "<<ir2<<endl;
 		float objC = abs (lfc.FilterGen(center)*sensor);
 		float objL = abs (lfl.FilterGen(center)*sensor);
 		float objR = abs (lfr.FilterGen(center)*sensor);
-		SendDist(objC, 5);
-		SendDist(objL, 6);
-		SendDist(objR, 7);
+		//SendDist(objC, 1);
+		//SendDist(objL, 2);
+		//SendDist(objR, 3);
+		//SendDist(1200, 1);
 		fp<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
 		cout<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
 		Spikes=ActiveSimGetSpike("800");
@@ -155,6 +161,7 @@ Pixy: <float>, <float>, <float>
 		cout
 		<<"receving\n"
 		<<"Spikes:"<<endl<<Spikes<<endl;
+		fp<<"Spikes: "<<Spikes<<endl;
 
 		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
 			case 'F':

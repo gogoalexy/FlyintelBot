@@ -114,7 +114,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	
 	//end of reading pro file
 		
-	/*for(int i=0; i<ProFile.TypeFreq.size(); i++)
+	for(int i=0; i<ProFile.TypeFreq.size(); i++)
 	{
 		cout
 		<<ProFile.TypeFreq[i].EventTime<<endl
@@ -128,7 +128,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 		<<ProFile.TypeFreq[i].EndText<<endl<<endl;
 	}
 	
-	cout<<ProFile.TypeMem<<endl;*/
+	cout<<ProFile.TypeMem<<endl;
 	
 	return 0;
 };
