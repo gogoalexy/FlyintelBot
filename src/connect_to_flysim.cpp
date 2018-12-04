@@ -84,10 +84,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 			 tmp2line[1]="";
 			}
 			continue;//ChangeMemPot is been neglected?
-<<<<<<< working copy
-			
-=======
->>>>>>> merge rev
+
 		}else if((tmp.find("EndEvent")!=string::npos)&&(FindFreq==1)){
 			FindFreq=0;
 			continue;
@@ -107,11 +104,8 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 				ProFile.TypeFreq.insert(ProFile.TypeFreq.end(), tmpTypeFreq);
 			}
 		}else if(FindFreq==0 && tmp[0]>' '){
-<<<<<<< working copy
+
 			ProFile.TypeMem=ProFile.TypeMem+tmp+"\n";
-=======
-			ProFile.TypeMem=ProFile.TypeMem+tmp2line[0]+tmp2line[1]+tmp+"\n";
->>>>>>> merge rev
 			tmp2line[0]="";
 			tmp2line[1]="";
 		}

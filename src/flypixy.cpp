@@ -111,10 +111,10 @@ Pixy: <float>, <float>, <float>
 	while(run_flag){
 
 	//baseline stimuli
-	//SendDist(2000, 20);
-SendDist(2000, 21);
-	//SendDist(2000, 22);
-	//SendDist(2000, 23);
+	SendDist(2000, 8);
+	SendDist(2000, 9);
+	SendDist(2000, 10);
+	SendDist(2000, 11);
 
 		pixy.capture();
 	  	array<obj, 2> see;
