@@ -61,12 +61,10 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	int FindFreq=0;
 	string tmp2line[2];
 	
-	while(!ReadPro.eof())
-	{	
+	while(!ReadPro.eof()){	
 		getline(ReadPro, tmp);
 		
-		if(tmp.find(ProFile.FirstEventTime)!=string::npos) 
-		{
+		if(tmp.find(ProFile.FirstEventTime)!=string::npos){
 			tmp2line[0]=tmp;//add 1st line
 			getline(ReadPro, tmp);
 			if(tmp.find("Type")!=string::npos)
@@ -79,17 +77,20 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 				FindFreq=1;
 				tmp2line[0]="";
 				tmp2line[1]="";
+			}else if(tmp.find("ChangeMembraneNoise")!=string::npos){
+			 FindFreq=0;
+			 ProFile.TypeMem=ProFile.TypeMem+'\n'+tmp2line[0]+'\n'+tmp2line[1]+'\n';
+			 tmp2line[0]="";
+			 tmp2line[1]="";
 			}
-			continue;
-		}
-		else if((tmp.find("EndEvent")!=string::npos)&&(FindFreq==1))
-		{
+			continue;//ChangeMemPot is been neglected?
+			
+		}else if((tmp.find("EndEvent")!=string::npos)&&(FindFreq==1)){
 			FindFreq=0;
 			continue;
 		}
 		
-		if(FindFreq==1)
-		{
+		if(FindFreq==1){
 			
 			if(tmp.find("Population")!=string::npos)
 			{
@@ -102,10 +103,8 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 				tmpTypeFreq.Population=atoi(tmpnum.c_str());
 				ProFile.TypeFreq.insert(ProFile.TypeFreq.end(), tmpTypeFreq);
 			}
-		}
-		else if(FindFreq==0 && tmp[0]>' ')
-		{
-			ProFile.TypeMem=ProFile.TypeMem+tmp2line[0]+tmp2line[1]+tmp+"\n";
+		}else if(FindFreq==0 && tmp[0]>' '){
+			ProFile.TypeMem=ProFile.TypeMem+tmp+"\n";
 			tmp2line[0]="";
 			tmp2line[1]="";
 		}
