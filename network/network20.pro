@@ -126,7 +126,63 @@ GaussMean=0.25
 GaussSTD=0.1
 EndEvent
 
-%--------------------------------------------------------------------
+
+
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc1
+Receptor: AMPA
+FreqExt=0
+EndEvent
+
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc4
+Receptor: AMPA
+FreqExt=0
+EndEvent
+
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc7
+Receptor: AMPA
+FreqExt=0
+EndEvent
+
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc10
+Receptor: AMPA
+FreqExt=0
+EndEvent
+
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc14
+Receptor: AMPA
+FreqExt=0
+EndEvent
+
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc16
+Receptor: AMPA
+FreqExt=0
+EndEvent
+
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc18
+Receptor: AMPA
+FreqExt=0
+EndEvent
 
 %fixed random input
 EventTime 0.0
@@ -134,7 +190,7 @@ Type=ChangeExtFreq
 Label=#1#
 Population: Exc20
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
 EventTime 0.0
@@ -142,7 +198,7 @@ Type=ChangeExtFreq
 Label=#1#
 Population: Exc21
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
 EventTime 0.0
@@ -150,7 +206,7 @@ Type=ChangeExtFreq
 Label=#1#
 Population: Exc22
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
 EventTime 0.0
@@ -158,21 +214,6 @@ Type=ChangeExtFreq
 Label=#1#
 Population: Exc23
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
-EventTime 50.0
-Type=EndTrial
-Label=End_of_the_trial
-EndEvent
-
-%--------------------------------------------------------------------
-
-OutControl
-
-FileName:SPmMiSpikes.dat
-Type=Spike
-population: AllPopulation
-EndOutputFile
-
-EndOutControl
