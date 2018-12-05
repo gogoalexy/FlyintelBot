@@ -35,8 +35,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	ifstream ReadCon;
 	//reading conf file
 	ReadCon.open(ConfFilename);
-	if(!ReadCon)
-	{
+	if(!ReadCon){
 		cout<<"Fail to read: "<<ConfFilename<<endl;
 		return -1;
 	}
@@ -51,8 +50,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	//reading pro file
 	ifstream ReadPro;
 	ReadPro.open(ProFilename);
-	if(!ReadPro)
-	{
+	if(!ReadPro){
 		cout<<"Fail to read: "<<ProFilename<<endl;
 		return -2;
 	}
@@ -83,7 +81,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 			 tmp2line[0]="";
 			 tmp2line[1]="";
 			}
-			continue;//ChangeMemPot is been neglected?
+			continue;
 
 		}else if((tmp.find("EndEvent")!=string::npos)&&(FindFreq==1)){
 			FindFreq=0;
@@ -114,8 +112,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	
 	//end of reading pro file
 		
-	for(int i=0; i<ProFile.TypeFreq.size(); i++)
-	{
+	for(int i=0; i<ProFile.TypeFreq.size(); i++){
 		cout
 		<<ProFile.TypeFreq[i].EventTime<<endl
 		<<ProFile.TypeFreq[i].Type<<endl

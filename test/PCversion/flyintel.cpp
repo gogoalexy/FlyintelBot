@@ -93,6 +93,8 @@ char Flyintel::motorNeuron(int max) {
 		return 'L';
 	}else if(decision.rright>0.5){
 		return 'R';
+	}else{
+		return 'S';
 	}
 }
 

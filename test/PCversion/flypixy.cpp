@@ -38,17 +38,9 @@ int main(int argc, char *argv[]){
 	int n;
 
 	Flyintel flyintel;
-	string conf_file = "../network/verysimple.conf", pro_file = "../network/verysimple.pro";
+	string conf_file = "verysimple.conf", pro_file = "verysimple.pro";
 	fstream fp;
 	fp.open("Spikeslog.txt", ios::out);
-
-/*
-OutFile protocol:
-frame: <int>
-Ultra: <float>; IR: <float>, <float>
-Pixy: <float>, <float>, <float>
-<char>
-*/
 
 	//argument
 	if(argc == 1){
@@ -69,12 +61,12 @@ Pixy: <float>, <float>, <float>
 
 	while(run_flag){
 
-	//baseline stimuli
-	//SendDist(2000, 8);
-	//SendDist(2000, 9);
-	//SendDist(2000, 10);
-	//SendDist(2000, 11);
-    Spikes=ActiveSimGetSpike("500");
+		//baseline stimuli
+		SendDist(2000, 1);
+		//SendDist(2000, 9);
+		//SendDist(2000, 10);
+		//SendDist(2000, 11);
+    	Spikes=ActiveSimGetSpike("500");
 
 		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
 			case 'F':
@@ -97,7 +89,7 @@ Pixy: <float>, <float>, <float>
 				cout<<'S'<<endl;
 				fp<<'S'<<endl;
 		}
-
+		flyintel.refresh();
     }
 	fp.close();
 	return 0;
