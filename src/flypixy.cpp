@@ -111,10 +111,10 @@ Pixy: <float>, <float>, <float>
 	while(run_flag){
 
 	//baseline stimuli
-	SendDist(2000, 8);
-	SendDist(2000, 9);
-	SendDist(2000, 10);
-	SendDist(2000, 11);
+	SendDist(5000, 1);
+	SendDist(2000, 2);
+	SendDist(2000, 3);
+	SendDist(2000, 4);
 
 		pixy.capture();
 	  	array<obj, 2> see;
@@ -156,7 +156,7 @@ Pixy: <float>, <float>, <float>
 		//SendDist(1200, 1);
 		fp<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
 		cout<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
-		Spikes=ActiveSimGetSpike("2000");
+		Spikes=ActiveSimGetSpike("500");
 		//-3: connect error
 		cout
 		<<"receving\n"

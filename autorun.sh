@@ -1,6 +1,6 @@
 #!/bin/bash
 
-~/sim07_21_2/flysim07_21_2.out -daemon 8889 &
+~/sim07_21_3/flysim.out -daemon 8889 &
 FLYSIM=$!
 
 echo ${FLYSIM}
