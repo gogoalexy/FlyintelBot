@@ -127,63 +127,6 @@ GaussSTD=0.1
 EndEvent
 
 
-
-EventTime 0.0
-Type=ChangeExtFreq
-Label=#1#
-Population: Exc1
-Receptor: AMPA
-FreqExt=0
-EndEvent
-
-EventTime 0.0
-Type=ChangeExtFreq
-Label=#1#
-Population: Exc4
-Receptor: AMPA
-FreqExt=0
-EndEvent
-
-EventTime 0.0
-Type=ChangeExtFreq
-Label=#1#
-Population: Exc7
-Receptor: AMPA
-FreqExt=0
-EndEvent
-
-EventTime 0.0
-Type=ChangeExtFreq
-Label=#1#
-Population: Exc10
-Receptor: AMPA
-FreqExt=0
-EndEvent
-
-EventTime 0.0
-Type=ChangeExtFreq
-Label=#1#
-Population: Exc14
-Receptor: AMPA
-FreqExt=0
-EndEvent
-
-EventTime 0.0
-Type=ChangeExtFreq
-Label=#1#
-Population: Exc16
-Receptor: AMPA
-FreqExt=0
-EndEvent
-
-EventTime 0.0
-Type=ChangeExtFreq
-Label=#1#
-Population: Exc18
-Receptor: AMPA
-FreqExt=0
-EndEvent
-
 %fixed random input
 EventTime 0.0
 Type=ChangeExtFreq
