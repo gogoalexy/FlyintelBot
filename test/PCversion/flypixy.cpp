@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 	int n;
 
 	Flyintel flyintel;
-	string conf_file = "verysimple.conf", pro_file = "verysimple.pro";
+	string conf_file = "network20.conf", pro_file = "network20.pro";
 	fstream fp;
 	fp.open("Spikeslog.txt", ios::out);
 
@@ -63,9 +63,9 @@ int main(int argc, char *argv[]){
 
 		//baseline stimuli
 		SendDist(2000, 1);
-		//SendDist(2000, 9);
-		//SendDist(2000, 10);
-		//SendDist(2000, 11);
+		SendDist(2000, 2);
+		SendDist(2000, 3);
+		SendDist(2000, 4);
     	Spikes=ActiveSimGetSpike("500");
 
 		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
