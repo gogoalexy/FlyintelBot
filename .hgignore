@@ -1,11 +1,13 @@
 syntax: glob
 
 *~
+*.o
 *.out
 CMakeCache.txt
 *.bin
 **/CMakeFiles/**
 build/**
 *.log
+*.dat
 Spikeslog.txt
 *.save
