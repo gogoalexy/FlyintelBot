@@ -28,6 +28,11 @@ inline float LinearFilter::slope(){
 	return ( this->max / this->edgelen );
 }
 
-float LinearFilter::FilterGen(int obj_x){
-	return max - ( std::abs(obj_x - mean) * slope() );
+float LinearFilter::FilterGen(int objx){
+	float dist_to_mean = std::abs(objx - mean);
+	if(dist_to_mean > edgelen){
+		return 0;
+	}else{
+		return max - ( dist_to_mean * slope() );
+	}
 }

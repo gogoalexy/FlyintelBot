@@ -20,7 +20,6 @@
 #include <signal.h>
 #include <iostream>
 #include <string>
-#include <cmath>
 #include "wiringPi.h"
 #include "connect_to_flysim.cpp"
 #include "flyintel.h"
@@ -65,10 +64,13 @@ int main(int argc, char *argv[]){
 	DCmotor front(8, 9, 7, 0, 1, 26);
 	DCmotor rear(22, 21, 3, 2, 23, 24);
 	Attention pixy;
+	LinearFilter lfc(CENTER_X, 1, 100);
+	LinearFilter lfl(LEFT_X, 1, 60);
+	LinearFilter lfr(RIGHT_X, 1, 60);
 	Flyintel flyintel;
 	string conf_file = "./network/network21.conf", pro_file = "./network/network21.pro";
 	fstream fp;
-	fp.open("Spikeslog.txt", ios::out);
+	fp.open("FlyintelBot.log", ios::out);
 
 /*
 OutFile protocol:
@@ -110,30 +112,24 @@ Pixy: <float>, <float>, <float>
 
 	while(run_flag){
 
-	//baseline stimuli
-	SendDist(2000, 1);
-	SendDist(2000, 2);
-	SendDist(2000, 3);
-	SendDist(2000, 4);
+		//baseline stimuli
+		SendDist(2000, 1);
+		SendDist(2000, 2);
+		SendDist(2000, 3);
+		SendDist(2000, 4);
 
+		++frame;
+		
 		pixy.capture();
-	  	array<obj, 2> see;
-	  	see = pixy.pick();
+	  	array<obj, 2> retina;
+	  	retina = pixy.pick();
 		cout<<"frame: "<<frame<<endl;
 		fp<<"frame: "<<frame<<endl;
 
 		front.velocity(500, 500);
 		rear.velocity(500, 500);
 		flyintel.refresh();
-		LinearFilter lfc(CENTER_X, 20, 130);
-		LinearFilter lfl(LEFT_X, 8, 90);
-		LinearFilter lfr(RIGHT_X, 8, 90);
 
-        float center = abs(see[0].second - CENTER_X);
-        if (!center){
-        	center = 1;
-        }
-        float sensor = see[0].first/center;
 /*Note: try operator overload to output file and console in the same line*/
 
 		unsigned int soundtime = rescue0.UsoundRange();
@@ -143,8 +139,8 @@ Pixy: <float>, <float>, <float>
 			SendDist(9000-(9000/500.0)*(soundtime-875), 5);
 		}
 
-		cout<<rescue1.IRrange()<<' '<<rescue2.IRrange()<<endl;
 		cout<<"Ultra: "<<soundtime<<"; ";
+
 
 		float irL = rescue1.IRrange();
 		if(irL > 600){
@@ -162,14 +158,25 @@ Pixy: <float>, <float>, <float>
 
 		cout<<"IR: "<<irL<<", "<<irR<<endl;
 
-		float objC = abs (lfc.FilterGen(center)*sensor);
-		float objL = abs (lfl.FilterGen(center)*sensor);
-		float objR = abs (lfr.FilterGen(center)*sensor);
-		//SendDist(objC, 1);
-		//SendDist(objL, 2);
-		//SendDist(objR, 3);
-		//SendDist(1200, 1);
+
+		float x = retina[0].second;
+		float area = retina[0].first;
+		if(area < 400){
+			area = 0;
+		}else if(area > 5000){
+			area = 5000;
+		}else if(area >= 400 && area < 1500){
+			area = 1500;
+		}
+		float objC = lfc.FilterGen(x)*area;
+		float objL = lfl.FilterGen(x)*area;
+		float objR = lfr.FilterGen(x)*area;
+		SendDist(objC, 8);
+		SendDist(objL, 9);
+		SendDist(objR, 10);
+		
 		cout<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
+
 
 		Spikes=ActiveSimGetSpike("600");
 		//-3: connect error
@@ -178,12 +185,13 @@ Pixy: <float>, <float>, <float>
 		<<"Spikes:"<<endl<<Spikes<<endl;
 		fp<<"Spikes: "<<Spikes<<endl;
 
+		front.stop();
+		rear.stop();
+
 		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
 			case 'F':
 				cout<<'F'<<endl;
 				digitalWrite(4, HIGH);
-				front.stop();
-				rear.stop();
 				front.forward();
 				rear.forward();
 				digitalWrite(4, LOW);
@@ -192,8 +200,6 @@ Pixy: <float>, <float>, <float>
 			case 'B':
 				cout<<'B'<<endl;
 				digitalWrite(5, HIGH);
-				front.stop();
-				rear.stop();
 				front.backward();
 				rear.backward();
 				digitalWrite(5, LOW);
@@ -202,8 +208,6 @@ Pixy: <float>, <float>, <float>
 			case 'L':
 				cout<<'L'<<endl;
 				digitalWrite(6, HIGH);
-				front.stop();
-				rear.stop();
 				front.velocity(650, 650);
 				front.left();
 				rear.left();
@@ -213,8 +217,6 @@ Pixy: <float>, <float>, <float>
 			case 'R':
 				cout<<'R'<<endl;
 				digitalWrite(10, HIGH);
-				front.stop();
-				rear.stop();
 				front.velocity(650, 650);
 				front.right();
 				rear.right();
@@ -225,11 +227,8 @@ Pixy: <float>, <float>, <float>
 				cout<<'S'<<endl;
 				front.stop();
 				rear.stop();
-				delay(150);
 				fp<<'S'<<endl;
 		}
-
-		frame++;
 	}
 	fp.close();
 	return 0;
