@@ -61,7 +61,7 @@ using namespace std;
     if (sockfd == -1)
     {
       /* create socket */
-      sockfd = socket(AF_INET, SOCK_STREAM, 0);
+      sockfd = socket(AF_INET, SOCK_STREAM, 0); //type=IPv4 protocol=auto
       
       if(sockfd != -1)
       {
