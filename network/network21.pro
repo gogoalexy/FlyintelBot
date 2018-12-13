@@ -127,62 +127,58 @@ GaussSTD=0.1
 EndEvent
 
 %fixed random input
-EventTime 100.0
+EventTime 0.0
 Type=ChangeExtFreq
 Label=#1#
 Population: Exc20
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
-EventTime 100.0
+EventTime 0.0
 Type=ChangeExtFreq
 Label=#1#
 Population: Exc21
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
-EventTime 100.0
+EventTime 0.0
 Type=ChangeExtFreq
 Label=#1#
 Population: Exc22
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
-EventTime 100.0
+EventTime 0.0
 Type=ChangeExtFreq
 Label=#1#
 Population: Exc23
 Receptor: AMPA
-FreqExt=2000
+FreqExt=0
 EndEvent
 
-EventTime 100.0
-Type=EndTrial
-Label=End_of_the_trial
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc14
+Receptor: AMPA
+FreqExt=0
 EndEvent
 
-%--------------------------------------------------------------------
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc16
+Receptor: AMPA
+FreqExt=0
+EndEvent
 
-OutControl
-
-FileName:MemPot20.dat
-Type=MemPot
-population: AllPopulation
-EndOutputFile
-
-FileName:Spikes20.dat
-Type=Spike
-population: AllPopulation
-EndOutputFile
-
-FileName:FRates20.dat
-Type=FiringRate
-FiringRateWindow=50
-PrintStep=50
-population: AllPopulation
-EndOutputFile
-
-EndOutControl
+EventTime 0.0
+Type=ChangeExtFreq
+Label=#1#
+Population: Exc18
+Receptor: AMPA
+FreqExt=0
+EndEvent

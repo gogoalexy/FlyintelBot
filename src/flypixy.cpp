@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 	DCmotor rear(22, 21, 3, 2, 23, 24);
 	Attention pixy;
 	Flyintel flyintel;
-	string conf_file = "./network/network20.conf", pro_file = "./network/network20.pro";
+	string conf_file = "./network/network21.conf", pro_file = "./network/network21.pro";
 	fstream fp;
 	fp.open("Spikeslog.txt", ios::out);
 
@@ -111,7 +111,7 @@ Pixy: <float>, <float>, <float>
 	while(run_flag){
 
 	//baseline stimuli
-	SendDist(5000, 1);
+	SendDist(2000, 1);
 	SendDist(2000, 2);
 	SendDist(2000, 3);
 	SendDist(2000, 4);
@@ -135,18 +135,33 @@ Pixy: <float>, <float>, <float>
         }
         float sensor = see[0].first/center;
 /*Note: try operator overload to output file and console in the same line*/
-		cout<<rescue0.UsoundRange()<<";";
-		float sound = 2018 * exp(-pow((rescue0.UsoundRange()-1000), 2)/300);
-		//SendDist(sound, 5);
-		fp<<"Ultra: "<<sound<<"; ";
+
+		unsigned int soundtime = rescue0.UsoundRange();
+		if(soundtime < 875){
+			SendDist(9000, 5);
+		}else{
+			SendDist(9000-(9000/500.0)*(soundtime-875), 5);
+		}
+
 		cout<<rescue1.IRrange()<<' '<<rescue2.IRrange()<<endl;
-		cout<<"Ultra: "<<sound<<"; ";
-		float ir1 = 2018 * exp(-pow((rescue1.IRrange()-1000), 2)/150);
-		float ir2 = 2018 * exp(-pow((rescue2.IRrange()-1000), 2)/150);
-		//SendDist(ir1, 6);
-		//SendDist(ir2, 7);
-		fp<<"IR: "<<ir1<<", "<<ir2<<endl;
-		cout<<"IR: "<<ir1<<", "<<ir2<<endl;
+		cout<<"Ultra: "<<soundtime<<"; ";
+
+		float irL = rescue1.IRrange();
+		if(irL > 600){
+			SendDist(9000, 6);
+		}else{
+			SendDist(9000-(9000/100.0)*(600-irL), 6);
+		}
+
+		float irR = rescue2.IRrange();
+		if(irR > 600){
+			SendDist(9000, 7);
+		}else{
+			SendDist(9000-(9000/100.0)*(600-irR), 7);
+		}
+
+		cout<<"IR: "<<irL<<", "<<irR<<endl;
+
 		float objC = abs (lfc.FilterGen(center)*sensor);
 		float objL = abs (lfl.FilterGen(center)*sensor);
 		float objR = abs (lfr.FilterGen(center)*sensor);
@@ -154,9 +169,9 @@ Pixy: <float>, <float>, <float>
 		//SendDist(objL, 2);
 		//SendDist(objR, 3);
 		//SendDist(1200, 1);
-		fp<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
 		cout<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
-		Spikes=ActiveSimGetSpike("500");
+
+		Spikes=ActiveSimGetSpike("600");
 		//-3: connect error
 		cout
 		<<"receving\n"
@@ -171,7 +186,6 @@ Pixy: <float>, <float>, <float>
 				rear.stop();
 				front.forward();
 				rear.forward();
-				delay(150);
 				digitalWrite(4, LOW);
 				fp<<'F'<<endl;
 				break;
@@ -182,7 +196,6 @@ Pixy: <float>, <float>, <float>
 				rear.stop();
 				front.backward();
 				rear.backward();
-				delay(150);
 				digitalWrite(5, LOW);
 				fp<<'B'<<endl;
 				break;
@@ -191,9 +204,9 @@ Pixy: <float>, <float>, <float>
 				digitalWrite(6, HIGH);
 				front.stop();
 				rear.stop();
+				front.velocity(650, 650);
 				front.left();
 				rear.left();
-				delay(200);
 				digitalWrite(6, LOW);
 				fp<<'L'<<endl;
 				break;
@@ -202,9 +215,9 @@ Pixy: <float>, <float>, <float>
 				digitalWrite(10, HIGH);
 				front.stop();
 				rear.stop();
+				front.velocity(650, 650);
 				front.right();
 				rear.right();
-				delay(200);
 				digitalWrite(10, LOW);
 				fp<<'R'<<endl;
 				break;
