@@ -43,9 +43,9 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	while(!ReadCon.eof())
 		ConfFile+=ReadCon.get(); 
 	ReadCon.close();
-	
+
 	ConfFile[ConfFile.size()-1]='\0';
-	
+
 	//end of reading conf file
 
 	//reading pro file
@@ -56,14 +56,14 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 		cout<<"Fail to read: "<<ProFilename<<endl;
 		return -2;
 	}
-	
+
 	string tmp="";
 	int FindFreq=0;
 	string tmp2line[2];
-	
+
 	while(!ReadPro.eof()){	
 		getline(ReadPro, tmp);
-		
+
 		if(tmp.find(ProFile.FirstEventTime)!=string::npos){
 			tmp2line[0]=tmp;//add 1st line
 			getline(ReadPro, tmp);
@@ -71,7 +71,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 				tmp2line[1]=tmp;//add 2nd line
 			else
 				continue;
-				
+
 			if(tmp.find("ChangeExtFreq")!=string::npos)//find Type=ChangeExtFreq
 			{
 				FindFreq=1;
@@ -89,16 +89,16 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 			FindFreq=0;
 			continue;
 		}
-		
+
 		if(FindFreq==1){
-			
+
 			if(tmp.find("Population")!=string::npos)
 			{
 				int found=tmp.find_first_of("Exc");
 				string tmpnum="";
 				for(int c=found+3; tmp[c]>' '; c++)
 					tmpnum+=tmp[c];
-				
+
 				TypeFreqModule tmpTypeFreq;
 				tmpTypeFreq.Population=atoi(tmpnum.c_str());
 				ProFile.TypeFreq.insert(ProFile.TypeFreq.end(), tmpTypeFreq);
@@ -111,9 +111,9 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 		}
 	}
 	ReadPro.close();
-	
+
 	//end of reading pro file
-		
+	/*
 	for(int i=0; i<ProFile.TypeFreq.size(); i++)
 	{
 		cout
@@ -127,9 +127,9 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 		<<ProFile.TypeFreq[i].FreqExt<<endl
 		<<ProFile.TypeFreq[i].EndText<<endl<<endl;
 	}
-	
+
 	cout<<ProFile.TypeMem<<endl;
-	
+	*/
 	return 0;
 };
 

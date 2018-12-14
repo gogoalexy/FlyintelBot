@@ -27,7 +27,7 @@
 #include "Sharp_IR.h"
 #include "HC_SR04.h"
 #include "attention.h"
-#include "sensefilter.h"
+//#include "sensefilter.h"
 
 #define CENTER_X 154
 #define LEFT_X 0
@@ -64,9 +64,9 @@ int main(int argc, char *argv[]){
 	DCmotor front(8, 9, 7, 0, 1, 26);
 	DCmotor rear(22, 21, 3, 2, 23, 24);
 	Attention pixy;
-	LinearFilter lfc(CENTER_X, 1, 100);
-	LinearFilter lfl(LEFT_X, 1, 60);
-	LinearFilter lfr(RIGHT_X, 1, 60);
+	//LinearFilter lfc(CENTER_X, 1, 100);
+	//LinearFilter lfl(LEFT_X, 1, 60);
+	//LinearFilter lfr(RIGHT_X, 1, 60);
 	Flyintel flyintel;
 	string conf_file = "./network/network21.conf", pro_file = "./network/network21.pro";
 	fstream fp;
@@ -113,21 +113,22 @@ Pixy: <float>, <float>, <float>
 	while(run_flag){
 
 		//baseline stimuli
-		SendDist(2000, 1);
-		SendDist(2000, 2);
-		SendDist(2000, 3);
-		SendDist(2000, 4);
+		SendDist(1500, 1);
+		SendDist(1500, 2);
+		SendDist(1500, 3);
+		SendDist(1500, 4);
 
 		++frame;
-		
+
+		pixy.refresh();
 		pixy.capture();
 	  	array<obj, 2> retina;
 	  	retina = pixy.pick();
 		cout<<"frame: "<<frame<<endl;
 		fp<<"frame: "<<frame<<endl;
 
-		front.velocity(500, 500);
-		rear.velocity(500, 500);
+		front.velocity(450, 450)
+		rear.velocity(450, 450);
 		flyintel.refresh();
 
 /*Note: try operator overload to output file and console in the same line*/
@@ -159,23 +160,28 @@ Pixy: <float>, <float>, <float>
 		cout<<"IR: "<<irL<<", "<<irR<<endl;
 
 
-		float x = retina[0].second;
+		float dx = retina[0].second - CENTER_X;
 		float area = retina[0].first;
-		if(area < 400){
-			area = 0;
-		}else if(area > 5000){
-			area = 5000;
-		}else if(area >= 400 && area < 1500){
-			area = 1500;
+		if(area > 4000){
+			area = 4000;
+		}else if(area >= 1000 && area < 2000){
+			area = 2000;
 		}
-		float objC = lfc.FilterGen(x)*area;
-		float objL = lfl.FilterGen(x)*area;
-		float objR = lfr.FilterGen(x)*area;
-		SendDist(objC, 8);
-		SendDist(objL, 9);
-		SendDist(objR, 10);
-		
-		cout<<"Pixy: "<<objC<<", "<<objL<<", "<<objR<<endl;
+		if(dx > 120){
+			SendDist(0, 8);
+			SendDist(0, 9);
+			SendDist(area, 10);
+		}else if(dx < -120){
+			SendDist(0, 8);
+			SendDist(area, 9);
+			SendDist(0, 10);
+		}else{
+			SendDist(area, 8);
+			SendDist(0, 9);
+			SendDist(0, 10);
+		}
+
+		cout<<"area="<<area<<", dx="<<dx<<endl;
 
 
 		Spikes=ActiveSimGetSpike("600");
@@ -187,6 +193,10 @@ Pixy: <float>, <float>, <float>
 
 		front.stop();
 		rear.stop();
+		digitalWrite(4, LOW);
+		digitalWrite(5, LOW);
+		digitalWrite(6, LOW);
+		digitalWrite(27, LOW);
 
 		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
 			case 'F':
@@ -194,7 +204,6 @@ Pixy: <float>, <float>, <float>
 				digitalWrite(4, HIGH);
 				front.forward();
 				rear.forward();
-				digitalWrite(4, LOW);
 				fp<<'F'<<endl;
 				break;
 			case 'B':
@@ -202,7 +211,6 @@ Pixy: <float>, <float>, <float>
 				digitalWrite(5, HIGH);
 				front.backward();
 				rear.backward();
-				digitalWrite(5, LOW);
 				fp<<'B'<<endl;
 				break;
 			case 'L':
@@ -211,16 +219,14 @@ Pixy: <float>, <float>, <float>
 				front.velocity(650, 650);
 				front.left();
 				rear.left();
-				digitalWrite(6, LOW);
 				fp<<'L'<<endl;
 				break;
 			case 'R':
 				cout<<'R'<<endl;
-				digitalWrite(10, HIGH);
+				digitalWrite(27, HIGH);
 				front.velocity(650, 650);
 				front.right();
 				rear.right();
-				digitalWrite(10, LOW);
 				fp<<'R'<<endl;
 				break;
 			default:
