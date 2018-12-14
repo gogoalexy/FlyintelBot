@@ -76,24 +76,24 @@ void Attention::capture() {
             continue;
         }
     }
-    
+
 }
 
 array<obj, 2> Attention::pick() {
     array<obj, 2> see;
-    
+
     if(!foodQ.empty()) {
         see[0] = foodQ.top();
     }else{
         see[0] = make_pair(0, 0);
     }
-    
+
     if(!toxicQ.empty()) {
         see[1] = toxicQ.top();
     }else{
         see[1] = make_pair(0, 0);
     }
-    
+
     return see;
 }
 
