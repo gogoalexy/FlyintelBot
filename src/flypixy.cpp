@@ -20,6 +20,7 @@
 #include <signal.h>
 #include <iostream>
 #include <string>
+#include <cmath>
 #include "wiringPi.h"
 #include "connect_to_flysim.cpp"
 #include "flyintel.h"
@@ -41,6 +42,14 @@ static bool run_flag = true;
 void handle_SIGINT(int unused){
   // On CTRL+C - abort! //
     run_flag = false;
+    digitalWrite(8, 0);
+    digitalWrite(9, 0);
+    digitalWrite(7, 0);
+    digitalWrite(0, 0);
+    digitalWrite(22, 0);
+    digitalWrite(21, 0);
+    digitalWrite(3, 0);
+    digitalWrite(2, 0);
 }
 
 char *Spikes = nullptr;
@@ -127,8 +136,8 @@ Pixy: <float>, <float>, <float>
 		cout<<"frame: "<<frame<<endl;
 		fp<<"frame: "<<frame<<endl;
 
-		front.velocity(450, 450)
-		rear.velocity(450, 450);
+		//front.velocity(450, 450)
+		//rear.velocity(450, 450);
 		flyintel.refresh();
 
 /*Note: try operator overload to output file and console in the same line*/
@@ -198,7 +207,52 @@ Pixy: <float>, <float>, <float>
 		digitalWrite(6, LOW);
 		digitalWrite(27, LOW);
 
-		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
+		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
+		if(motorNeuron.first & 0x1){
+			short speed = motorNeuron.second - 300;
+			cout<<'F'<<endl;
+			digitalWrite(4, HIGH);
+			front.velocity(speed, speed);
+			rear.velocity(speed, speed);
+			front.forward();
+			rear.forward();
+			fp<<'F'<<endl;
+		}else if(motorNeuron.first & 0x2){
+			short speed = motorNeuron.second - 300;
+			cout<<'B'<<endl;
+			digitalWrite(5, HIGH);
+			front.velocity(speed, speed);
+			rear.velocity(speed, speed);
+			front.backward();
+			rear.backward();
+			fp<<'B'<<endl;
+		}else if(motorNeuron.first & 0x4){
+			short speed = motorNeuron.second + 200;
+			if(speed > 1024){ speed = 1024; }
+			cout<<'L'<<endl;
+			digitalWrite(6, HIGH);
+			front.velocity(speed, speed);
+			rear.velocity(speed, speed);
+			front.left();
+			rear.left();
+			fp<<'L'<<endl;
+		}else if(motorNeuron.first & 0x8){
+			short speed = motorNeuron.second + 200;
+			if(speed > 1024){ speed = 1024; }
+			cout<<'R'<<endl;
+			digitalWrite(27, HIGH);
+			front.velocity(speed, speed);
+			rear.velocity(speed, speed);
+			front.right();
+			rear.right();
+			fp<<'R'<<endl;
+		}else{
+			cout<<'S'<<endl;
+			front.stop();
+			rear.stop();
+			fp<<'S'<<endl;
+		}
+		/*switch(flyintel.getMotor(flyintel.cstoi(Spikes))) {
 			case 'F':
 				cout<<'F'<<endl;
 				digitalWrite(4, HIGH);
@@ -235,6 +289,7 @@ Pixy: <float>, <float>, <float>
 				rear.stop();
 				fp<<'S'<<endl;
 		}
+		*/
 	}
 	fp.close();
 	return 0;
