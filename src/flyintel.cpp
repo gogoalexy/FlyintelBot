@@ -21,7 +21,7 @@
 using namespace std;
 
 Flyintel::Flyintel() {
-	motor = {0, 0, 0, 0, 0, 0};
+	count = {0, 0, 0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
 }
 
@@ -40,68 +40,68 @@ int Flyintel::cstoi(char* Spikes) {
 	}
 }
 
-char Flyintel::motorNeuron(int max) {
+motor Flyintel::getMotor(int max) {
 	for(int i=2; i<max; i+=3){
 		switch(spiketrain[i]){
 			case 5:
-				motor.forward++;
+				count.forward++;
 				break;
 			case 11:
-				motor.backward++;
+				count.backward++;
 				break;
 			case 17:
-				motor.left++;
+				count.left++;
 				break;
 			case 23:
-				motor.right++;
+				count.right++;
 				break;
 			default:
-				motor.noise++;
+				count.noise++;
 		}
 	}
-	
-	if(motor.forward != 0)
+	/*
+	if(count.forward != 0)
 		motor.conflict++;
-	if(motor.backward != 0)
+	if(count.backward != 0)
 		motor.conflict++;
-	if(motor.left != 0)
+	if(count.left != 0)
 		motor.conflict++;
-	if(motor.right != 0)
+	if(count.right != 0)
 		motor.conflict++;
-
-	decision.denom = motor.forward+motor.backward+motor.right+motor.left;
+	*/
+	decision.denom = count.forward+count.backward+count.right+count.left;
 	if(decision.denom == 0)
 		decision.denom = 1;
 	if(decision.denom){
-	    	decision.rforward = motor.forward/decision.denom;
+	    	decision.rforward = count.forward/decision.denom;
 		std::cout<<decision.rforward<<";";
-		decision.rbackward = motor.backward/decision.denom;
+		decision.rbackward = count.backward/decision.denom;
 		std::cout<<decision.rbackward<<";";
-	   	decision.rleft = motor.left/decision.denom;
+	   	decision.rleft = count.left/decision.denom;
 		std::cout<<decision.rleft<<";";
-	   	decision.rright = motor.right/decision.denom;
+	   	decision.rright = count.right/decision.denom;
 		std::cout<<decision.rright<<";"<<endl;
 	}
-	
+
 	if(decision.rforward<=0.5 && decision.rbackward<=0.5 && decision.rleft<=0.5 && decision.rright<=0.5){
-		return 'S';
+		return make_pair(0x0, 0); //S
 	}else if(decision.rforward>0.5){
-		return 'F';
+		return make_pair(0x1, short(1024*decision.rforward)); //F
 	}else if(decision.rbackward>0.5){
-		return 'B';
+		return make_pair(0x2, short(1024*decision.rbackward)); //B
 	}else if(decision.rleft>0.5){
-		return 'L';
+		return make_pair(0x4, short(1024*decision.rleft)); //L
 	}else if(decision.rright>0.5){
-		return 'R';
+		return make_pair(0x8, short(1024*decision.rright)); //R
 	}
 }
 
 void Flyintel::refresh() {
 	memset(spiketrain, 0,sizeof(spiketrain));
-	motor.forward=0;
-	motor.backward=0;
-	motor.left=0;
-	motor.right=0;
-	motor.noise=0;
-	motor.conflict=0;
+	count.forward=0;
+	count.backward=0;
+	count.left=0;
+	count.right=0;
+	count.noise=0;
+	count.conflict=0;
 }

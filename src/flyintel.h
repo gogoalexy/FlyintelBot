@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <utility>
 
 struct Container{
 	float forward;
@@ -38,15 +39,17 @@ struct Ratio{
 	float rright;
 };
 
+typedef std::pair<unsigned char, short> motor;
+
 class Flyintel {
 public:
 Flyintel();
 int cstoi(char*);
-char motorNeuron(int);
+motor getMotor(int);
 void refresh();
 
 private:
-Container motor;
+Container count;
 Ratio decision;
 int spiketrain[500];
 
