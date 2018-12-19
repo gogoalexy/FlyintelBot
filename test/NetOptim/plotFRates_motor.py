@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-inFile = open("FRates20.dat","r") #open the FRates.dat file
+inFile = open("FRates21.dat","r") #open the FRates.dat file
 t = []
 Exc1 = []
 Exc2 = []

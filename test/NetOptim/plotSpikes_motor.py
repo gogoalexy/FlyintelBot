@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-inFile = open("Spikes20.dat","r") #open the Spikes.dat file
+inFile = open("Spikes21.dat","r") #open the Spikes.dat file
 t = []
 spike = []
 
