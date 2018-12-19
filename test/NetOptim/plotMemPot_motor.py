@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-inFile = open("MemPot20.dat","r") #open the FRates.dat file
+inFile = open("MemPot21.dat","r") #open the FRates.dat file
 #Number of total neurons: 61
 t = []
 N1 = []

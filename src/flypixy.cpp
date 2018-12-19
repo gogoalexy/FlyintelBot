@@ -171,8 +171,8 @@ Pixy: <float>, <float>, <float>
 
 		float dx = retina[0].second - CENTER_X;
 		float area = retina[0].first;
-		if(area > 4000){
-			area = 4000;
+		if(area > 5000){
+			area = 5000;
 		}else if(area >= 1000 && area < 2000){
 			area = 2000;
 		}
@@ -209,7 +209,7 @@ Pixy: <float>, <float>, <float>
 
 		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
 		if(motorNeuron.first & 0x1){
-			short speed = motorNeuron.second - 300;
+			short speed = motorNeuron.second - 350;
 			cout<<'F'<<endl;
 			digitalWrite(4, HIGH);
 			front.velocity(speed, speed);
@@ -218,7 +218,7 @@ Pixy: <float>, <float>, <float>
 			rear.forward();
 			fp<<'F'<<endl;
 		}else if(motorNeuron.first & 0x2){
-			short speed = motorNeuron.second - 300;
+			short speed = motorNeuron.second - 350;
 			cout<<'B'<<endl;
 			digitalWrite(5, HIGH);
 			front.velocity(speed, speed);
@@ -252,44 +252,6 @@ Pixy: <float>, <float>, <float>
 			rear.stop();
 			fp<<'S'<<endl;
 		}
-		/*switch(flyintel.getMotor(flyintel.cstoi(Spikes))) {
-			case 'F':
-				cout<<'F'<<endl;
-				digitalWrite(4, HIGH);
-				front.forward();
-				rear.forward();
-				fp<<'F'<<endl;
-				break;
-			case 'B':
-				cout<<'B'<<endl;
-				digitalWrite(5, HIGH);
-				front.backward();
-				rear.backward();
-				fp<<'B'<<endl;
-				break;
-			case 'L':
-				cout<<'L'<<endl;
-				digitalWrite(6, HIGH);
-				front.velocity(650, 650);
-				front.left();
-				rear.left();
-				fp<<'L'<<endl;
-				break;
-			case 'R':
-				cout<<'R'<<endl;
-				digitalWrite(27, HIGH);
-				front.velocity(650, 650);
-				front.right();
-				rear.right();
-				fp<<'R'<<endl;
-				break;
-			default:
-				cout<<'S'<<endl;
-				front.stop();
-				rear.stop();
-				fp<<'S'<<endl;
-		}
-		*/
 	}
 	fp.close();
 	return 0;
