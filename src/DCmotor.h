@@ -20,8 +20,6 @@
 
 #include <wiringPi.h>
 
-using namespace std;
-
 class DCmotor{
 public:
 	DCmotor(short, short, short, short, short, short);
@@ -31,6 +29,8 @@ public:
 	void right();
 	void stop();
 	void velocity(short, short);
+	void proceed();
+	void reverse();
 private:
 	short motorIN1;
 	short motorIN2;

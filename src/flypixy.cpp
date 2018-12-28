@@ -136,8 +136,6 @@ Pixy: <float>, <float>, <float>
 		cout<<"frame: "<<frame<<endl;
 		fp<<"frame: "<<frame<<endl;
 
-		//front.velocity(450, 450)
-		//rear.velocity(450, 450);
 		flyintel.refresh();
 
 /*Note: try operator overload to output file and console in the same line*/
@@ -200,8 +198,6 @@ Pixy: <float>, <float>, <float>
 		<<"Spikes:"<<endl<<Spikes<<endl;
 		fp<<"Spikes: "<<Spikes<<endl;
 
-		front.stop();
-		rear.stop();
 		digitalWrite(4, LOW);
 		digitalWrite(5, LOW);
 		digitalWrite(6, LOW);
