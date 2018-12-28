@@ -61,7 +61,7 @@ Container count;
 Ratio decision;
 int spiketrain[500];
 const int MAX_SPIKES;
-//const int speedDynamic;
+const float RATE_THRESHOLD;
 int turnConst;
 int preturnSpeed;
 int prebaseSpeed;

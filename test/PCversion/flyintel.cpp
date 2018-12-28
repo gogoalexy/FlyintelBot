@@ -20,7 +20,7 @@
 
 using namespace std;
 
-Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC) {
+Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.2) {
 	count = {0, 0, 0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
 	turnConst = 700;
@@ -110,10 +110,20 @@ vmotor Flyintel::getSpeed(int max) {
 		}
 	}
 
-	float forwardRate = (float)count.forward / (float)MAX_SPIKES;
-	float backwardRate = (float)count.backward / (float)MAX_SPIKES;	
-	float leftRate = (float)count.left / (float)MAX_SPIKES;
-	float rightRate = (float)count.right / (float)MAX_SPIKES;
+	int SpikeThreshold = RATE_THRESHOLD * MAX_SPIKES;
+	float forwardRate = 0, backwardRate = 0, leftRate = 0, rightRate = 0;
+	if(count.forward > SpikeThreshold) {
+		forwardRate = (float)count.forward / (float)MAX_SPIKES;
+	}
+	if(count.backward > SpikeThreshold) {
+		backwardRate = (float)count.backward / (float)MAX_SPIKES;
+	}
+	if(count.left > SpikeThreshold) {
+		leftRate = (float)count.left / (float)MAX_SPIKES;
+	}
+	if(count.right > SpikeThreshold) {
+		rightRate = (float)count.right / (float)MAX_SPIKES;
+	}
 
 	float turnAct = turnConst * ( leftRate - rightRate );
 	float baseAct = ( forwardRate - backwardRate ) * V_MAX;
