@@ -21,6 +21,12 @@
 #include <iostream>
 #include <cstring>
 #include <utility>
+#include <cmath>
+
+#define MOTOR_REFRAC 6
+#define STEP_TIME 50 
+#define V_MAX 800
+#define V_MIN 300
 
 struct Container{
 	float forward;
@@ -40,18 +46,25 @@ struct Ratio{
 };
 
 typedef std::pair<unsigned char, short> motor;
+typedef std::pair<int, int> vmotor;
 
 class Flyintel {
 public:
 Flyintel();
 int cstoi(char*);
 motor getMotor(int);
+vmotor getSpeed(int);
 void refresh();
 
 private:
 Container count;
 Ratio decision;
 int spiketrain[500];
+const int MAX_SPIKES;
+//const int speedDynamic;
+int turnConst;
+int preturnSpeed;
+int prebaseSpeed;
 
 };
 

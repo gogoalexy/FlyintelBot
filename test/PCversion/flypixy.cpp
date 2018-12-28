@@ -35,12 +35,12 @@ void handle_SIGINT(int unused){
 char *Spikes = nullptr;
 
 int main(int argc, char *argv[]){
-	int n;
+	int n = 0;
 
 	Flyintel flyintel;
-	string conf_file = "network20.conf", pro_file = "network20.pro";
+	string conf_file = "network21.conf", pro_file = "network21.pro";
 	fstream fp;
-	fp.open("Spikeslog.txt", ios::out);
+	fp.open("Speed.log", ios::out);
 
 	//argument
 	if(argc == 1){
@@ -60,35 +60,45 @@ int main(int argc, char *argv[]){
 	 //0: normal; -1: conf file reading error; -2: pro file reading error
 
 	while(run_flag){
-
+		++n;
 		//baseline stimuli
-		SendDist(2000, 1);
-		SendDist(2000, 2);
-		SendDist(2000, 3);
-		SendDist(2000, 4);
+		SendDist(1500, 1);
+		SendDist(1500, 2);
+		SendDist(1500, 3);
+		SendDist(1500, 4);
     	Spikes=ActiveSimGetSpike("500");
+    	cout
+		<<"receving\n"
+		<<"Spikes:"<<endl<<Spikes<<endl;
 
-		switch(flyintel.motorNeuron(flyintel.cstoi(Spikes))) {
-			case 'F':
-				cout<<'F'<<endl;
-				fp<<'F'<<endl;
-				break;
-			case 'B':
-				cout<<'B'<<endl;
-				fp<<'B'<<endl;
-				break;
-			case 'L':
-				cout<<'L'<<endl;
-				fp<<'L'<<endl;
-				break;
-			case 'R':
-				cout<<'R'<<endl;
-				fp<<'R'<<endl;
-				break;
-			default:
-				cout<<'S'<<endl;
-				fp<<'S'<<endl;
+		vmotor speed = flyintel.getSpeed(flyintel.cstoi(Spikes));
+		int vleft = speed.first;
+		int vright = speed.second;
+
+		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
+		if(motorNeuron.first & 0x1){
+			short speed = motorNeuron.second - 350;
+			cout<<'F'<<endl;
+			fp<<n<<' '<<vleft<<' '<<vright<<' '<<'F'<<endl;
+		}else if(motorNeuron.first & 0x2){
+			short speed = motorNeuron.second - 350;
+			cout<<'B'<<endl;
+			fp<<n<<' '<<vleft<<' '<<vright<<' '<<'B'<<endl;
+		}else if(motorNeuron.first & 0x4){
+			short speed = motorNeuron.second + 200;
+			if(speed > 1024){ speed = 1024; }
+			cout<<'L'<<endl;
+			fp<<n<<' '<<vleft<<' '<<vright<<' '<<'L'<<endl;
+		}else if(motorNeuron.first & 0x8){
+			short speed = motorNeuron.second + 200;
+			if(speed > 1024){ speed = 1024; }
+			cout<<'R'<<endl;
+			fp<<n<<' '<<vleft<<' '<<vright<<' '<<'R'<<endl;
+		}else{
+			cout<<'S'<<endl;
+			fp<<n<<' '<<vleft<<' '<<vright<<' '<<'S'<<endl;
 		}
+
 		flyintel.refresh();
     }
 	fp.close();

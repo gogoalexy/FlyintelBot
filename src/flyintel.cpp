@@ -20,9 +20,12 @@
 
 using namespace std;
 
-Flyintel::Flyintel() {
+Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC) {
 	count = {0, 0, 0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
+	turnConst = 500;
+	preturnSpeed = 0;
+	prebaseSpeed = 0;
 }
 
 int Flyintel::cstoi(char* Spikes) {
@@ -59,16 +62,7 @@ motor Flyintel::getMotor(int max) {
 				count.noise++;
 		}
 	}
-	/*
-	if(count.forward != 0)
-		motor.conflict++;
-	if(count.backward != 0)
-		motor.conflict++;
-	if(count.left != 0)
-		motor.conflict++;
-	if(count.right != 0)
-		motor.conflict++;
-	*/
+
 	decision.denom = count.forward+count.backward+count.right+count.left;
 	if(decision.denom == 0)
 		decision.denom = 1;
@@ -94,6 +88,48 @@ motor Flyintel::getMotor(int max) {
 	}else if(decision.rright>0.5){
 		return make_pair(0x8, short(1024*decision.rright)); //R
 	}
+}
+
+vmotor Flyintel::getSpeed(int max) {
+	for(int i=2; i<max; i+=3){
+		switch(spiketrain[i]){
+			case 5:
+				count.forward++;
+				break;
+			case 11:
+				count.backward++;
+				break;
+			case 17:
+				count.left++;
+				break;
+			case 23:
+				count.right++;
+				break;
+			default:
+				count.noise++;
+		}
+	}
+
+	float forwardRate = (float)count.forward / (float)MAX_SPIKES;
+	float backwardRate = (float)count.backward / (float)MAX_SPIKES;	
+	float leftRate = (float)count.left / (float)MAX_SPIKES;
+	float rightRate = (float)count.right / (float)MAX_SPIKES;
+
+	float turnAct = turnConst * ( leftRate - rightRate );
+	float baseAct = ( forwardRate - backwardRate ) * V_MAX;
+	
+	float turnSmooth = sqrt( ( pow(leftRate, 2) + pow(rightRate, 2) ) / 2 );
+	float baseSmooth = sqrt( ( pow(forwardRate, 2) + pow(backwardRate, 2) ) / 2 );
+	
+	int turnSpeed = turnSmooth * turnAct + (1 - turnSmooth) * preturnSpeed;
+	int baseSpeed =  baseSmooth * baseAct + (1 - baseSmooth) * prebaseSpeed;
+	
+	if(baseSpeed >= 0){
+		return make_pair(baseSpeed - turnSpeed, baseSpeed + turnSpeed);
+	}else if(baseSpeed < 0){
+		return make_pair(baseSpeed + turnSpeed, baseSpeed - turnSpeed);
+	}
+
 }
 
 void Flyintel::refresh() {

@@ -18,6 +18,8 @@
 
 #include "DCmotor.h"
 
+using namespace std;
+
 DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4, short enableA, short enableB){
     this->motorIN1 = motorIN1;
     this->motorIN2 = motorIN2;
@@ -66,6 +68,21 @@ void DCmotor::stop(){
 	digitalWrite(motorIN2, 0);
 	digitalWrite(motorIN3, 0);
 	digitalWrite(motorIN4, 0);
+}
+
+/*left/right grouping*/
+void DCmotor::proceed(){
+	digitalWrite(motorIN1, 1);
+	digitalWrite(motorIN2, 0);
+	digitalWrite(motorIN3, 1);
+	digitalWrite(motorIN4, 0);
+}
+
+void DCmotor::reverse(){
+	digitalWrite(motorIN1, 0);
+	digitalWrite(motorIN2, 1);
+	digitalWrite(motorIN3, 0);
+	digitalWrite(motorIN4, 1);
 }
 
 /*For rp3 analog outpot is poorly supported, it's better to get an external DAC.*/
