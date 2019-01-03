@@ -20,10 +20,10 @@
 
 using namespace std;
 
-Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC) {
+Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3) {
 	count = {0, 0, 0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
-	turnConst = 500;
+	turnConst = 700;
 	preturnSpeed = 0;
 	prebaseSpeed = 0;
 }
@@ -87,6 +87,8 @@ motor Flyintel::getMotor(int max) {
 		return make_pair(0x4, short(1024*decision.rleft)); //L
 	}else if(decision.rright>0.5){
 		return make_pair(0x8, short(1024*decision.rright)); //R
+	}else{
+		return make_pair(0x0, 0); //S
 	}
 }
 
@@ -110,24 +112,43 @@ vmotor Flyintel::getSpeed(int max) {
 		}
 	}
 
-	float forwardRate = (float)count.forward / (float)MAX_SPIKES;
-	float backwardRate = (float)count.backward / (float)MAX_SPIKES;	
-	float leftRate = (float)count.left / (float)MAX_SPIKES;
-	float rightRate = (float)count.right / (float)MAX_SPIKES;
+	int SpikeThreshold = RATE_THRESHOLD * MAX_SPIKES;
+	float forwardRate = 0, backwardRate = 0, leftRate = 0, rightRate = 0;
+	if(count.forward > SpikeThreshold) {
+		forwardRate = (float)count.forward / (float)MAX_SPIKES;
+	}
+	if(count.backward > SpikeThreshold) {
+		backwardRate = (float)count.backward / (float)MAX_SPIKES;
+	}
+	if(count.left > SpikeThreshold) {
+		leftRate = (float)count.left / (float)MAX_SPIKES;
+	}
+	if(count.right > SpikeThreshold) {
+		rightRate = (float)count.right / (float)MAX_SPIKES;
+	}
 
 	float turnAct = turnConst * ( leftRate - rightRate );
 	float baseAct = ( forwardRate - backwardRate ) * V_MAX;
 	
-	float turnSmooth = sqrt( ( pow(leftRate, 2) + pow(rightRate, 2) ) / 2 );
-	float baseSmooth = sqrt( ( pow(forwardRate, 2) + pow(backwardRate, 2) ) / 2 );
+	float turnSmooth = 0.3;//sqrt( ( pow((leftRate - preleftRate), 2) + pow((rightRate - prerightRate), 2) ) / 2 );
+	float baseSmooth = 0.5;//sqrt( ( pow((forwardRate - preforwardRate), 2) + pow((backwardRate - prebackwardRate), 2) ) / 2 );
 	
 	int turnSpeed = turnSmooth * turnAct + (1 - turnSmooth) * preturnSpeed;
 	int baseSpeed =  baseSmooth * baseAct + (1 - baseSmooth) * prebaseSpeed;
 	
+	preleftRate = leftRate;
+	prerightRate = rightRate;
+	preforwardRate = forwardRate;
+	prebackwardRate = backwardRate;
+	preturnSpeed = turnSpeed;
+	prebaseSpeed = baseSpeed;
+	
 	if(baseSpeed >= 0){
-		return make_pair(baseSpeed - turnSpeed, baseSpeed + turnSpeed);
+		return make_pair(2*(baseSpeed - turnSpeed), 2*(baseSpeed + turnSpeed));//enlarge
 	}else if(baseSpeed < 0){
-		return make_pair(baseSpeed + turnSpeed, baseSpeed - turnSpeed);
+		return make_pair(2*(baseSpeed + turnSpeed), 2*(baseSpeed - turnSpeed));
+	}else{
+		return make_pair(0, 0);
 	}
 
 }

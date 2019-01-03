@@ -23,10 +23,10 @@
 #include <utility>
 #include <cmath>
 
-#define MOTOR_REFRAC 6
-#define STEP_TIME 50 
-#define V_MAX 800
-#define V_MIN 300
+#define MOTOR_REFRAC 10
+#define STEP_TIME 50
+#define V_MAX 1024
+#define V_MIN 400
 
 struct Container{
 	float forward;
@@ -61,10 +61,14 @@ Container count;
 Ratio decision;
 int spiketrain[500];
 const int MAX_SPIKES;
-//const int speedDynamic;
+const float RATE_THRESHOLD;
 int turnConst;
 int preturnSpeed;
 int prebaseSpeed;
+float preleftRate;
+float prerightRate;
+float preforwardRate;
+float prebackwardRate;
 
 };
 
