@@ -65,6 +65,10 @@ const float RATE_THRESHOLD;
 int turnConst;
 int preturnSpeed;
 int prebaseSpeed;
+float preleftRate;
+float prerightRate;
+float preforwardRate;
+float prebackwardRate;
 
 };
 

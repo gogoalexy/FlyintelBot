@@ -70,8 +70,8 @@ int main(int argc, char *argv[]){
 	HCSR04 rescue0(15, 16, 10000);
 	SharpIR rescue1(0, 0);
 	SharpIR rescue2(0, 1);
-	DCmotor front(8, 9, 7, 0, 1, 26);
-	DCmotor rear(22, 21, 3, 2, 23, 24);
+	DCmotor Mleft(8, 9, 7, 0, 1, 26);
+	DCmotor Mright(22, 21, 3, 2, 23, 24);
 	Attention pixy;
 	//LinearFilter lfc(CENTER_X, 1, 100);
 	//LinearFilter lfl(LEFT_X, 1, 60);
@@ -203,51 +203,28 @@ Pixy: <float>, <float>, <float>
 		digitalWrite(6, LOW);
 		digitalWrite(27, LOW);
 
-		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
-		if(motorNeuron.first & 0x1){
-			short speed = motorNeuron.second - 350;
-			cout<<'F'<<endl;
-			digitalWrite(4, HIGH);
-			front.velocity(speed, speed);
-			rear.velocity(speed, speed);
-			front.forward();
-			rear.forward();
-			fp<<'F'<<endl;
-		}else if(motorNeuron.first & 0x2){
-			short speed = motorNeuron.second - 350;
-			cout<<'B'<<endl;
-			digitalWrite(5, HIGH);
-			front.velocity(speed, speed);
-			rear.velocity(speed, speed);
-			front.backward();
-			rear.backward();
-			fp<<'B'<<endl;
-		}else if(motorNeuron.first & 0x4){
-			short speed = motorNeuron.second + 200;
-			if(speed > 1024){ speed = 1024; }
-			cout<<'L'<<endl;
-			digitalWrite(6, HIGH);
-			front.velocity(speed, speed);
-			rear.velocity(speed, speed);
-			front.left();
-			rear.left();
-			fp<<'L'<<endl;
-		}else if(motorNeuron.first & 0x8){
-			short speed = motorNeuron.second + 200;
-			if(speed > 1024){ speed = 1024; }
-			cout<<'R'<<endl;
-			digitalWrite(27, HIGH);
-			front.velocity(speed, speed);
-			rear.velocity(speed, speed);
-			front.right();
-			rear.right();
-			fp<<'R'<<endl;
+		vmotor motorNeuron = flyintel.getSpeed(flyintel.cstoi(Spikes));
+		int vleft = speed.first;
+		int vright = speed.second;
+		if(vleft < 0){
+			vleft = -vleft;
+			Mleft.velocity(veleft, vleft);
+			Mleft.reverse();
 		}else{
-			cout<<'S'<<endl;
-			front.stop();
-			rear.stop();
-			fp<<'S'<<endl;
+			Mleft.velocity(veleft, vleft);
+			Mleft.reverse();
 		}
+		
+		if(vright < 0){
+			vright = -vright;
+			Mright.velocity(vright, vright);
+			Mright.reverse();
+		}else{
+			Mright.velocity(vright, vright);
+			Mright.reverse();
+		}
+
+		
 	}
 	fp.close();
 	return 0;
