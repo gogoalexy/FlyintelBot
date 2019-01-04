@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
 	HCSR04 rescue0(15, 16, 10000);
 	SharpIR rescue1(0, 0);
 	SharpIR rescue2(0, 1);
-	DCmotor Mleft(8, 9, 7, 0, 1, 26);
+	DCmotor Mleft(8, 9, 0, 7, 1, 26);
 	DCmotor Mright(22, 21, 3, 2, 23, 24);
 	Attention pixy;
 	//LinearFilter lfc(CENTER_X, 1, 100);
@@ -204,15 +204,15 @@ Pixy: <float>, <float>, <float>
 		digitalWrite(27, LOW);
 
 		vmotor motorNeuron = flyintel.getSpeed(flyintel.cstoi(Spikes));
-		int vleft = speed.first;
-		int vright = speed.second;
+		int vleft = motorNeuron.first;
+		int vright = motorNeuron.second;
 		if(vleft < 0){
 			vleft = -vleft;
-			Mleft.velocity(veleft, vleft);
+			Mleft.velocity(vleft, vleft);
 			Mleft.reverse();
 		}else{
-			Mleft.velocity(veleft, vleft);
-			Mleft.reverse();
+			Mleft.velocity(vleft, vleft);
+			Mleft.proceed();
 		}
 		
 		if(vright < 0){
@@ -221,7 +221,7 @@ Pixy: <float>, <float>, <float>
 			Mright.reverse();
 		}else{
 			Mright.velocity(vright, vright);
-			Mright.reverse();
+			Mright.proceed();
 		}
 
 		
