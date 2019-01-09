@@ -20,7 +20,7 @@
 
 using namespace std;
 
-Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3) {
+Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3), turnSmooth(0.3), baseSmooth(0.5) {
 	count = {0, 0, 0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
 	turnConst = 700;
@@ -130,9 +130,6 @@ vmotor Flyintel::getSpeed(int max) {
 	float turnAct = turnConst * ( leftRate - rightRate );
 	float baseAct = ( forwardRate - backwardRate ) * V_MAX;
 	
-	float turnSmooth = 0.3;//sqrt( ( pow((leftRate - preleftRate), 2) + pow((rightRate - prerightRate), 2) ) / 2 );
-	float baseSmooth = 0.5;//sqrt( ( pow((forwardRate - preforwardRate), 2) + pow((backwardRate - prebackwardRate), 2) ) / 2 );
-	
 	int turnSpeed = turnSmooth * turnAct + (1 - turnSmooth) * preturnSpeed;
 	int baseSpeed =  baseSmooth * baseAct + (1 - baseSmooth) * prebaseSpeed;
 	
@@ -144,17 +141,17 @@ vmotor Flyintel::getSpeed(int max) {
 	prebaseSpeed = baseSpeed;
 	
 	if(baseSpeed){
-		if(baseSpeed<500){
-			baseSpeed = 500;
+		if(baseSpeed < 200){
+			baseSpeed = 200;
 		}else if(baseSpeed > 900){
 			baseSpeed = 900;
 		}
 
 	}
 	if(turnSpeed){
-		if(turnSpeed<500){
-			turnSpeed = 500;
-		}else if(turnSpeed){
+		if(turnSpeed < 200){
+			turnSpeed = 200;
+		}else if(turnSpeed > 900){
 			turnSpeed = 900;
 		}
 	}
