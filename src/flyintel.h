@@ -63,6 +63,8 @@ int spiketrain[500];
 const int MAX_SPIKES;
 const float RATE_THRESHOLD;
 int turnConst;
+float turnSmooth;
+float baseSmooth;
 int preturnSpeed;
 int prebaseSpeed;
 float preleftRate;
