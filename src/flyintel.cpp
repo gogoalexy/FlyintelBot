@@ -143,6 +143,23 @@ vmotor Flyintel::getSpeed(int max) {
 	preturnSpeed = turnSpeed;
 	prebaseSpeed = baseSpeed;
 	
+	if(baseSpeed){
+		if(baseSpeed<500){
+			baseSpeed = 500;
+		}else if(baseSpeed > 900){
+			baseSpeed = 900;
+		}
+
+	}
+	if(turnSpeed){
+		if(turnSpeed<500){
+			turnSpeed = 500;
+		}else if(turnSpeed){
+			turnSpeed = 900;
+		}
+	}
+
+
 	if(baseSpeed >= 0){
 		return make_pair(2*(baseSpeed - turnSpeed), 2*(baseSpeed + turnSpeed));//enlarge
 	}else if(baseSpeed < 0){

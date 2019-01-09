@@ -6,5 +6,8 @@ FLYSIM=$!
 echo ${FLYSIM}
 
 sudo ./build/flypixy.out
+FLYINTEL=$!
+
+echo ${FLYINTEL}
 
 kill ${FLYSIM}

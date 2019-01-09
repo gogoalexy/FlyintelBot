@@ -85,8 +85,7 @@ void DCmotor::reverse(){
 	digitalWrite(motorIN4, 1);
 }
 
-/*For rp3 analog outpot is poorly supported, it's better to get an external DAC.*/
-void DCmotor::velocity(short velocityL, short velocityR){
-	pwmWrite(enableA, velocityL);
-	pwmWrite(enableB, velocityR);
+void DCmotor::velocity(short velocity1, short velocity2){
+	pwmWrite(enableA, velocity1);
+	pwmWrite(enableB, velocity2);
 }
