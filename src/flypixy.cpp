@@ -42,14 +42,14 @@ static bool run_flag = true;
 void handle_SIGINT(int unused){
   // On CTRL+C - abort! //
     run_flag = false;
-    digitalWrite(8, 0);
-    digitalWrite(9, 0);
-    digitalWrite(7, 0);
-    digitalWrite(0, 0);
+    digitalWrite(2, 0);
+    digitalWrite(3, 0);
+    digitalWrite(4, 0);
+    digitalWrite(5, 0);
     digitalWrite(22, 0);
     digitalWrite(21, 0);
-    digitalWrite(3, 0);
-    digitalWrite(2, 0);
+    digitalWrite(27, 0);
+    digitalWrite(25, 0);
 }
 
 char *Spikes = nullptr;
@@ -70,8 +70,8 @@ int main(int argc, char *argv[]){
 	HCSR04 rescue0(15, 16, 10000);
 	SharpIR rescue1(0, 0);
 	SharpIR rescue2(0, 1);
-	DCmotor Mleft(8, 9, 0, 7, 1, 26);
-	DCmotor Mright(22, 21, 3, 2, 23, 24);
+	DCmotor Mleft(22, 21, 27, 25, 23, 24);
+	DCmotor Mright(2, 3, 4, 5, 1, 26);
 	Attention pixy;
 	//LinearFilter lfc(CENTER_X, 1, 100);
 	//LinearFilter lfl(LEFT_X, 1, 60);
@@ -142,7 +142,7 @@ Pixy: <float>, <float>, <float>
 
 		unsigned int soundtime = rescue0.UsoundRange();
 		if(soundtime < 875){
-			SendDist(9000, 5);
+			SendDist(9500, 5);
 		}else{
 			SendDist(9000-(9000/500.0)*(soundtime-875), 5);
 		}
@@ -154,14 +154,14 @@ Pixy: <float>, <float>, <float>
 		if(irL > 600){
 			SendDist(9000, 6);
 		}else{
-			SendDist(9000-(9000/100.0)*(600-irL), 6);
+			SendDist(9000-(9000/90.0)*(600-irL), 6);
 		}
 
 		float irR = rescue2.IRrange();
 		if(irR > 600){
 			SendDist(9000, 7);
 		}else{
-			SendDist(9000-(9000/100.0)*(600-irR), 7);
+			SendDist(9000-(9000/90.0)*(600-irR), 7);
 		}
 
 		cout<<"IR: "<<irL<<", "<<irR<<endl;
