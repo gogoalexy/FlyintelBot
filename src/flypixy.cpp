@@ -109,16 +109,6 @@ Pixy: <float>, <float>, <float>
 	cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 	 //0: normal; -1: conf file reading error; -2: pro file reading error
 
-	digitalWrite(4, HIGH);
-	digitalWrite(5, HIGH);
-	digitalWrite(6, HIGH);
-	digitalWrite(27, HIGH);
-	delay(500);
-	digitalWrite(4, LOW);
-	digitalWrite(5, LOW);
-	digitalWrite(6, LOW);
-	digitalWrite(27, LOW);
-
 	while(run_flag){
 
 		//baseline stimuli
@@ -144,7 +134,7 @@ Pixy: <float>, <float>, <float>
 		if(soundtime < 875){
 			SendDist(9500, 5);
 		}else{
-			SendDist(9000-(9000/500.0)*(soundtime-875), 5);
+			SendDist(9500-(9500/500.0)*(soundtime-875), 5);
 		}
 
 		cout<<"Ultra: "<<soundtime<<"; ";
@@ -191,35 +181,43 @@ Pixy: <float>, <float>, <float>
 		cout<<"area="<<area<<", dx="<<dx<<endl;
 
 
-		Spikes=ActiveSimGetSpike("600");
+		Spikes=ActiveSimGetSpike("500");
 		//-3: connect error
 		cout
 		<<"receving\n"
 		<<"Spikes:"<<endl<<Spikes<<endl;
 		fp<<"Spikes: "<<Spikes<<endl;
 
-		digitalWrite(4, LOW);
-		digitalWrite(5, LOW);
-		digitalWrite(6, LOW);
-		digitalWrite(27, LOW);
 
 		vmotor motorNeuron = flyintel.getSpeed(flyintel.cstoi(Spikes));
 		int vleft = motorNeuron.first;
 		int vright = motorNeuron.second;
 		if(vleft < 0){
 			vleft = -vleft;
+			if(vleft > 400){
+				vleft = 400;
+			}
 			Mleft.velocity(vleft, vleft);
 			Mleft.reverse();
 		}else{
+			if(vleft > 400){
+				vleft = 400;
+			}
 			Mleft.velocity(vleft, vleft);
 			Mleft.proceed();
 		}
 		
 		if(vright < 0){
 			vright = -vright;
+			if(vright > 400){
+				vright = 400;
+			}
 			Mright.velocity(vright, vright);
 			Mright.reverse();
 		}else{
+			if(vright > 400){
+				vright = 400;
+			}
 			Mright.velocity(vright, vright);
 			Mright.proceed();
 		}

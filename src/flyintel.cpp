@@ -23,7 +23,7 @@ using namespace std;
 Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3), turnSmooth(0.3), baseSmooth(0.5) {
 	count = {0, 0, 0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
-	turnConst = 700;
+	turnConst = 100;
 	preturnSpeed = 0;
 	prebaseSpeed = 0;
 }
@@ -139,35 +139,36 @@ vmotor Flyintel::getSpeed(int max) {
 	prebackwardRate = backwardRate;
 	preturnSpeed = turnSpeed;
 	prebaseSpeed = baseSpeed;
-	
+	/*
 	if(baseSpeed > 0){
 		if(baseSpeed < 200){
 			baseSpeed = 200;
-		}else if(baseSpeed > 900){
-			baseSpeed = 900;
+		}else if(baseSpeed > 700){
+			baseSpeed = 700;
 		}
 	}else if(baseSpeed < 0){
 	 if(baseSpeed > -200){
 			baseSpeed = -200;
-		}else if(baseSpeed < -900){
-			baseSpeed = -900;
+		}else if(baseSpeed < -700){
+			baseSpeed = -700;
 		}
 	}
-	
+	*/
+	/*
 	if(turnSpeed > 0){
 		if(turnSpeed < 200){
 			turnSpeed = 200;
-		}else if(turnSpeed > 900){
-			turnSpeed = 900;
+		}else if(turnSpeed > 700){
+			turnSpeed = 700;
 		}
 	}else if(turnSpeed < 0){
 	 if(turnSpeed > -200){
 			turnSpeed = -200;
-		}else if(turnSpeed < -900){
-			turnSpeed = -900;
+		}else if(turnSpeed < -700){
+			turnSpeed = -700;
 		}
 	}
-
+	*/
 
 	if(baseSpeed >= 0){
 		return make_pair(2*(baseSpeed - turnSpeed), 2*(baseSpeed + turnSpeed));//enlarge
