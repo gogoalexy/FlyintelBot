@@ -54,12 +54,14 @@ Flyintel();
 int cstoi(char*);
 motor getMotor(int);
 vmotor getSpeed(int);
+
 void refresh();
 
 private:
 Container count;
 Ratio decision;
 int spiketrain[500];
+int maxspikes;
 const int MAX_SPIKES;
 const float RATE_THRESHOLD;
 int turnConst;

@@ -19,16 +19,20 @@
 #ifndef DCMOTOR_H
 
 #include <wiringPi.h>
+#include <softPwm.h>
 
 class DCmotor{
 public:
 	DCmotor(short, short, short, short, short, short);
+	DCmotor(short, short, short, short);
 	void forward();
 	void backward();
 	void left();
 	void right();
 	void stop();
-	void velocity(short, short);
+	void velocity(int, int);
+	int soft_init();
+	void softvelocity(int, int);
 	void proceed();
 	void reverse();
 private:
