@@ -38,10 +38,13 @@ int Flyintel::cstoi(char* Spikes) {
 			spiketrain[k] = spiketrain[k]*10 + Spikes[j]-'0';
 			j++;
 		}else if(Spikes[j] == 'E'){
-			return max = k-1;//array elements (count from 0)
+			this->maxspikes = k-1;
+			return maxspikes;//array elements (count from 0)
 		}
 	}
 }
+
+
 
 motor Flyintel::getMotor(int max) {
 	for(int i=2; i<max; i+=3){
@@ -139,36 +142,7 @@ vmotor Flyintel::getSpeed(int max) {
 	prebackwardRate = backwardRate;
 	preturnSpeed = turnSpeed;
 	prebaseSpeed = baseSpeed;
-	/*
-	if(baseSpeed > 0){
-		if(baseSpeed < 200){
-			baseSpeed = 200;
-		}else if(baseSpeed > 700){
-			baseSpeed = 700;
-		}
-	}else if(baseSpeed < 0){
-	 if(baseSpeed > -200){
-			baseSpeed = -200;
-		}else if(baseSpeed < -700){
-			baseSpeed = -700;
-		}
-	}
-	*/
-	/*
-	if(turnSpeed > 0){
-		if(turnSpeed < 200){
-			turnSpeed = 200;
-		}else if(turnSpeed > 700){
-			turnSpeed = 700;
-		}
-	}else if(turnSpeed < 0){
-	 if(turnSpeed > -200){
-			turnSpeed = -200;
-		}else if(turnSpeed < -700){
-			turnSpeed = -700;
-		}
-	}
-	*/
+
 
 	if(baseSpeed >= 0){
 		return make_pair(2*(baseSpeed - turnSpeed), 2*(baseSpeed + turnSpeed));//enlarge
