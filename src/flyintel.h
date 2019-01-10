@@ -25,8 +25,8 @@
 
 #define MOTOR_REFRAC 10
 #define STEP_TIME 50
-#define V_MAX 1024
-#define V_MIN 400
+#define V_MAX 500
+#define V_MIN 200
 
 struct Container{
 	float forward;

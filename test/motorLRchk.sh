@@ -49,10 +49,10 @@ done
 EN=(1 26 23 24)
 IN=(2 3 4 5 22 21 27 25)
 
-gpio pwm ${EN[0]}
-gpio pwm ${EN[1]}
-gpio pwm ${EN[2]}
-gpio pwm ${EN[3]}
+gpio pwm ${EN[0]} 0
+gpio pwm ${EN[1]} 0
+gpio pwm ${EN[2]} 0
+gpio pwm ${EN[3]} 0
 
 gpio write ${IN[0]} 1
 gpio write ${IN[1]} 0
