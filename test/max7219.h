@@ -10,19 +10,17 @@ extern int max7219Setup (int pinBase, int spiChannel) ;
 }
 #endif
 */
-class max7219 {
-public:
-max7219();
-bool init();
+#include <wiringPiSPI.h>
+
+bool max7219_init();
 void registerWrite(unsigned char, unsigned char);
 unsigned char ANODE_FUNC(int);
+unsigned char CATHODE_FUNC(int);
+void matrix_clear();
 //void setBrightness();
 //void setMode();
 
-private:
-int  fd;
-
-};
+int  max7219fd;
 
 const unsigned char DECODE_MODE = 0x09;
 const unsigned char INTENSITY = 0x0A;
@@ -34,9 +32,6 @@ const unsigned char ENTER_DECODE = 0xFF;
 const unsigned char EXIT_DECODE = 0x00;
 const unsigned char ENTER_SHUTDOWN = 0x00;
 const unsigned char EXIT_SHUTDOWN = 0x01;
-
-const unsigned char CATHODE[8]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-
 
 #define MAX7219_H
 #endif
