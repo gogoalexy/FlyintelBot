@@ -59,7 +59,7 @@ motor Flyintel::getMotor(int max) {
 				count.right++;
 				break;
 			default:
-				count.noise++;
+				//count.noise++;
 		}
 	}
 
@@ -108,7 +108,7 @@ vmotor Flyintel::getSpeed(int max) {
 				count.right++;
 				break;
 			default:
-				count.noise++;
+				//count.noise++;
 		}
 	}
 
@@ -154,11 +154,11 @@ vmotor Flyintel::getSpeed(int max) {
 }
 
 void Flyintel::refresh() {
-	memset(spiketrain, 0,sizeof(spiketrain));
+	memset(spiketrain, 0, sizeof(spiketrain));
 	count.forward=0;
 	count.backward=0;
 	count.left=0;
 	count.right=0;
-	count.noise=0;
-	count.conflict=0;
+	//count.noise=0;
+	//count.conflict=0;
 }

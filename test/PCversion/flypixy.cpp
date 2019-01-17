@@ -24,6 +24,8 @@
 #include "connect_to_flysim.cpp"
 #include "flyintel.h"
 
+#define NUM_NEURONS 61
+
 using namespace std;
 
 static bool run_flag = true;

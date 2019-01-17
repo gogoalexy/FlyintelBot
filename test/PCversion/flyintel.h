@@ -33,8 +33,8 @@ struct Container{
 	float backward;
 	float left;
 	float right;
-	float noise;
-	float conflict;
+	//float noise;
+	//float conflict;
 };
 
 struct Ratio{
@@ -50,25 +50,28 @@ typedef std::pair<int, int> vmotor;
 
 class Flyintel {
 public:
-Flyintel();
-int cstoi(char*);
-motor getMotor(int);
-vmotor getSpeed(int);
-void refresh();
+    Flyintel();
+    int cstoi(char*);
+    int cstoarr(char*);
+    motor getMotor(int);
+    vmotor getSpeed(int);
+    void refresh();
+
+    friend class NeuroMonitor;
 
 private:
-Container count;
-Ratio decision;
-int spiketrain[500];
-const int MAX_SPIKES;
-const float RATE_THRESHOLD;
-int turnConst;
-int preturnSpeed;
-int prebaseSpeed;
-float preleftRate;
-float prerightRate;
-float preforwardRate;
-float prebackwardRate;
+    Container count;
+    Ratio decision;
+    int spiketrain[500];
+    const int MAX_SPIKES;
+    const float RATE_THRESHOLD;
+    int turnConst;
+    int preturnSpeed;
+    int prebaseSpeed;
+    float preleftRate;
+    float prerightRate;
+    float preforwardRate;
+    float prebackwardRate;
 
 };
 
