@@ -8,8 +8,8 @@ bool LEDmatrix::init(int pinBase, int spiChan) {
     max7219Setup();
 }
 
-void LEDmatrix::LEDwrite(unsigned short row, unsigned short column, bool state) {
-
+void LEDmatrix::registerWrite(unsigned char byte1, unsigned char byte2) {
+    digitalWrite();
 }
 
 
