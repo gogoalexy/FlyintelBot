@@ -70,8 +70,8 @@ int main(int argc, char *argv[]){
 	HCSR04 rescue0(15, 16, 10000);
 	SharpIR rescue1(0, 0);
 	SharpIR rescue2(0, 1);
-	DCmotor Mleft(22, 21, 27, 25, 23, 24);
-	DCmotor Mright(2, 3, 4, 5, 1, 26);
+	DCmotor Mleft(22, 21, 27, 25, 1, 26);
+	DCmotor Mright(2, 3, 4, 5, 23, 24);
 	Attention pixy;
 	//LinearFilter lfc(CENTER_X, 1, 100);
 	//LinearFilter lfl(LEFT_X, 1, 60);

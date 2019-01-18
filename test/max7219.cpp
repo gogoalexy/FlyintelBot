@@ -44,40 +44,37 @@ int max7219Setup (const int pinBase, int spiChannel)
 }
 */
 
-bool max7219_init(int spiChannel)
+int max7219_init(int spiChannel)
 {
-  max7219fd = wiringPiSPISetup (spiChannel, 1000000);
-  if ( max7219fd < 0)
-    return FALSE;
-
-  return TRUE;
+  int fd = wiringPiSPISetup (spiChannel, 500000);
+  return fd;
 }
 
-void registerWrite(unsigned char, unsigned char)
-{
-  unsigned char spiData [2];
-  spiData [0] = addr;
-  spiData [1] = value;
-
-  wiringPiSPIDataRW (max7219fd, spiData, 2);
-
-}
-
-inline unsigned char CATHODE_FUNC(int position)
+unsigned char CATHODE_FUNC(int position)
 {
     return 0x01 + position;
 }
 
-inline unsigned char ANODE_FUNC(int position)
+unsigned char ANODE_FUNC(int position)
 {
     return 0x80 >> position;
 }
 
-void matrix_clear()
+void registerWrite(int fd, unsigned char digit, unsigned char seg)
+{
+  unsigned char spiData [2];
+  spiData [0] = digit;
+  spiData [1] = seg;
+
+  wiringPiSPIDataRW (fd, spiData, 2);
+
+}
+
+void matrix_clear(int fd)
 {
     for (int i = 0; i < 8; i++)
     {
-        registerWrite(CATHODE_FUNC(i), 0x00);
+        registerWrite(fd, CATHODE_FUNC(i), 0x00);
     }
 }
 
