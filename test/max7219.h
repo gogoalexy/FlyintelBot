@@ -12,15 +12,15 @@ extern int max7219Setup (int pinBase, int spiChannel) ;
 */
 #include <wiringPiSPI.h>
 
-bool max7219_init();
-void registerWrite(unsigned char, unsigned char);
-unsigned char ANODE_FUNC(int);
+int max7219_init(int);
 unsigned char CATHODE_FUNC(int);
-void matrix_clear();
+unsigned char ANODE_FUNC(int);
+void registerWrite(int, unsigned char, unsigned char);
+void matrix_clear(int);
 //void setBrightness();
 //void setMode();
 
-int  max7219fd;
+//extern int  max7219fd;
 
 const unsigned char DECODE_MODE = 0x09;
 const unsigned char INTENSITY = 0x0A;
