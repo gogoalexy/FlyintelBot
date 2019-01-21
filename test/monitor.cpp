@@ -109,7 +109,7 @@ struct Container NeuroMonitor::sortinghat(int max)
 	return motorOut;
 }
 
-int NeuroMonitor::visualize()
+int NeuroMonitor::visualize(struct NeuroCatalog neurogroup)
 {
 	if(neurogroup.rsensorF)
 	{
@@ -192,6 +192,8 @@ int NeuroMonitor::visualize()
 		registerWrite(CATHODE_FUNC(ROW.motorR), ANODE_FUNC(COL.motorR));
 	}
 }
+
+
 
 void NeuroMonitor::refresh()
 {
