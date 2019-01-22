@@ -1,5 +1,5 @@
 #ifndef MAX7219_H
-/*
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -9,9 +9,8 @@ extern int max7219Setup (int pinBase, int spiChannel) ;
 #ifdef __cplusplus
 }
 #endif
-*/
-#include <wiringPiSPI.h>
 
+/*
 int max7219_init(int);
 unsigned char CATHODE_FUNC(int);
 unsigned char ANODE_FUNC(int);
@@ -32,6 +31,6 @@ const unsigned char ENTER_DECODE = 0xFF;
 const unsigned char EXIT_DECODE = 0x00;
 const unsigned char ENTER_SHUTDOWN = 0x00;
 const unsigned char EXIT_SHUTDOWN = 0x01;
-
+*/
 #define MAX7219_H
 #endif
