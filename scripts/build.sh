@@ -12,10 +12,13 @@ function GREEN_TEXT {
 function RED_TEXT {
   printf "\033[1;31m"
 }
+function END_COLOR {
+	printf "\0330m"
+}
 
 WHITE_TEXT
 echo "########################################################################################"
-echo "# Building FlyintelBot...                                                              #"
+echo "+ Building FlyintelBot...                                                              +"
 echo "########################################################################################"
 NORMAL_TEXT
 
@@ -25,7 +28,7 @@ TARGET_BUILD_FOLDER=../build
 
 mkdir -pv $TARGET_BUILD_FOLDER
 
-if [ -e $TARGET_BUILD_FOLDER/main.out]
+if [ -e $TARGET_BUILD_FOLDER/main.out ]
 then
 	cd ../src
     make clean

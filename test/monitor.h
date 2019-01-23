@@ -6,16 +6,17 @@
 //#include "flyintel.h"??
 
 
-class NeuroMonitor {
+class NeuroMonitor
+{
 public:
 	NeuroMonitor();
+	int init(int, int);
 	int sortinghat(); //friend of flyintel
 	int visualize(NetStruct);
 	void refresh();
 
 private:
 	int state;
-
 };
 
 #define MONITOR_H
