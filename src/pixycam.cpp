@@ -1,6 +1,6 @@
 /*
  *	  This file is part of FlyintelBot.
- *    Copyright (C) 2018  Alex Huang-Yu Yao
+ *    Copyright (C) 2019  Alex Huang-Yu Yao
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -20,22 +20,20 @@
 
 using namespace std;
 
-PixyCam::PixyCam (): pixy() {
-    this->FOOD = 1;
-    this->TOXIC = 2;
-}
+PixyCam::PixyCam(): pixy(), FOOD(1), TOXIC(2)
+{}
 
-PixyCam::PixyCam (int food_sig, int toxic_sig): pixy() {
-    this->FOOD = food_sig;
-    this->TOXIC = toxic_sig;
-}
+PixyCam::PixyCam(int food_sig, int toxic_sig): pixy(), FOOD(food_sig), TOXIC(toxic_sig)
+{}
 
-int PixyCam::vision_init() {
+int PixyCam::init()
+{
     int pixy_init_status = pixy.init();
   // Was there an error initializing pixy? //
-    if(pixy_init_status < 0) {
+    if(pixy_init_status < 0)
+    {
     // Error initializing Pixy //
-        cout<<"pixy_init(): "<<pixy_init_status<<endl;
+        cout<<"pixy.init(): Error "<<pixy_init_status<<endl;
 
         return pixy_init_status;
     }
@@ -43,64 +41,81 @@ int PixyCam::vision_init() {
     return pixy_init_status;
 }
 
-void PixyCam::refresh() {
-    if(!foodQ.empty()) {
+void PixyCam::refresh()
+{
+    if(!foodQ.empty())
+    {
         foodQ = clearQ;
     }
-    if(!toxicQ.empty()) {
+    if(!toxicQ.empty())
+    {
         toxicQ = clearQ;
     }
 }
 
-void PixyCam::capture() {
-
-	int  Block_Index;
-
-  // Query Pixy for blocks //
+void PixyCam::capture()
+{
+	int  block_index;
+    // Query Pixy for blocks //
 	pixy.ccc.getBlocks();
-		cout<<__LINE__<<endl;
-  // Were blocks detected? //
+	//The returned blocks are sorted by area, with the largest blocks appearing first in the blocks array.
+	
+    // Were blocks detected? //
 	if (pixy.ccc.numBlocks)
 	{
-		for (Block_Index = 0; Block_Index < pixy.ccc.numBlocks; ++Block_Index)
+		for (block_index = 0; block_index < pixy.ccc.numBlocks; ++block_index)
 	    {
-        	if(pixy.ccc.blocks[Block_Index].m_signature == FOOD){
-            	auto food = make_pair(pixy.ccc.blocks[Block_Index].m_width*pixy.ccc.blocks[Block_Index].m_height, pixy.ccc.blocks[Block_Index].m_x);
+        	if(pixy.ccc.blocks[block_index].m_signature == FOOD)
+        	{
+            	auto food = make_pair(pixy.ccc.blocks[block_index].m_width*pixy.ccc.blocks[block_index].m_height, pixy.ccc.blocks[block_index].m_x);
             	foodQ.push(food);
-        	}else if(pixy.ccc.blocks[Block_Index].m_signature == TOXIC){
-            	auto toxic = make_pair(pixy.ccc.blocks[Block_Index].m_width*pixy.ccc.blocks[Block_Index].m_height, pixy.ccc.blocks[Block_Index].m_x);
+        	}
+        	else if(pixy.ccc.blocks[block_index].m_signature == TOXIC)
+        	{
+            	auto toxic = make_pair(pixy.ccc.blocks[block_index].m_width*pixy.ccc.blocks[block_index].m_height, pixy.ccc.blocks[block_index].m_x);
             	toxicQ.push(toxic);
-        	}else{
+        	}
+        	else
+        	{
             	continue;
         	}
 	    }
 	}
 }
 
-array<obj, 2> PixyCam::pick() {
-    array<obj, 2> see;
+array<Obj, 2> PixyCam::pickLarge()
+{
+    array<Obj, 2> tmp;
 
-    if(!foodQ.empty()) {
-        see[0] = foodQ.top();
-    }else{
-        see[0] = make_pair(0, 0);
+    if(!foodQ.empty())
+    {
+        tmp[0] = foodQ.front();
+    }
+    else
+    {
+        tmp[0] = make_pair(0, 0);
     }
 
-    if(!toxicQ.empty()) {
-        see[1] = toxicQ.top();
-    }else{
-        see[1] = make_pair(0, 0);
+    if(!toxicQ.empty())
+    {
+        tmp[1] = toxicQ.front();
+    }
+    else
+    {
+        tmp[1] = make_pair(0, 0);
     }
 
-    return see;
+    return tmp;
 }
 
-PixyCam::~PixyCam(){
-
-    while(!foodQ.empty()){
+PixyCam::~PixyCam()
+{
+    while(!foodQ.empty())
+    {
         foodQ.pop();
     }
-    while(!toxicQ.empty()){
+    while(!toxicQ.empty())
+    {
         toxicQ.pop();
     }
 }

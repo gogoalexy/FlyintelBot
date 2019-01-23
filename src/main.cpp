@@ -29,16 +29,13 @@
 #include "HC_SR04.h"
 #include "pixycam.h"
 
-#define CENTER_X 154
-#define LEFT_X 0
-#define RIGHT_X 319
-
 bool chkSPI = false;
 
 using namespace std;
 
 static bool run_flag = true;
-void handle_SIGINT(int unused){
+void handle_SIGINT(int unused)
+{
   // On CTRL+C - abort! //
     run_flag = false;
     digitalWrite(2, 0);
@@ -57,8 +54,10 @@ int main(int argc, char *argv[]){
 	int n;
 	unsigned int frame = 0;
 
-	if(wiringPiSetup() == -1){
-		return -1;
+	if(wiringPiSetup() == -1)
+	{
+		cout<<"wiringPi initialization error"<<endl;
+		return -3;
 	}
 
 	pinMode(4, OUTPUT);
@@ -72,10 +71,8 @@ int main(int argc, char *argv[]){
 	DCmotor Mleft(22, 21, 27, 25, 1, 26);
 	DCmotor Mright(2, 3, 4, 5, 23, 24);
 	PixyCam pixy;
-	//LinearFilter lfc(CENTER_X, 1, 100);
-	//LinearFilter lfl(LEFT_X, 1, 60);
-	//LinearFilter lfr(RIGHT_X, 1, 60);
 	Flyintel flyintel;
+
 	string conf_file = "./network/network21.conf", pro_file = "./network/network21.pro";
 	fstream fp;
 	fp.open("FlyintelBot.log", ios::out);
@@ -89,18 +86,23 @@ Pixy: <float>, <float>, <float>
 */
 
 	//argument
-	if(argc == 1){
-	}else if(argc >= 2 && argv[1] == "-f"){
+	if(argc == 1)
+	{}
+	else if(argc >= 2 && argv[1] == "-f")
+	{
 	    conf_file = argv[2];
 	    pro_file = argv[3];
-	}else{
+	}
+	else
+	{
 	    cout<<"Unrecognizable arguments\n"
 	    <<"Use default file path"<<endl;
 	}
 
 	signal(SIGINT, handle_SIGINT);
 
-	if(!pixy.vision_init() == 0){
+	if(!pixy.init() == 0)
+	{
 	    return -4;
 	}
 
@@ -120,19 +122,20 @@ Pixy: <float>, <float>, <float>
 
 		pixy.refresh();
 		pixy.capture();
-	  	array<obj, 2> retina;
-	  	retina = pixy.pick();
+	  	array<Obj, 2> retina;
+	  	retina = pixy.pickLarge();
 		cout<<"frame: "<<frame<<endl;
 		fp<<"frame: "<<frame<<endl;
 
 		flyintel.refresh();
 
-/*Note: try operator overload to output file and console in the same line*/
-
 		unsigned int soundtime = rescue0.UsoundRange();
-		if(soundtime < 875){
+		if(soundtime < 875)
+		{
 			SendDist(9500, 5);
-		}else{
+		}
+		else
+		{
 			SendDist(9500-(9500/500.0)*(soundtime-875), 5);
 		}
 
@@ -140,38 +143,52 @@ Pixy: <float>, <float>, <float>
 
 
 		float irL = rescue1.IRrange();
-		if(irL > 600){
+		if(irL > 600)
+		{
 			SendDist(9000, 6);
-		}else{
+		}
+		else
+		{
 			SendDist(9000-(9000/90.0)*(600-irL), 6);
 		}
 
 		float irR = rescue2.IRrange();
-		if(irR > 600){
+		if(irR > 600)
+		{
 			SendDist(9000, 7);
-		}else{
+		}
+		else
+		{
 			SendDist(9000-(9000/90.0)*(600-irR), 7);
 		}
 
 		cout<<"IR: "<<irL<<", "<<irR<<endl;
 
 
-		float dx = retina[0].second - CENTER_X;
+		float dx = retina[0].second - PIXY2_CENTER_X;
 		float area = retina[0].first;
-		if(area > 5000){
+		if(area > 5000)
+		{
 			area = 5000;
-		}else if(area >= 1000 && area < 2000){
+		}
+		else if(area >= 1000 && area < 2000)
+		{
 			area = 2000;
 		}
-		if(dx > 120){
+		if(dx > 120)
+		{
 			SendDist(0, 8);
 			SendDist(0, 9);
 			SendDist(area, 10);
-		}else if(dx < -120){
+		}
+		else if(dx < -120)
+		{
 			SendDist(0, 8);
 			SendDist(area, 9);
 			SendDist(0, 10);
-		}else{
+		}
+		else
+		{
 			SendDist(area, 8);
 			SendDist(0, 9);
 			SendDist(0, 10);
@@ -191,36 +208,45 @@ Pixy: <float>, <float>, <float>
 		vmotor motorNeuron = flyintel.getSpeed(flyintel.cstoi(Spikes));
 		int vleft = motorNeuron.first;
 		int vright = motorNeuron.second;
-		if(vleft < 0){
+		if(vleft < 0)
+		{
 			vleft = -vleft;
-			if(vleft > 400){
+			if(vleft > 400)
+			{
 				vleft = 400;
 			}
 			Mleft.velocity(vleft, vleft);
 			Mleft.reverse();
-		}else{
-			if(vleft > 400){
+		}
+		else
+		{
+			if(vleft > 400)
+			{
 				vleft = 400;
 			}
 			Mleft.velocity(vleft, vleft);
 			Mleft.proceed();
 		}
 
-		if(vright < 0){
+		if(vright < 0)
+		{
 			vright = -vright;
-			if(vright > 400){
+			if(vright > 400)
+			{
 				vright = 400;
 			}
 			Mright.velocity(vright, vright);
 			Mright.reverse();
-		}else{
-			if(vright > 400){
+		}
+		else
+		{
+			if(vright > 400)
+			{
 				vright = 400;
 			}
 			Mright.velocity(vright, vright);
 			Mright.proceed();
 		}
-
 
 	}
 	fp.close();

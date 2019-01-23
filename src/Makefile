@@ -14,7 +14,7 @@ BUILD_DIR=../build
 $(BUILD_DIR)/main.out: $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDLIBS)
 
-$(BUILD_DIR)/main.o: main.cpp dirmake
+$(BUILD_DIR)/main.o: main.cpp
 	$(CXX) -c $(CXXFLAGS) main.cpp -o $(BUILD_DIR)/main.o
 
 $(BUILD_DIR)/pixycam.o: pixycam.cpp
@@ -32,8 +32,8 @@ $(BUILD_DIR)/HC_SR04.o: HC_SR04.cpp
 $(BUILD_DIR)/DCmotor.o: DCmotor.cpp
 	$(CXX) -c DCmotor.cpp -o $(BUILD_DIR)/DCmotor.o
 
-dirmake:
-	mkdir -pv $(BUILD_DIR)
+#dirmake:
+#	mkdir -pv $(BUILD_DIR)
 
 clean:
 	rm -rf $(BUILD_DIR)/main.out $(BUILD_DIR)/*.o

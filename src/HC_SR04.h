@@ -21,7 +21,8 @@
 #include <wiringPi.h>
 #include "sensor.h"
 
-class HCSR04 : public Sensor {
+class HCSR04 : public Sensor
+{
 public:
 	HCSR04(short, short, int);
 	void init() override;
