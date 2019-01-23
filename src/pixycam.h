@@ -18,9 +18,9 @@
 
 #ifndef PIXYCAM_H
 
-//#include <cstdio> //sprintf is used in pixy.h but not included lol
 #include <iostream>
 #include <utility>
+#include <list>
 #include <queue>
 #include <array>
 #include "libpixyusb2.h"

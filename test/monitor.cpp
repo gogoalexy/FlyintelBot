@@ -7,6 +7,11 @@ NeuroMonitor::NeuroMonitor()
 	neurogroup = {0};
 }
 
+int NeuroMonitor::init(int pibBase, int spiChan)
+{
+
+}
+
 struct Container NeuroMonitor::sortinghat(int max)
 {
 	for(int i=2; i<max; i+=3){
