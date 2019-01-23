@@ -12,6 +12,7 @@ using namespace std;
 int main(){
 	int frame = 0;
 	PixyCam pixy;
+	pixy.vision_init();
 
 	while(true){
 		frame += 1;
@@ -27,6 +28,7 @@ int main(){
 		float sensor = retina[0].first;
 
 		cout<<center<<", "<<sensor<<", "<<endl;
+		pixy.refresh();
 
 	}
 }

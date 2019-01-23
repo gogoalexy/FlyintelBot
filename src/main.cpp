@@ -21,7 +21,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include "wiringPi.h"
+#include <wiringPi.h>
 #include "connect_to_flysim.cpp"
 #include "flyintel.h"
 #include "DCmotor.h"
