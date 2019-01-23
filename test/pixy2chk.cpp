@@ -1,8 +1,7 @@
 #include <iostream>
 #include <array>
 #include <cmath>
-#include "../src/attention.h"
-#include "../src/sensefilter.h"
+#include "../src/pixycam.h"
 
 #define CENTER_X 154
 #define LEFT_X 0
@@ -12,10 +11,7 @@ using namespace std;
 
 int main(){
 	int frame = 0;
-	Attention pixy;
-	LinearFilter lfc(CENTER_X, 1, 100);
-	LinearFilter lfl(LEFT_X, 1, 60);
-	LinearFilter lfr(RIGHT_X, 1, 60);
+	PixyCam pixy;
 
 	while(true){
 		frame += 1;
@@ -30,11 +26,7 @@ int main(){
 		}
 		float sensor = retina[0].first;
 
-		float objC = lfc.FilterGen(center)*sensor;
-		float objL = lfl.FilterGen(center)*sensor;
-		float objCR= lfr.FilterGen(center)*sensor;
-
-		cout<<objC<<", "<<objL<<", "<<objR<<", "<<endl;
+		cout<<center<<", "<<sensor<<", "<<endl;
 
 	}
 }
