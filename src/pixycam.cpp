@@ -37,7 +37,6 @@ int PixyCam::vision_init() {
     if(!pixy_init_status == 0) {
     // Error initializing Pixy //
         cout<<"pixy_init(): ";
-        pixy_error(pixy_init_status);
 
         return pixy_init_status;
     }
