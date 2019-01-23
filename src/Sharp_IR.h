@@ -26,7 +26,8 @@
 
 extern bool chkSPI;
 
-class SharpIR : public Sensor {
+class SharpIR : public Sensor
+{
 public:
 	SharpIR(short, int);
 	void init() override;

@@ -1,6 +1,6 @@
 /*
  *	  This file is part of FlyintelBot.
- *    Copyright (C) 2018  Alex Huang-Yu Yao
+ *    Copyright (C) 2019  Alex Huang-Yu Yao
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,39 +18,62 @@
 
 #ifndef PIXYCAM_H
 
-#include <cstdio> //sprintf is used in pixy.h but not included lol
+//#include <cstdio> //sprintf is used in pixy.h but not included lol
 #include <iostream>
 #include <utility>
 #include <queue>
 #include <array>
 #include "libpixyusb2.h"
 
-#define BLOCK_BUFFER_SIZE 25
-
-typedef std::pair<int, int> obj;
 /*
-struct Object {
-    float key_area;
-    float horizontal;
-}
-*/
-class PixyCam {
+ *==============================View Field===============================
+ *
+ *    (0, 0)------------------------------(315, 0)
+ *          |    increasing x ->          |
+ *          |                             |
+ *          |                             |
+ *          |                             |
+ *          |  increasing y               |
+ *          |    |                        |
+ *          |    *                        |
+ *          |                             |
+ *          |                             |
+ *          ------------------------------(315, 207)
+ *      (0, 207)
+ *
+ * Reference: https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:ccc_api
+ *=======================================================================
+ */
+
+#define PIXY2_CENTER_X 158
+#define PIXY2_LEFT_X 0
+#define PIXY2_RIGHT_X 315
+
+const int BLOCK_BUFFER_SIZE = 25;
+
+typedef std::pair<int, int> Obj;
+//Obj pair
+//first => area;
+//second => x;
+
+class PixyCam 
+{
 public:
     PixyCam();
     PixyCam(int, int);
-    int vision_init();
+    int init();
     void refresh();
     void capture();
-    std::array<obj, 2> pick();
+    std::array<Obj, 2> pickLarge();
     ~PixyCam();
 private:
 	Pixy2 pixy;
-    int FOOD;
-    int TOXIC;
     struct Block blocks[BLOCK_BUFFER_SIZE];
-    std::priority_queue< obj, std::vector<obj>, std::greater<obj> > foodQ;
-    std::priority_queue< obj, std::vector<obj>, std::greater<obj> > toxicQ;
-    std::priority_queue< obj, std::vector<obj>, std::greater<obj> > clearQ;
+    const int FOOD;
+    const int TOXIC;
+    std::queue< Obj, std::list<Obj> > foodQ;
+    std::queue< Obj, std::list<Obj> > toxicQ;
+    std::queue< Obj, std::list<Obj> > clearQ;
 };
 
 #define PIXYCAM_H

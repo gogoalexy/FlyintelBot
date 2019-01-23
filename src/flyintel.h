@@ -28,16 +28,16 @@
 #define V_MAX 500
 #define V_MIN 200
 
-struct Container{
+struct Container
+{
 	float forward;
 	float backward;
 	float left;
 	float right;
-	float noise;
-	float conflict;
 };
 
-struct Ratio{
+struct Ratio
+{
 	float denom;
 	float rforward;
 	float rbackward;
@@ -48,7 +48,8 @@ struct Ratio{
 typedef std::pair<unsigned char, short> motor;
 typedef std::pair<int, int> vmotor;
 
-class Flyintel {
+class Flyintel
+{
 public:
 Flyintel();
 int cstoi(char*);

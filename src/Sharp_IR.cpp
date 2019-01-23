@@ -20,34 +20,35 @@
 
 using namespace std;
 
-SharpIR::SharpIR(short spi_chan, int ic_chan){
+SharpIR::SharpIR(short spi_chan, int ic_chan)
+{
     this->spi_chan = spi_chan;
     this->ic_chan = ic_chan;
     //fixed spi speed
     //spisetup check
-    if(!chkSPI){
-    	//if(wiringPiSPISetup() == -1){
-	//	cout<<"SPI setup failed."<<endl;
-	//	return;
-	//}
-	chkSPI = true;
-    
+    if(!chkSPI)
+    {
+	    chkSPI = true;    
         mcp3004Setup(BASE, this->spi_chan);
     }
 }
 
-void SharpIR::init() {
-    if(wiringPiSPISetup(this->spi_chan, 500000) == -1){
+void SharpIR::init()
+{
+    if(wiringPiSPISetup(this->spi_chan, 500000) == -1)
+    {
 		    cout<<"SPI setup failed."<<endl;
 		    return;
-		}
+    }
 		mcp3004Setup(BASE, this->spi_chan);
 }
 
-unsigned int SharpIR::range() {
+unsigned int SharpIR::range()
+{
     return analogRead(BASE + ic_chan);
 }
 
-int SharpIR::IRrange(){
+int SharpIR::IRrange()
+{
 	return analogRead(BASE + ic_chan);
 }

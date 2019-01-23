@@ -1,12 +1,5 @@
 #!/bin/bash
 
-mkdir -pv ../build
-cd build
-cmake ../src
-echo "Cmake sucesseed!"
-make
-echo "Compile complete!"
-
 function WHITE_TEXT {
   printf "\033[1;37m"
 }
@@ -22,7 +15,7 @@ function RED_TEXT {
 
 WHITE_TEXT
 echo "########################################################################################"
-echo "# Building Get Blocks CPP Demo...                                                      #"
+echo "# Building FlyintelBot...                                                              #"
 echo "########################################################################################"
 NORMAL_TEXT
 
@@ -32,16 +25,17 @@ TARGET_BUILD_FOLDER=../build
 
 mkdir -pv $TARGET_BUILD_FOLDER
 
-if [test -e $TARGET_BUILD_FOLDER/main.out]
+if [ -e $TARGET_BUILD_FOLDER/main.out]
 then
+	cd ../src
     make clean
 fi
 
 cd ../src
 make
-mv ./get_blocks_cpp_demo ../../../../build/get_blocks_cpp_demo
 
-if [ -f ../../../../build/get_blocks_cpp_demo/get_blocks_cpp_demo ]; then
+if [ -f ../build/main.out ]
+then
   GREEN_TEXT
   printf "SUCCESS "
 else

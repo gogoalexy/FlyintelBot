@@ -20,7 +20,8 @@
 
 using namespace std;
 
-DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4, short enableA, short enableB){
+DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4, short enableA, short enableB)
+{
     this->motorIN1 = motorIN1;
     this->motorIN2 = motorIN2;
     this->motorIN3 = motorIN3;
@@ -35,7 +36,8 @@ DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4,
 	pinMode(enableB, PWM_OUTPUT);
 }
 
-DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4){
+DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4)
+{
     this->motorIN1 = motorIN1;
     this->motorIN2 = motorIN2;
     this->motorIN3 = motorIN3;
@@ -47,48 +49,56 @@ DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4)
 	pinMode(motorIN4, OUTPUT);
 }
 
-int DCmotor::soft_init(short enableA, short enableB) {
+int DCmotor::soft_init(short enableA, short enableB)
+{
 	this->enableA = enableA;
     this->enableB = enableB;
 	int pwmcreate = softPwmCreate (enableA, 0, 100);
-	if (pwmcreate){
+	if (pwmcreate)
+	{
 		return -8;
 	}
 	pwmcreate = softPwmCreate (enableB, 0, 100);
-	if (pwmcreate){
+	if (pwmcreate)
+	{
 		return -8;
 	}
 }
 
-void DCmotor::forward(){
+void DCmotor::forward()
+{
 	digitalWrite(motorIN1, 1);
 	digitalWrite(motorIN2, 0);
 	digitalWrite(motorIN3, 1);
 	digitalWrite(motorIN4, 0);
 }
 
-void DCmotor::backward(){
+void DCmotor::backward()
+{
 	digitalWrite(motorIN1, 0);
 	digitalWrite(motorIN2, 1);
 	digitalWrite(motorIN3, 0);
 	digitalWrite(motorIN4, 1);
 }
 
-void DCmotor::left(){
+void DCmotor::left()
+{
 	digitalWrite(motorIN1, 0);
 	digitalWrite(motorIN2, 1);
 	digitalWrite(motorIN3, 1);
 	digitalWrite(motorIN4, 0);
 }
 
-void DCmotor::right(){
+void DCmotor::right()
+{
 	digitalWrite(motorIN1, 1);
 	digitalWrite(motorIN2, 0);
 	digitalWrite(motorIN3, 0);
 	digitalWrite(motorIN4, 1);
 }
 
-void DCmotor::stop(){
+void DCmotor::stop()
+{
 	digitalWrite(motorIN1, 0);
 	digitalWrite(motorIN2, 0);
 	digitalWrite(motorIN3, 0);
@@ -96,14 +106,16 @@ void DCmotor::stop(){
 }
 
 /*left/right grouping*/
-void DCmotor::proceed(){
+void DCmotor::proceed()
+{
 	digitalWrite(motorIN1, 1);
 	digitalWrite(motorIN2, 0);
 	digitalWrite(motorIN3, 1);
 	digitalWrite(motorIN4, 0);
 }
 
-void DCmotor::reverse(){
+void DCmotor::reverse()
+{
 	digitalWrite(motorIN1, 0);
 	digitalWrite(motorIN2, 1);
 	digitalWrite(motorIN3, 0);
@@ -111,15 +123,15 @@ void DCmotor::reverse(){
 }
 
 /*hardware PWM*/
-void DCmotor::velocity(int velocity1, int velocity2){
+void DCmotor::velocity(int velocity1, int velocity2)
+{
 	pwmWrite(enableA, velocity1);
 	pwmWrite(enableB, velocity2);
 }
 
 /*software PWM*/
-/*
-void DCmotor::softvelocity(int velocity1, int velocity2){
+void DCmotor::softvelocity(int velocity1, int velocity2)
+{
 	softPwmWrite (enableA, velocity1);
 	softPwmWrite (enableB, velocity2);
 }
-*/

@@ -21,7 +21,8 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 
-class DCmotor{
+class DCmotor
+{
 public:
 	DCmotor(short, short, short, short, short, short);
 	DCmotor(short, short, short, short);
@@ -32,7 +33,7 @@ public:
 	void stop();
 	void velocity(int, int);
 	int soft_init(short, short);
-	//void softvelocity(int, int);
+	void softvelocity(int, int);
 	void proceed();
 	void reverse();
 private:
