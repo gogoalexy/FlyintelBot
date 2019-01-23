@@ -5,7 +5,7 @@ FLYSIM=$!
 
 echo ${FLYSIM}
 
-sudo ./build/flypixy.out
+sudo ./build/main.out
 FLYINTEL=$!
 
 echo ${FLYINTEL}
