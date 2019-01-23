@@ -51,11 +51,11 @@ int DCmotor::soft_init(short enableA, short enableB) {
 	this->enableA = enableA;
     this->enableB = enableB;
 	int pwmcreate = softPwmCreate (enableA, 0, 100);
-	if (pwmcreat){
+	if (pwmcreate){
 		return -8;
 	}
 	pwmcreate = softPwmCreate (enableB, 0, 100);
-	if (pwmcreat){
+	if (pwmcreate){
 		return -8;
 	}
 }
@@ -117,7 +117,9 @@ void DCmotor::velocity(int velocity1, int velocity2){
 }
 
 /*software PWM*/
+/*
 void DCmotor::softvelocity(int velocity1, int velocity2){
 	softPwmWrite (enableA, velocity1);
 	softPwmWrite (enableB, velocity2);
 }
+*/

@@ -31,8 +31,8 @@ public:
 	void right();
 	void stop();
 	void velocity(int, int);
-	int soft_init();
-	void softvelocity(int, int);
+	int soft_init(short, short);
+	//void softvelocity(int, int);
 	void proceed();
 	void reverse();
 private:

@@ -27,8 +27,7 @@
 #include "DCmotor.h"
 #include "Sharp_IR.h"
 #include "HC_SR04.h"
-#include "attention.h"
-//#include "sensefilter.h"
+#include "pixycam.h"
 
 #define CENTER_X 154
 #define LEFT_X 0
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]){
 	SharpIR rescue2(0, 1);
 	DCmotor Mleft(22, 21, 27, 25, 1, 26);
 	DCmotor Mright(2, 3, 4, 5, 23, 24);
-	Attention pixy;
+	PixyCam pixy;
 	//LinearFilter lfc(CENTER_X, 1, 100);
 	//LinearFilter lfl(LEFT_X, 1, 60);
 	//LinearFilter lfr(RIGHT_X, 1, 60);
@@ -206,7 +205,7 @@ Pixy: <float>, <float>, <float>
 			Mleft.velocity(vleft, vleft);
 			Mleft.proceed();
 		}
-		
+
 		if(vright < 0){
 			vright = -vright;
 			if(vright > 400){
@@ -222,7 +221,7 @@ Pixy: <float>, <float>, <float>
 			Mright.proceed();
 		}
 
-		
+
 	}
 	fp.close();
 	return 0;
