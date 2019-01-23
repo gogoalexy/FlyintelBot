@@ -20,23 +20,22 @@
 
 using namespace std;
 
-PixyCam::PixyCam () {
+PixyCam::PixyCam (): pixy() {
     this->FOOD = 1;
     this->TOXIC = 2;
 }
 
-PixyCam::PixyCam (int food_sig, int toxic_sig) {
+PixyCam::PixyCam (int food_sig, int toxic_sig): pixy() {
     this->FOOD = food_sig;
     this->TOXIC = toxic_sig;
 }
 
 int PixyCam::vision_init() {
     int pixy_init_status = pixy.init();
-
   // Was there an error initializing pixy? //
-    if(!pixy_init_status == 0) {
+    if(pixy_init_status < 0) {
     // Error initializing Pixy //
-        cout<<"pixy_init(): ";
+        cout<<"pixy_init(): "<<pixy_init_status<<endl;
 
         return pixy_init_status;
     }
@@ -59,6 +58,7 @@ void PixyCam::capture() {
 
   // Query Pixy for blocks //
 	pixy.ccc.getBlocks();
+		cout<<__LINE__<<endl;
   // Were blocks detected? //
 	if (pixy.ccc.numBlocks)
 	{
