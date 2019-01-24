@@ -1,7 +1,7 @@
 #ifndef MONITOR_H
 
 #include <vector>
-#include "net_struct_def.h"
+#include "../src/net_struct_def.h"
 #include "max7219.h"
 //#include "flyintel.h"??
 
