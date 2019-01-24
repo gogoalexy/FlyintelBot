@@ -9,7 +9,11 @@ NeuroMonitor::NeuroMonitor()
 
 int NeuroMonitor::init(int pibBase, int spiChan)
 {
-
+    if(!max7219Setup(pinBase, spiChan))
+    {
+        return -1;
+    }
+    return 0;
 }
 
 struct Container NeuroMonitor::sortinghat(int max)
@@ -198,10 +202,13 @@ int NeuroMonitor::visualize(struct NeuroCatalog neurogroup)
 	}
 }
 
-
+void NeuroMonitor::registerWrite(int pin, unsigned char addr1, unsigned char addr2)
+{
+    int sendint = GLUE(addr1, addr2);
+    analogWrite(pin, sendint);
+}
 
 void NeuroMonitor::refresh()
 {
 	neurogroup = {0};
-	matrix_clear();
 }

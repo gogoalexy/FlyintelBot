@@ -4,15 +4,6 @@
 #include "max7219.h"
 
 /*
-unsigned char CATHODE_FUNC(int position)
-{
-    return 0x01 + position;
-}
-
-unsigned char ANODE_FUNC(int position)
-{
-    return 0x80 >> position;
-}
 
 void registerWrite(int fd, unsigned char digit, unsigned char seg)
 {
