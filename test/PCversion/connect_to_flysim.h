@@ -1,6 +1,4 @@
-
 #ifndef CONNECT_TO_FLYSIM_H
-#define CONNECT_TO_FLYSIM_H
 
 #include <vector>
 #include <string>
@@ -49,5 +47,7 @@ int ReadFile(const string ConfFilename, const string ProFilename);
 void SendDist(float DisFreq, int SensorID);
 char *ActiveSimGetSpike(string RunTime);
 char *GetChAry(string tmp);
+void CloseSim();
 
-#endif //CONNECT_TO_FLYSIM_H
+#define CONNECT_TO_FLYSIM_H
+#endif
