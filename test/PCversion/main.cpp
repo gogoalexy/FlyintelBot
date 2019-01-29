@@ -32,6 +32,8 @@ static bool run_flag = true;
 void handle_SIGINT(int unused){
   // On CTRL+C - abort! //
     run_flag = false;
+    CloseSim();
+    exit(0);
 }
 
 char *Spikes = nullptr;

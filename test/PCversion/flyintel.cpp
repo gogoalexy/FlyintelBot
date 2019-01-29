@@ -20,32 +20,44 @@
 
 using namespace std;
 
-Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3) {
-	count = {0, 0, 0, 0, 0, 0};
+Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3), turnSmooth(0.3), baseSmooth(0.5)
+{
+	count = {0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
-	turnConst = 700;
+	turnConst = 100;
 	preturnSpeed = 0;
 	prebaseSpeed = 0;
 }
 
-int Flyintel::cstoi(char* Spikes) {
+int Flyintel::cstoi(char* Spikes)
+{
 	int j=0, k=0, max;
 	while(1){
-		if(Spikes[j] == ' '){
+		if(Spikes[j] == ' ')
+		{
 			k++;
 			j++;
-		}else if(Spikes[j] >= '0' && Spikes[j] <= '9'){
+		}
+		else if(Spikes[j] >= '0' && Spikes[j] <= '9')
+		{
 			spiketrain[k] = spiketrain[k]*10 + Spikes[j]-'0';
 			j++;
-		}else if(Spikes[j] == 'E'){
-			return max = k-1;//array elements (count from 0)
+		}
+		else if(Spikes[j] == 'E')
+		{
+			this->maxspikes = k-1;
+			return maxspikes;//array elements (count from 0)
 		}
 	}
 }
 
-motor Flyintel::getMotor(int max) {
-	for(int i=2; i<max; i+=3){
-		switch(spiketrain[i]){
+
+motor Flyintel::getMotor(int max)
+{
+	for(int i=2; i<max; i+=3)
+	{
+		switch(spiketrain[i])
+		{
 			case 5:
 				count.forward++;
 				break;
@@ -59,14 +71,15 @@ motor Flyintel::getMotor(int max) {
 				count.right++;
 				break;
 			default:
-				//count.noise++;
+				;
 		}
 	}
 
 	decision.denom = count.forward+count.backward+count.right+count.left;
 	if(decision.denom == 0)
 		decision.denom = 1;
-	if(decision.denom){
+	if(decision.denom)
+	{
 	    	decision.rforward = count.forward/decision.denom;
 		std::cout<<decision.rforward<<";";
 		decision.rbackward = count.backward/decision.denom;
@@ -77,24 +90,38 @@ motor Flyintel::getMotor(int max) {
 		std::cout<<decision.rright<<";"<<endl;
 	}
 
-	if(decision.rforward<=0.5 && decision.rbackward<=0.5 && decision.rleft<=0.5 && decision.rright<=0.5){
+	if(decision.rforward<=0.5 && decision.rbackward<=0.5 && decision.rleft<=0.5 && decision.rright<=0.5)
+	{
 		return make_pair(0x0, 0); //S
-	}else if(decision.rforward>0.5){
+	}
+	else if(decision.rforward>0.5)
+	{
 		return make_pair(0x1, short(1024*decision.rforward)); //F
-	}else if(decision.rbackward>0.5){
+	}
+	else if(decision.rbackward>0.5)
+	{
 		return make_pair(0x2, short(1024*decision.rbackward)); //B
-	}else if(decision.rleft>0.5){
+	}
+	else if(decision.rleft>0.5)
+	{
 		return make_pair(0x4, short(1024*decision.rleft)); //L
-	}else if(decision.rright>0.5){
+	}
+	else if(decision.rright>0.5)
+	{
 		return make_pair(0x8, short(1024*decision.rright)); //R
-	}else{
+	}
+	else
+	{
 		return make_pair(0x0, 0); //S
 	}
 }
 
-vmotor Flyintel::getSpeed(int max) {
-	for(int i=2; i<max; i+=3){
-		switch(spiketrain[i]){
+vmotor Flyintel::getSpeed(int max)
+{
+	for(int i=2; i<max; i+=3)
+	{
+		switch(spiketrain[i])
+		{
 			case 5:
 				count.forward++;
 				break;
@@ -108,30 +135,31 @@ vmotor Flyintel::getSpeed(int max) {
 				count.right++;
 				break;
 			default:
-				//count.noise++;
+				;
 		}
 	}
 
 	int SpikeThreshold = RATE_THRESHOLD * MAX_SPIKES;
 	float forwardRate = 0, backwardRate = 0, leftRate = 0, rightRate = 0;
-	if(count.forward > SpikeThreshold) {
+	if(count.forward > SpikeThreshold)
+	{
 		forwardRate = (float)count.forward / (float)MAX_SPIKES;
 	}
-	if(count.backward > SpikeThreshold) {
+	if(count.backward > SpikeThreshold)
+	{
 		backwardRate = (float)count.backward / (float)MAX_SPIKES;
 	}
-	if(count.left > SpikeThreshold) {
+	if(count.left > SpikeThreshold)
+	{
 		leftRate = (float)count.left / (float)MAX_SPIKES;
 	}
-	if(count.right > SpikeThreshold) {
+	if(count.right > SpikeThreshold)
+	{
 		rightRate = (float)count.right / (float)MAX_SPIKES;
 	}
 
 	float turnAct = turnConst * ( leftRate - rightRate );
 	float baseAct = ( forwardRate - backwardRate ) * V_MAX;
-	
-	float turnSmooth = 0.3;//sqrt( ( pow((leftRate - preleftRate), 2) + pow((rightRate - prerightRate), 2) ) / 2 );
-	float baseSmooth = 0.5;//sqrt( ( pow((forwardRate - preforwardRate), 2) + pow((backwardRate - prebackwardRate), 2) ) / 2 );
 	
 	int turnSpeed = turnSmooth * turnAct + (1 - turnSmooth) * preturnSpeed;
 	int baseSpeed =  baseSmooth * baseAct + (1 - baseSmooth) * prebaseSpeed;
@@ -142,23 +170,28 @@ vmotor Flyintel::getSpeed(int max) {
 	prebackwardRate = backwardRate;
 	preturnSpeed = turnSpeed;
 	prebaseSpeed = baseSpeed;
-	
-	if(baseSpeed >= 0){
+
+
+	if(baseSpeed >= 0)
+	{
 		return make_pair(2*(baseSpeed - turnSpeed), 2*(baseSpeed + turnSpeed));//enlarge
-	}else if(baseSpeed < 0){
+	}
+	else if(baseSpeed < 0)
+	{
 		return make_pair(2*(baseSpeed + turnSpeed), 2*(baseSpeed - turnSpeed));
-	}else{
+	}
+	else
+	{
 		return make_pair(0, 0);
 	}
 
 }
 
-void Flyintel::refresh() {
-	memset(spiketrain, 0, sizeof(spiketrain));
+void Flyintel::refresh()
+{
+	memset(spiketrain, 0,sizeof(spiketrain));
 	count.forward=0;
 	count.backward=0;
 	count.left=0;
 	count.right=0;
-	//count.noise=0;
-	//count.conflict=0;
 }

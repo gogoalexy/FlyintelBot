@@ -25,19 +25,19 @@
 
 #define MOTOR_REFRAC 10
 #define STEP_TIME 50
-#define V_MAX 1024
-#define V_MIN 400
+#define V_MAX 500
+#define V_MIN 200
 
-struct Container{
+struct Container
+{
 	float forward;
 	float backward;
 	float left;
 	float right;
-	//float noise;
-	//float conflict;
 };
 
-struct Ratio{
+struct Ratio
+{
 	float denom;
 	float rforward;
 	float rbackward;
@@ -48,30 +48,32 @@ struct Ratio{
 typedef std::pair<unsigned char, short> motor;
 typedef std::pair<int, int> vmotor;
 
-class Flyintel {
+class Flyintel
+{
 public:
-    Flyintel();
-    int cstoi(char*);
-    int cstoarr(char*);
-    motor getMotor(int);
-    vmotor getSpeed(int);
-    void refresh();
+Flyintel();
+int cstoi(char*);
+motor getMotor(int);
+vmotor getSpeed(int);
 
-    friend class NeuroMonitor;
+void refresh();
 
 private:
-    Container count;
-    Ratio decision;
-    int spiketrain[500];
-    const int MAX_SPIKES;
-    const float RATE_THRESHOLD;
-    int turnConst;
-    int preturnSpeed;
-    int prebaseSpeed;
-    float preleftRate;
-    float prerightRate;
-    float preforwardRate;
-    float prebackwardRate;
+Container count;
+Ratio decision;
+int spiketrain[500];
+int maxspikes;
+const int MAX_SPIKES;
+const float RATE_THRESHOLD;
+int turnConst;
+float turnSmooth;
+float baseSmooth;
+int preturnSpeed;
+int prebaseSpeed;
+float preleftRate;
+float prerightRate;
+float preforwardRate;
+float prebackwardRate;
 
 };
 

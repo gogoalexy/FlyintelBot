@@ -231,3 +231,8 @@ char *GetChAry(string tmp) //char *GetChAry(char *argv)
 
   return s2;
 };
+
+void CloseSim()
+{
+    CltClose();
+}
