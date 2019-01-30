@@ -1,10 +1,11 @@
-#include "cltcmd.h"
 #include "connect_to_flysim.h"
 
 //#define DEBUG
 #ifdef DEBUG
 	#define DEBUG(x) cout<<__FILE__<<" "<<__LINE__<<" "<<__PRETTY_FUNCTION__<<" : "<<x<<endl
 #endif
+
+using namespace std;
 
 TypeFreqModule::TypeFreqModule()
 {
@@ -17,18 +18,40 @@ TypeFreqModule::TypeFreqModule()
 	FreqExtText="FreqExt=";
 	FreqExt=0;
 	EndText="EndEvent";
-};
+}
 
 TypeFreqModule::~TypeFreqModule()
-{};
+{}
+
+TypeMacroModule::TypeMacroModule()
+{
+    StartHeader="DefineMacro";
+    GroupNameText="GroupName:";
+    GroupName='\0';
+    GroupMemberText="GroupMembers:";
+    GroupMember='\0';
+    EndMember="EndGroupMembers";
+    EndHeader="EndDefineMacro";
+}
+
+TypeMacroModule::~TypeMacroModule()
+{}
+
+FindMacroModule::FindMacroModule()
+{
+
+}
+
+FindMacroModule::~FindMacroModule()
+{}
 
 ProFileModule::ProFileModule()
 {
 	FirstEventTime="EventTime 0";
-};
+}
 
 ProFileModule::~ProFileModule()
-{};
+{}
 
 int ReadFile(const string ConfFilename, const string ProFilename)
 {
@@ -40,11 +63,12 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 		return -1;
 	}
 	while(!ReadCon.eof())
+	{
 		ConfFile+=ReadCon.get(); 
+	}
 	ReadCon.close();
 	
-	ConfFile[ConfFile.size()-1]='\0';
-	
+	ConfFile[ConfFile.size() - 1] = '\0';
 	//end of reading conf file
 
 	//reading pro file
@@ -61,6 +85,8 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	
 	while(!ReadPro.eof()){	
 		getline(ReadPro, tmp);
+		
+		//if(tmp.find())
 		
 		if(tmp.find(ProFile.FirstEventTime)!=string::npos){
 			tmp2line[0]=tmp;//add 1st line

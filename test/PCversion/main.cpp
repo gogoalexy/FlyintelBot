@@ -21,7 +21,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include "connect_to_flysim.cpp"
+#include "connect_to_flysim.h"
 #include "flyintel.h"
 
 #define NUM_NEURONS 61
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
 	int n = 0;
 
 	Flyintel flyintel;
-	string conf_file = "network21.conf", pro_file = "network21.pro";
+	string conf_file = "ringnetwork.conf", pro_file = "network21.pro";
 	fstream fp;
 	fp.open("Speed.log", ios::out);
 
@@ -68,8 +68,8 @@ int main(int argc, char *argv[]){
 		//baseline stimuli
 		SendDist(1500, 1);
 		SendDist(1500, 2);
-		SendDist(1500, 3);
-		SendDist(1500, 4);
+		//SendDist(1500, 3);
+		//SendDist(1500, 4);
     	Spikes=ActiveSimGetSpike("500");
     	cout
 		<<"receving\n"

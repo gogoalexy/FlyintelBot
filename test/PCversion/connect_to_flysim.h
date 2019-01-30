@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <string>
+#include <utility>
 #include <iostream>
 #include <fstream>
+#include "cltcmd.h"
 
 #define TotalSensor 9 //FS(4) + TS(4) + NPY(1) when building neural circuit in Hanitu rule
-
-using namespace std;
 
 class TypeFreqModule
 {
@@ -16,15 +16,30 @@ class TypeFreqModule
 		TypeFreqModule();
 		~TypeFreqModule();
 		
-		string EventTime;
-		string Type;
-		string Label;
-		string PopulationText;
+		std::string EventTime;
+		std::string Type;
+		std::string Label;
+		std::string PopulationText;
 		int Population; //Population: Exc1
-		string Receptor;
-		string FreqExtText;
+		std::string Receptor;
+		std::string FreqExtText;
 		float FreqExt;
-		string EndText;
+		std::string EndText;
+};
+
+class TypeMacroModule
+{
+    public:
+        TypeMacroModule();
+        ~TypeMacroModule();
+        
+        std::string StartHeader;
+        std::string GroupNameText;
+        std::string GroupName;
+        std::string GroupMemberText;
+        std::string GroupMember;
+        std::string EndMember;
+        std::string EndHeader;
 };
 
 class ProFileModule
@@ -33,20 +48,29 @@ class ProFileModule
 		ProFileModule();
 		~ProFileModule();
 		
-		vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
-		string FirstEventTime;
-		string TypeMem; //Type=ChangeMembraneNoise
+		std::vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
+		std::string FirstEventTime;
+		std::string TypeMem; //Type=ChangeMembraneNoise
 };
 
-static string ConfFile="";
-static string ProFileComplete="";
+class FindMacroModule
+{
+    public:
+        FindMacroModule();
+        ~FindMacroModule();
+
+};
+
+static std::string ConfFile="";
+static std::string ProFileComplete="";
 static ProFileModule ProFile;
 static int Round=0;
 
-int ReadFile(const string ConfFilename, const string ProFilename);
-void SendDist(float DisFreq, int SensorID);
-char *ActiveSimGetSpike(string RunTime);
-char *GetChAry(string tmp);
+int ReadFile(const std::string ConfFilename, const std::string ProFilename);
+void SendFreq(float DisFreq, int SensorID);
+void SendFreq(float, std::string);
+char *ActiveSimGetSpike(std::string RunTime);
+char *GetChAry(std::string tmp);
 void CloseSim();
 
 #define CONNECT_TO_FLYSIM_H
