@@ -61,7 +61,7 @@ void refresh();
 private:
 Container count;
 Ratio decision;
-int spiketrain[500];
+int spiketrain[50000];
 int maxspikes;
 const int MAX_SPIKES;
 const float RATE_THRESHOLD;
