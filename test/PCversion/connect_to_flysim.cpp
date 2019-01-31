@@ -156,7 +156,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	return 0;
 };
 
-void SendDist(float DisFreq, int SensorID)
+void SendFreq(float DisFreq, int SensorID)
 {
 	#ifdef DEBUG
 		DEBUG(ProFile.TypeFreq[SensorID-1].FreqExt);

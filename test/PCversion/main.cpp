@@ -20,6 +20,7 @@
 #include <signal.h>
 #include <iostream>
 #include <string>
+#include <time.h>
 #include <cmath>
 #include "connect_to_flysim.h"
 #include "flyintel.h"
@@ -42,7 +43,7 @@ int main(int argc, char *argv[]){
 	int n = 0;
 
 	Flyintel flyintel;
-	string conf_file = "ringnetwork.conf", pro_file = "network21.pro";
+	string conf_file = "ringnetwork.conf", pro_file = "verysimple.pro";
 	fstream fp;
 	fp.open("Speed.log", ios::out);
 
@@ -65,15 +66,16 @@ int main(int argc, char *argv[]){
 
 	while(run_flag){
 		++n;
+		clock_t tik = clock();
 		//baseline stimuli
-		SendDist(1500, 1);
-		SendDist(1500, 2);
+		SendFreq(1500, 1);
+		SendFreq(1500, 2);
 		//SendDist(1500, 3);
 		//SendDist(1500, 4);
-    	Spikes=ActiveSimGetSpike("500");
+    	Spikes=ActiveSimGetSpike("300");
     	cout
-		<<"receving\n"
-		<<"Spikes:"<<endl<<Spikes<<endl;
+		<<"receving\n";
+		//<<"Spikes:"<<endl<<Spikes<<endl;
 
 		vmotor speed = flyintel.getSpeed(flyintel.cstoi(Spikes));
 		int vleft = speed.first;
@@ -104,6 +106,8 @@ int main(int argc, char *argv[]){
 		}
 
 		flyintel.refresh();
+		clock_t tok = clock();
+cout<<"time:"<<(tik-tok)/(double)CLOCKS_PER_SEC<<endl;
     }
 	fp.close();
 	return 0;
