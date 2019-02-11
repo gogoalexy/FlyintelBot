@@ -13,6 +13,7 @@ int NeuroMonitor::init(int pibBase, int spiChan)
     {
         return -1;
     }
+    memcpy(matrixConfig, defaultMatrixConfig, size.matrixConfig);
     return 0;
 }
 
@@ -202,13 +203,31 @@ int NeuroMonitor::visualize(struct NeuroCatalog neurogroup)
 	}
 }
 
-void NeuroMonitor::registerWrite(int pin, unsigned char addr1, unsigned char addr2)
-{
-    int sendint = GLUE(addr1, addr2);
-    analogWrite(pin, sendint);
-}
-
 void NeuroMonitor::refresh()
 {
 	neurogroup = {0};
+}
+
+void NeuronMonitor::updateMatrix(int pin)
+{
+    unsigned short val = bytes2short();
+    analogWrite(pin, val);
+}
+
+void NeuronMonitor::setDecode(int pin, const unsigned char operation)
+{
+    unsigned short val = bytes2short(DECODE_MODE, operation);
+    analogWrite(pin, val);
+}
+
+void NeuronMonitor::setShutdown(int pin, const unsigned char operation)
+{
+    unsigned short val = bytes2short(SHUTDOWN_MODE, operation);
+    analogWrite(pin, val);
+}
+
+void NeuronMonitor::setTest(int pin, const unsigned char operation)
+{
+    unsigned short val = bytes2short(DISPLAY_TEST_MODE, operation);
+    analogWrite(pin, val);
 }
