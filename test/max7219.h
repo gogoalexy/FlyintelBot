@@ -10,12 +10,6 @@ extern int max7219Setup (int pinBase, int spiChannel) ;
 }
 #endif
 
-/*
-void matrix_clear(int);
-//void setBrightness();
-//void setMode();
 
-
-*/
 #define MAX7219_H
 #endif

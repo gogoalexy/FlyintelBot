@@ -3,6 +3,7 @@
 #include <vector>
 #include <array>
 #include <cstring>
+#include <wiringPi.h>
 #include "net_struct_def.h"
 #include "max7219.h"
 
@@ -28,7 +29,7 @@ public:
     NeuroMonitor();
     int init(int, int);
     void refresh();
-    
+
     void recordActivity(int, int, bool);
     void update1Matrix(int);
     void setDecode(int, unsigned char);
@@ -37,7 +38,7 @@ public:
 
 private:
     std::array<unsigned char, 8> matrixConfig;
-    
+
     inline unsigned short bytes2short(unsigned char byte1, unsigned char byte2)
     {
         return byte2 | (byte1 << 8);

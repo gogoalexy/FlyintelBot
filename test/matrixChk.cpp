@@ -40,26 +40,33 @@ int main()
 {
     NeuroMonitor led;
     led.init(128, 1);
-    setShutdown(128, EXIT_SHUTDOWN);
-    setTest(128, EXIT_DISPLAY_TEST);
-    setDecode(128, DECODE_NONE);
-    
+    led.setShutdown(128, EXIT_SHUTDOWN);
+    led.setTest(128, EXIT_DISPLAY_TEST);
+    led.setDecode(128, DECODE_NONE);
+
     while(true)
     {
-        unsigned char x, y;
-        cout<<"N1"<<'\n'
-        cin>>x>>' '>>y;
-        led.recordActivity(x, y, true);
-        cout<<"N2"<<'\n'
-        cin>>x>>' '>>y;
-        led.recordActivity(x, y, true);
-        cout<<"N3"<<'\n'
-        cin>>x>>' '>>y;
-        led.recordActivity(x, y, true);
-        
         led.refresh();
-        led.updateMatrix(128);  
+	unsigned char x, y;
+        cout<<"N1"<<'\n';
+        //cin>>x>>y;
+x=0;
+y=5;
+        led.recordActivity(x, y, true);
+        cout<<"N2"<<'\n';
+        //cin>>x>>y;
+x=2;
+y=1;
+        led.recordActivity(x, y, true);
+        cout<<"N3"<<'\n';
+        //cin>>x>>y;
+x=7;
+y=7;
+        led.recordActivity(x, y, true);
+
+        //led.refresh();
+        led.update1Matrix(128);
     }
-    
+
     return 0;
 }
