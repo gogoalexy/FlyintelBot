@@ -3,10 +3,8 @@
 #include <vector>
 #include <array>
 #include <cstring>
-#include "LEDmatrix_def.h"
-#include "../src/net_struct_def.h"
+#include "net_struct_def.h"
 #include "max7219.h"
-//#include "flyintel.h"??
 
 const unsigned char INTENSITY = 0x0A;
 
@@ -29,18 +27,13 @@ class NeuroMonitor
 public:
     NeuroMonitor();
     int init(int, int);
-    int sortinghat(); //friend of flyintel
-    int visualize(NetStruct);
     void refresh();
-
-
-    void updateMatrix(int)
-
-    void setDecode(int, unsigned char)
-
-    void setShutdown(int, unsigned char)
-
-    void setTest(int, unsigned char)
+    
+    void recordActivity(int, int, bool);
+    void update1Matrix(int);
+    void setDecode(int, unsigned char);
+    void setShutdown(int, unsigned char);
+    void setTest(int, unsigned char);
 
 private:
     std::array<unsigned char, 8> matrixConfig;

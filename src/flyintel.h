@@ -22,6 +22,8 @@
 #include <cstring>
 #include <utility>
 #include <cmath>
+#include "net_struct_def.h"
+#include "monitor.h"
 
 #define MOTOR_REFRAC 10
 #define STEP_TIME 50
@@ -51,30 +53,34 @@ typedef std::pair<int, int> vmotor;
 class Flyintel
 {
 public:
-Flyintel();
-int cstoi(char*);
-motor getMotor(int);
-vmotor getSpeed(int);
-
-void refresh();
+    Flyintel();
+    int cstoi(char*);
+    void sortinghat();
+    motor getMotor(int);
+    vmotor getSpeed(int);
+    vmotor getSpeedSorted(int);
+    void refresh();
 
 private:
-Container count;
-Ratio decision;
-int spiketrain[500];
-int maxspikes;
-const int MAX_SPIKES;
-const float RATE_THRESHOLD;
-int turnConst;
-float turnSmooth;
-float baseSmooth;
-int preturnSpeed;
-int prebaseSpeed;
-float preleftRate;
-float prerightRate;
-float preforwardRate;
-float prebackwardRate;
+    Container count;
+    Ratio decision;
+    int spiketrain[500];
+    NetStruct neurogroup;
 
+    NeuroMonitor led;
+
+    int maxspikes;
+    const int MAX_SPIKES;
+    const float RATE_THRESHOLD;
+    int turnConst;
+    float turnSmooth;
+    float baseSmooth;
+    int preturnSpeed;
+    int prebaseSpeed;
+    float preleftRate;
+    float prerightRate;
+    float preforwardRate;
+    float prebackwardRate;
 };
 
 #define FLYINTEL_H
