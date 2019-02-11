@@ -12,7 +12,7 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 BUILD_DIR=../build
 
 $(BUILD_DIR)/main.out: $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDLIBS) -Winline
 
 $(BUILD_DIR)/main.o: main.cpp
 	$(CXX) -c $(CXXFLAGS) main.cpp -o $(BUILD_DIR)/main.o
