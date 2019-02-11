@@ -9,11 +9,11 @@
  *********************************************************************************
  */
 
-static void myRegisterWrite (struct wiringPiNodeStruct *node, int pin, unsigned short value)
+static void myRegisterWrite (struct wiringPiNodeStruct *node, int pin, int val)
 {
     unsigned char spiData [2] ;
     unsigned char reg1, reg2 ;
-
+    unsigned char value = (unsigned short)val;
     //bitmask 0xFF = b0000000011111111
     spiData [0] = ((value >> 8) & 0xFF) ;
     spiData [1] = value & 0xFF ;
