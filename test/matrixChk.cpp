@@ -1,4 +1,3 @@
-/*
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,11 +28,8 @@ int main(int argc, char** argv) {
 	}
 return 0;
 }
-*/
 
-#include <iostream>
-#include "monitor.h"
-
+/*
 using namespace std;
 
 int main()
@@ -70,3 +66,4 @@ y=7;
 
     return 0;
 }
+*/
