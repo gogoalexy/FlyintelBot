@@ -1,15 +1,12 @@
 #ifndef MAX7219_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <bitset>
+#include <wiringPiSPI.h>
 
-extern int max7219Setup (int pinBase, int spiChannel) ;
+typedef std::bitset<8> BYTE;
 
-#ifdef __cplusplus
-}
-#endif
-
+int max7219Setup (int spiChannel);
+void registerWrite(int, BYTE, BYTE);
 
 #define MAX7219_H
 #endif
