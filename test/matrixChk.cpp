@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 	//uint8_t on[] = { 0x0C, 0x01 };
 	//uint8_t off[] = { 0xFF, 0x01 };
 //	uint8_t buf[2] = {0xFF, 0x00};
-    BYTE row (0x02);
+    BYTE data (0b00001100);
 
     max7219 led;
 
@@ -23,10 +23,11 @@ int main(int argc, char** argv) {
     led.setShutdown(EXIT_SHUTDOWN);
     led.setTest(EXIT_DISPLAY_TEST);
     led.setDecode(DECODE_NONE);
-
+    led.setLimit(0x07);
+    led.setBrightness(0x0E);
 	for (;;) {
-		int val = 0x00 | 0xFF<<8;
-       led.setROW(1, row);
+//led.setTest(ENTER_DISPLAY_TEST);
+       led.setROW(2, data);
 		//delay(5000);
 	//	val = off[0] | off[1]<<8;
 	//	analogWrite(110, val);
