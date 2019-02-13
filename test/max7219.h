@@ -22,6 +22,13 @@ const BYTE DISPLAY_TEST_MODE (0x0F);
 const BYTE ENTER_DISPLAY_TEST (0x01);
 const BYTE EXIT_DISPLAY_TEST (0x00);
 
+const BYTE SCAN_LIMIT (0x0B);
+const BYTE SCAN_LIMIT_NONE (0x07);
+
+const BYTE BRIGHTNESS (0x0A);
+const BYTE BRIGHTNESS_MAX (0x0F);
+
+
 class max7219
 {
 public:
@@ -36,7 +43,6 @@ public:
     ~max7219();
 protected:
     void registerWrite(BYTE, BYTE);
-private:
     int spiChan;
     int fd;
 };

@@ -9,12 +9,29 @@ NeuroMonitor::NeuroMonitor()
 
 int NeuroMonitor::init(int spiChan)
 {
-    if(!max7219Setup(spiChan))
+    if(!isInit())
     {
-        return -1;
+        if(!max7219Setup(spiChan))
+        {
+            return -1;
+        }
     }
+    
     memcpy(matrixConfig.data(), defaultMatrixConfig.data(), matrixConfig.size());
-    return 0;
+    setShutdown(EXIT_SHUTDOWN);
+    setLimit(SCAN_LIMIT_NONE);
+    setBrightness(BRIGHTNESS_MAX);
+    
+    return fd;
+}
+
+bool NeuroMonitor::isInit()
+{
+    if(fd <= 0)
+    {
+        return false;
+    }
+    return true;
 }
 
 void NeuroMonitor::refresh()
@@ -24,7 +41,7 @@ void NeuroMonitor::refresh()
 
 void NeuroMonitor::recordActivity(int row, int col, bool state)
 {
-    unsigned char config = 0b10000000;
+    BYTE config = 0b10000000;
     if(state)
     {
         config >>= col;
