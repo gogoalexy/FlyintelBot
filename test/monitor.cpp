@@ -7,9 +7,9 @@ NeuroMonitor::NeuroMonitor()
 
 }
 
-int NeuroMonitor::init(int pinBase, int spiChan)
+int NeuroMonitor::init(int spiChan)
 {
-    if(!max7219Setup(pinBase, spiChan))
+    if(!max7219Setup(spiChan))
     {
         return -1;
     }
@@ -41,20 +41,4 @@ void NeuroMonitor::update1Matrix(int pin)
     }
 }
 
-void NeuroMonitor::setDecode(int pin, const unsigned char operation)
-{
-    unsigned short val = bytes2short(DECODE_MODE, operation);
-    analogWrite(pin, val);
-}
 
-void NeuroMonitor::setShutdown(int pin, const unsigned char operation)
-{
-    unsigned short val = bytes2short(SHUTDOWN_MODE, operation);
-    analogWrite(pin, val);
-}
-
-void NeuroMonitor::setTest(int pin, const unsigned char operation)
-{
-    unsigned short val = bytes2short(DISPLAY_TEST_MODE, operation);
-    analogWrite(pin, val);
-}
