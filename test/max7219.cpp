@@ -24,27 +24,28 @@ void max7219::registerWrite (BYTE byte1, BYTE byte2)
     spiData [0] = byte1;
     spiData [1] = byte2;
 
-    wiringPiSPIDataRW (fd, spiData, 2) ;
+    wiringPiSPIDataRW (fd, spiData, 2);
 }
 
 void max7219::setROW(int row, BYTE rowConf)
 {
-    registerWrite();
+    BYTE reg(row);
+    registerWrite(reg, rowConf);
 }
 
 void max7219::setDecode(const BYTE operation)
 {
-
+    registerWrite(DECODE_MODE, operation);
 }
 
 void max7219::setShutdown(const BYTE operation)
 {
-    registerWrite(pin, val);
+    registerWrite(SHUTDOWN_MODE, operation);
 }
 
 void max7219::setTest(const BYTE operation)
 {
-    registerWrite(pin, val);
+    registerWrite(DISPLAY_TEST_MODE, operation);
 }
 
 max7219::~max7219()
