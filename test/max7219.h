@@ -1,5 +1,6 @@
 #ifndef MAX7219_H
 
+#include <iostream>
 #include <bitset>
 #include <wiringPiSPI.h>
 
@@ -26,9 +27,11 @@ class max7219
 public:
     max7219();
     int max7219Setup (int spiChannel);
-    void setROW();
+    void setROW(int, BYTE);
     void setDecode(BYTE);
     void setShutdown(BYTE);
+    void setLimit(BYTE);
+    void setBrightness(BYTE);
     void setTest(BYTE);
     ~max7219();
 protected:
