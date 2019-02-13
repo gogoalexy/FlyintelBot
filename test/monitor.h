@@ -1,6 +1,5 @@
 #ifndef MONITOR_H
 
-#include <vector>
 #include <array>
 #include <cstring>
 #include <wiringPi.h>
@@ -19,21 +18,19 @@ const std::array<BYTE, 8> defaultMatrixConfig
     0b00000000
 };
 
-class NeuroMonitor
+class NeuroMonitor : protected max7219
 {
 public:
     NeuroMonitor();
     int init(int, int);
     void refresh();
+    bool isInit();
 
     void recordActivity(int, int, bool);
     void update1Matrix(int);
 
-
 private:
     std::array<BYTE, 8> matrixConfig;
-    max7219 Base;
-    max7219 Active;
 };
 
 #define MONITOR_H
