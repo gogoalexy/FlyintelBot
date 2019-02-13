@@ -38,17 +38,7 @@ typedef struct {
 //  7 o x x o o x x o |
 //---------------------
 
-const std::array<unsigned char, 8> defaultMatrixConfig
-{
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000
-};
+
 
 #define NET_STRUCT_DEF_H
 #endif
