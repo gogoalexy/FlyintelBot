@@ -18,7 +18,7 @@ const std::array<BYTE, 8> defaultMatrixConfig
     0b00000000
 };
 
-class NeuroMonitor : protected max7219
+class NeuroMonitor
 {
 public:
     NeuroMonitor(int);
