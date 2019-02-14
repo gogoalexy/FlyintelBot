@@ -26,27 +26,27 @@ int max7219::max7219Setup(int spiChannel, int spiSpeed, int num_of_matrix)
     return fd;
 }
 
-void max7219::registerWrite(BYTE byte1, BYTE byte2)
+void max7219::registerWrite(const BYTE byte1, const BYTE byte2)
 {
     unsigned char spiData[2];
 
-    spiData[0] = byte1.to_ulong();
-    spiData[1] = byte2.to_ulong();
+    spiData[0] = (unsigned char) byte1.to_ulong();
+    spiData[1] = (unsigned char) byte2.to_ulong();
 
     wiringPiSPIDataRW(fd, spiData, 2);
 }
 
 void max7219::registerWrite(int matrix_n, const BYTE byte1, const BYTE byte2)
 {
-    int bytes2send = matrix_n * 2;
+    int bytes2send = num_of_matrix * 2;
     unsigned char spiData[bytes2send];
 
-    spiData[0] = (unsigned char) byte1.to_ulong();
-    spiData[1] = (unsigned char) byte2.to_ulong();
-    for(int i=2; i<bytes2send; i++)
+    for(int i=0; i<bytes2send; i++)
     {
         spiData[i] = (unsigned char) NO_OP.to_ulong();
     }
+    spiData[matrix_n*2-2] = (unsigned char) byte1.to_ulong();
+    spiData[matrix_n*2-1] = (unsigned char) byte2.to_ulong();
 
     wiringPiSPIDataRW(fd, spiData, bytes2send);
 }
