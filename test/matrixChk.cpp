@@ -7,33 +7,33 @@ using namespace std;
 int main() {
 
     array<BYTE, 8> data
-{
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000000
-};
-BYTE value (0b11110011);
+    {
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000
+    };
+    BYTE value (0b11110011);
     max7219 led;
 
 	if (led.max7219Setup(1, 1000000) < 0) {
 
 		exit(1);
 	}
-    led.setShutdown(EXIT_SHUTDOWN);
-    led.setTest(EXIT_DISPLAY_TEST);
-    led.setDecode(BCD_DECODE_NONE);
-    led.setLimit(SCAN_LIMIT_NONE);
-    led.setBrightness(BRIGHTNESS_MAX);
+	led.setShutdown(EXIT_SHUTDOWN);
+	led.setTest(EXIT_DISPLAY_TEST);
+	led.setDecode(BCD_DECODE_NONE);
+	led.setLimit(SCAN_LIMIT_NONE);
+	led.setBrightness(BRIGHTNESS_MAX);
 	for (;;){
 //	 led.setTest(ENTER_DISPLAY_TEST);
-  led.setMatrix(data);
-       	led.setROW(1, 6, value);
-delay(300);
+    led.setMatrix(data);
+    led.setROW(1, 6, value);
+    delay(300);
 	}
 return 0;
 }
