@@ -45,8 +45,8 @@ void max7219::registerWrite(int matrix_n, const BYTE byte1, const BYTE byte2)
     {
         spiData[i] = (unsigned char) NO_OP.to_ulong();
     }
-    spiData[matrix_n*2-2] = (unsigned char) byte1.to_ulong();
-    spiData[matrix_n*2-1] = (unsigned char) byte2.to_ulong();
+    spiData[(num_of_matrix-matrix_n)*2] = (unsigned char) byte1.to_ulong();
+    spiData[(num_of_matrix-matrix_n)*2+1] = (unsigned char) byte2.to_ulong();
 
     wiringPiSPIDataRW(fd, spiData, bytes2send);
 }
