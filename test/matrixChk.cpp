@@ -1,14 +1,26 @@
 #include <wiringPi.h>
+#include <array>
 #include "max7219.h"
 
 using namespace std;
 
 int main() {
 
-    BYTE data (0b01001100);
+    array<BYTE, 8> data
+{
+0b00000000,
+0b00000000,
+0b00000000,
+0b00000000,
+0b00000000,
+0b00000000,
+0b00000000,
+0b00000000
+};
+BYTE value (0b11110011);
     max7219 led;
 
-	if (led.max7219Setup(1, 1000000, 2) < 0) {
+	if (led.max7219Setup(1, 1000000) < 0) {
 
 		exit(1);
 	}
@@ -18,10 +30,10 @@ int main() {
     led.setLimit(SCAN_LIMIT_NONE);
     led.setBrightness(BRIGHTNESS_MAX);
 	for (;;){
-	 led.setTest(ENTER_DISPLAY_TEST);
-//  led.setROW(1, 2, data);
-       	//led.setROW(2, 4, data);
-	   delay(500);
+//	 led.setTest(ENTER_DISPLAY_TEST);
+  led.setMatrix(data);
+       	led.setROW(1, 6, value);
+delay(300);
 	}
 return 0;
 }
