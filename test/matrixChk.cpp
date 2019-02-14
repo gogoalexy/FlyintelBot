@@ -20,7 +20,7 @@ int main() {
     BYTE value (0b11110011);
     max7219 led;
 
-	if (led.max7219Setup(1, 1000000) < 0) {
+	if (led.max7219Setup(1, 1000000, 2) < 0) {
 
 		exit(1);
 	}
@@ -30,9 +30,12 @@ int main() {
 	led.setLimit(SCAN_LIMIT_NONE);
 	led.setBrightness(BRIGHTNESS_MAX);
 	for (;;){
-//	 led.setTest(ENTER_DISPLAY_TEST);
-    led.setMatrix(data);
-    led.setROW(1, 6, value);
+	 led.setTest(ENTER_DISPLAY_TEST);
+    led.setMatrix(1, data);
+    led.setROW(1, 3, value);
+led.setMatrix(2, data);
+delay(500);
+led.setROW(2, 5, value);
     delay(300);
 	}
 return 0;
