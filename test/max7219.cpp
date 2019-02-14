@@ -26,12 +26,12 @@ int max7219::max7219Setup(int spiChannel, int spiSpeed, int num_of_matrix)
     return fd;
 }
 
-void max7219::registerWrite(const BYTE byte1, const BYTE byte2)
+void max7219::registerWrite(BYTE byte1, BYTE byte2)
 {
     unsigned char spiData[2];
 
-    spiData[0] = (unsigned char) byte1.to_ulong();
-    spiData[1] = (unsigned char) byte2.to_ulong();
+    spiData[0] = byte1.to_ulong();
+    spiData[1] = byte2.to_ulong();
 
     wiringPiSPIDataRW(fd, spiData, 2);
 }
@@ -47,15 +47,13 @@ void max7219::registerWrite(int matrix_n, const BYTE byte1, const BYTE byte2)
     {
         spiData[i] = (unsigned char) NO_OP.to_ulong();
     }
-    #ifdef DEBUG
-        cout<<hex<<spiData<<endl;
-    #endif
+
     wiringPiSPIDataRW(fd, spiData, bytes2send);
 }
 
 void max7219::setShutdown(const BYTE command)
 {
-    for(int n=0; n<num_of_matrix; n++)
+    for(int n=1; n<=num_of_matrix; n++)
     {
         registerWrite(n, SHUTDOWN_MODE, command);
     }
@@ -63,7 +61,7 @@ void max7219::setShutdown(const BYTE command)
 
 void max7219::setDecode(const BYTE command)
 {
-    for(int n=0; n<num_of_matrix; n++)
+    for(int n=1; n<=num_of_matrix; n++)
     {
         registerWrite(n, BCD_DECODE_MODE, command);
     }
@@ -71,7 +69,7 @@ void max7219::setDecode(const BYTE command)
 
 void max7219::setLimit(const BYTE limit)
 {
-    for(int n=0; n<num_of_matrix; n++)
+    for(int n=1; n<=num_of_matrix; n++)
     {
         registerWrite(n, SCAN_LIMIT, limit);
     }
@@ -79,7 +77,7 @@ void max7219::setLimit(const BYTE limit)
 
 void max7219::setBrightness(const BYTE intensity)
 {
-    for(int n=0; n<num_of_matrix; n++)
+    for(int n=1; n<=num_of_matrix; n++)
     {
         registerWrite(n, BRIGHTNESS, intensity);
     }
@@ -97,6 +95,9 @@ void max7219::setTest(const BYTE command)
 void max7219::setROW(int row, const BYTE rowConf)
 {
     BYTE reg(row+1);
+    #ifdef DEBUG
+        cout<<reg<<','<<rowConf<<'\n';
+    #endif
     registerWrite(reg, rowConf);
 }
 
