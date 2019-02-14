@@ -30,8 +30,8 @@ void max7219::registerWrite(const BYTE byte1, const BYTE byte2)
 {
     unsigned char spiData[2];
 
-    spiData[0] = unsigned char( byte1.to_ulong() );
-    spiData[1] = unsigned char( byte2.to_ulong() );
+    spiData[0] = (unsigned char) byte1.to_ulong();
+    spiData[1] = (unsigned char) byte2.to_ulong();
 
     wiringPiSPIDataRW(fd, spiData, 2);
 }
@@ -41,11 +41,11 @@ void max7219::registerWrite(int matrix_n, const BYTE byte1, const BYTE byte2)
     int bytes2send = matrix_n * 2;
     unsigned char spiData[bytes2send];
 
-    spiData[0] = unsigned char( byte1.to_ulong() );
-    spiData[1] = unsigned char( byte2.to_ulong() );
+    spiData[0] = (unsigned char) byte1.to_ulong();
+    spiData[1] = (unsigned char) byte2.to_ulong();
     for(int i=2; i<bytes2send; i++)
     {
-        spiData[i] = NO_OP;
+        spiData[i] = (unsigned char) NO_OP.to_ulong();
     }
     #ifdef DEBUG
         cout<<hex<<spiData<<endl;
@@ -65,7 +65,7 @@ void max7219::setDecode(const BYTE command)
 {
     for(int n=0; n<num_of_matrix; n++)
     {
-        registerWrite(n, DECODE_MODE, command);
+        registerWrite(n, BCD_DECODE_MODE, command);
     }
 }
 
@@ -87,7 +87,7 @@ void max7219::setBrightness(const BYTE intensity)
 
 void max7219::setTest(const BYTE command)
 {
-    for()
+    for(int n=0; n<num_of_matrix; n++)
     {
         registerWrite(DISPLAY_TEST_MODE, command);
     }

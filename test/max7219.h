@@ -37,8 +37,8 @@ class max7219
 {
 public:
     max7219();
-    int max7219Setup(int);
     int max7219Setup(int, int);
+    int max7219Setup(int, int, int);
     void setShutdown(BYTE);
     void setDecode(BYTE);
     void setLimit(BYTE);
