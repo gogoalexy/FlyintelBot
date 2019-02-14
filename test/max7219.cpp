@@ -51,6 +51,19 @@ void max7219::registerWrite(int matrix_n, const BYTE byte1, const BYTE byte2)
     wiringPiSPIDataRW(fd, spiData, bytes2send);
 }
 
+/*for bicolor*/
+void max7219::registerWrite(const BYTE byte0, const BYTE byte1, const BYTE byte2, const BYTE byte3)
+{
+    unsigned char spiData[4];
+
+    spiData[0] = (unsigned char) byte0.to_ulong();
+    spiData[1] = (unsigned char) byte1.to_ulong();
+    spiData[2] = (unsigned char) byte2.to_ulong();
+    spiData[3] = (unsigned char) byte3.to_ulong();
+
+    wiringPiSPIDataRW(fd, spiData, 4);
+}
+
 void max7219::setShutdown(const BYTE command)
 {
     for(int n=1; n<=num_of_matrix; n++)
