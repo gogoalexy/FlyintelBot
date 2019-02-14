@@ -49,10 +49,11 @@ public:
     void setMatrix(std::array<BYTE, 8>);
     void setMatrix(int, std::array<BYTE, 8>);
     ~max7219();
+        void registerWrite(BYTE, BYTE, BYTE, BYTE);//bicolor
 protected:
     void registerWrite(BYTE, BYTE);
     void registerWrite(int, BYTE, BYTE);
-    void registerWrite(BYTE, BYTE, BYTE, BYTE);//bicolor
+
 private:
     int spiChan;
     int fd;
