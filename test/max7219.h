@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <bitset>
+#include <array>
 #include <wiringPiSPI.h>
 
 typedef std::bitset<8> BYTE;
@@ -26,6 +27,8 @@ const BYTE SCAN_LIMIT (0x0B);
 const BYTE SCAN_LIMIT_NONE (0x07);
 
 const BYTE BRIGHTNESS (0x0A);
+const BYTE BRIGHTNESS_MIN (0x00);
+const BYTE BRIGHTNESS_HALF (0x08);
 const BYTE BRIGHTNESS_MAX (0x0F);
 
 
@@ -33,18 +36,22 @@ class max7219
 {
 public:
     max7219();
-    int max7219Setup (int spiChannel);
-    void setROW(int, BYTE);
+    int max7219Setup(int);
+    int max7219Setup(int, int);
     void setDecode(BYTE);
     void setShutdown(BYTE);
     void setLimit(BYTE);
     void setBrightness(BYTE);
     void setTest(BYTE);
+    void setROW(int, BYTE);
+    void setMatrix(std::array<BYTE, 8>);
     ~max7219();
 protected:
     void registerWrite(BYTE, BYTE);
+    void registerWrite(int, BYTE, BYTE);
     int spiChan;
     int fd;
+    int num_matrix;
 };
 
 #define MAX7219_H

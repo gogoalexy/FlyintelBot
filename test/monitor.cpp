@@ -2,30 +2,21 @@
 
 using namespace std;
 
-NeuroMonitor::NeuroMonitor()
+NeuroMonitor::NeuroMonitor(int spiChannel = 1)
 {
+    memcpy(matrixConfig.data(), defaultMatrixConfig.data(), matrixConfig.size());
 
-}
-
-int NeuroMonitor::init(int spiChan)
-{
-    if(!isInit())
+    this->spiChan = spiChannel;
+    if(!isSPIinit())
     {
         if(!max7219Setup(spiChan))
         {
-            return -1;
+            exit(1);
         }
     }
-    
-    memcpy(matrixConfig.data(), defaultMatrixConfig.data(), matrixConfig.size());
-    setShutdown(EXIT_SHUTDOWN);
-    setLimit(SCAN_LIMIT_NONE);
-    setBrightness(BRIGHTNESS_MAX);
-    
-    return fd;
 }
 
-bool NeuroMonitor::isInit()
+bool NeuroMonitor::isSPIinit()
 {
     if(fd <= 0)
     {
@@ -33,6 +24,17 @@ bool NeuroMonitor::isInit()
     }
     return true;
 }
+
+void NeuroMonitor::init()
+{        
+    setShutdown(EXIT_SHUTDOWN);
+    setLimit(SCAN_LIMIT_NONE);
+    setBrightness(BRIGHTNESS_MAX);
+    setAllMatrix(defaultMatrixConfig);
+    
+    return fd;
+}
+
 
 void NeuroMonitor::refresh()
 {
@@ -49,12 +51,11 @@ void NeuroMonitor::recordActivity(int row, int col, bool state)
     }
 }
 
-void NeuroMonitor::update1Matrix(int pin)
+void NeuroMonitor::updateMatrix()
 {
     for(unsigned char addr = 0x01; addr <= 0x08; addr+=0x01)
     {
-        unsigned short val = bytes2short(addr, matrixConfig.at((short)addr-1));
-        analogWrite(pin, val);
+
     }
 }
 

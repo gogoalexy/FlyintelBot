@@ -21,13 +21,13 @@ const std::array<BYTE, 8> defaultMatrixConfig
 class NeuroMonitor : protected max7219
 {
 public:
-    NeuroMonitor();
-    int init(int, int);
+    NeuroMonitor(int);
+    bool isSPIinit();
+    void init();
     void refresh();
-    bool isInit();
 
     void recordActivity(int, int, bool);
-    void update1Matrix(int);
+    void updateMatrix();
 
 private:
     std::array<BYTE, 8> matrixConfig;
