@@ -1,37 +1,28 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
-
 #include <wiringPi.h>
 #include "max7219.h"
 
-int main(int argc, char** argv) {
-	//uint8_t on[] = { 0x0C, 0x01 };
-	//uint8_t off[] = { 0xFF, 0x01 };
-//	uint8_t buf[2] = {0xFF, 0x00};
-    BYTE data (0b00001100);
+using namespace std;
+
+int main() {
+
+    BYTE data (0b01001100);
 
     max7219 led;
 
-	if (led.max7219Setup(1) < 0) {
-		printf ("SPI Setup failed\n");
+	if (led.max7219Setup(1, 1000000, 2) < 0) {
+		cout<<"SPI Setup failed"<<"\n";
 		exit(1);
 	}
     led.setShutdown(EXIT_SHUTDOWN);
     led.setTest(EXIT_DISPLAY_TEST);
     led.setDecode(DECODE_NONE);
-    led.setLimit(0x07);
-    led.setBrightness(0x0E);
+    led.setLimit(SCAN_LIMIT_NONE);
+    led.setBrightness(BRIGHTNESS_MAX);
 	for (;;) {
 //led.setTest(ENTER_DISPLAY_TEST);
-       led.setROW(2, data);
-		//delay(5000);
-	//	val = off[0] | off[1]<<8;
-	//	analogWrite(110, val);
-		//sleep(1);
+       led.setROW(1, 2, data);
+       led.setROW(2, 4, data);
+	   delay(500);
 	}
 return 0;
 }

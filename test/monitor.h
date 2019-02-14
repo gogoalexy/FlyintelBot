@@ -2,7 +2,6 @@
 
 #include <array>
 #include <cstring>
-#include <wiringPi.h>
 #include "net_struct_def.h"
 #include "max7219.h"
 
@@ -21,16 +20,15 @@ const std::array<BYTE, 8> defaultMatrixConfig
 class NeuroMonitor
 {
 public:
-    NeuroMonitor(int);
-    bool isSPIinit();
+    NeuroMonitor(int, int, int);
     void init();
     void refresh();
-
     void recordActivity(int, int, bool);
     void updateMatrix();
 
 private:
     std::array<BYTE, 8> matrixConfig;
+    max7219 chip;
 };
 
 #define MONITOR_H
