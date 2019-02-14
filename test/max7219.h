@@ -52,6 +52,7 @@ public:
 protected:
     void registerWrite(BYTE, BYTE);
     void registerWrite(int, BYTE, BYTE);
+    void registerWrite(BYTE, BYTE, BYTE, BYTE);//bicolor
 private:
     int spiChan;
     int fd;
