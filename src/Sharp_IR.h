@@ -30,7 +30,7 @@ class SharpIR : public Sensor
 {
 public:
 	SharpIR(short, int);
-	void init() override;
+	void init();
 	unsigned int range() override;
 	int IRrange();
 private:
