@@ -2,61 +2,39 @@
 
 using namespace std;
 
-NeuroMonitor::NeuroMonitor(int spiChannel = 1)
+NeuroMonitor::NeuroMonitor(int spiChannel = 1, int spiSpeed = 1000000, int num_of_matrix = 2)
 {
     memcpy(matrixConfig.data(), defaultMatrixConfig.data(), matrixConfig.size());
 
-    this->spiChan = spiChannel;
-    if(!isSPIinit())
+    if(chip.max7219Setup(spiChannel, spiSpeed, num_of_matrix) == -1)
     {
-        if(!max7219Setup(spiChan))
-        {
-            exit(1);
-        }
+        exit(1);
     }
-}
-
-bool NeuroMonitor::isSPIinit()
-{
-    if(fd <= 0)
-    {
-        return false;
-    }
-    return true;
 }
 
 void NeuroMonitor::init()
 {        
-    setShutdown(EXIT_SHUTDOWN);
-    setLimit(SCAN_LIMIT_NONE);
-    setBrightness(BRIGHTNESS_MAX);
-    setAllMatrix(defaultMatrixConfig);
-    
-    return fd;
+    chip.setShutdown(EXIT_SHUTDOWN);
+    chip.setDecode(BCD_DECODE_NONE);
+    chip.setLimit(SCAN_LIMIT_NONE);
+    chip.setBrightness(BRIGHTNESS_MAX);
+    chip.setMatrix(defaultMatrixConfig);
 }
-
 
 void NeuroMonitor::refresh()
 {
     memcpy(matrixConfig.data(), defaultMatrixConfig.data(), matrixConfig.size());
 }
 
-void NeuroMonitor::recordActivity(int row, int col, bool state)
+void NeuroMonitor::recordActivity(int row, int col)
 {
     BYTE config = 0b10000000;
-    if(state)
-    {
-        config >>= col;
-        matrixConfig.at(row) |= config;
-    }
+    config >>= col;
+    matrixConfig.at(row) |= config;
 }
 
 void NeuroMonitor::updateMatrix()
 {
-    for(unsigned char addr = 0x01; addr <= 0x08; addr+=0x01)
-    {
-
-    }
+    chip.setMatrix(2, matrixConfig);
 }
-
 
