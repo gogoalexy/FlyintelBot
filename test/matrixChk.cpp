@@ -6,22 +6,21 @@ using namespace std;
 int main() {
 
     BYTE data (0b01001100);
-
     max7219 led;
 
 	if (led.max7219Setup(1, 1000000, 2) < 0) {
-		cout<<"SPI Setup failed"<<"\n";
+
 		exit(1);
 	}
     led.setShutdown(EXIT_SHUTDOWN);
     led.setTest(EXIT_DISPLAY_TEST);
-    led.setDecode(DECODE_NONE);
+    led.setDecode(BCD_DECODE_NONE);
     led.setLimit(SCAN_LIMIT_NONE);
     led.setBrightness(BRIGHTNESS_MAX);
-	for (;;) {
-//led.setTest(ENTER_DISPLAY_TEST);
-       led.setROW(1, 2, data);
-       led.setROW(2, 4, data);
+	for (;;){
+	 led.setTest(ENTER_DISPLAY_TEST);
+//  led.setROW(1, 2, data);
+       	//led.setROW(2, 4, data);
 	   delay(500);
 	}
 return 0;
