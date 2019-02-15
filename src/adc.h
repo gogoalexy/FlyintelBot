@@ -7,6 +7,9 @@ class ADC
 public:
     ADC();
     int initSPI();
+protected:
+    int spiChan;
+    int pinBase;
 }
 //both included by ir adxl
 //foward declaration
