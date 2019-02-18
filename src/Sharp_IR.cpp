@@ -1,6 +1,6 @@
 /*
  *	  This file is part of FlyintelBot.
- *    Copyright (C) 2018  Alex Huang-Yu Yao
+ *    Copyright (C) 2019  Alex Huang-Yu Yao
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -20,35 +20,15 @@
 
 using namespace std;
 
-SharpIR::SharpIR(short spi_chan, int ic_chan)
+SharpIR::SharpIR()
 {
-    this->spi_chan = spi_chan;
-    this->ic_chan = ic_chan;
-    //fixed spi speed
-    //spisetup check
-    if(!chkSPI)
-    {
-	    chkSPI = true;    
-        mcp3004Setup(BASE, this->spi_chan);
-    }
+    cout<<"ADC is undefined."<<endl;
 }
 
-void SharpIR::init()
-{
-    if(wiringPiSPISetup(this->spi_chan, 500000) == -1)
-    {
-		    cout<<"SPI setup failed."<<endl;
-		    return;
-    }
-		mcp3004Setup(BASE, this->spi_chan);
-}
+SharpIR::SharpIR(const ADC& mcp3008, int sensorID) : adc(mcp3008), chipChan(sensorID)
+{ }
 
 unsigned int SharpIR::range()
 {
-    return analogRead(BASE + ic_chan);
-}
-
-int SharpIR::IRrange()
-{
-	return analogRead(BASE + ic_chan);
+    return adc.readChan(chipChan);
 }
