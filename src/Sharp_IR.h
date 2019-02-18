@@ -1,6 +1,6 @@
 /*
  *	  This file is part of FlyintelBot.
- *    Copyright (C) 2018  Alex Huang-Yu Yao
+ *    Copyright (C) 2019  Alex Huang-Yu Yao
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 #ifndef SHARP_IR_H
 
 #include <wiringPi.h>
-#include <wiringPiSPI.h>
-#include <mcp3004.h>
+#include <adc.h>
 #include <iostream>
 #include "sensor.h"
 
@@ -29,15 +28,17 @@ extern bool chkSPI;
 class SharpIR : public Sensor
 {
 public:
-	SharpIR(short, int);
-	void init();
-	unsigned int range() override;
-	int IRrange();
+    SharpIR();
+    SharpIR(const ADC&, int);
+    unsigned int range() override;
+    inline int IRrange()
+    {
+	    return adc.readChan(chipChan);
+    };
+
 private:
-	short spi_chan;
-	const int BASE = 100;
-	int ic_chan;
-	bool SPIinit = false;
+    ADC adc;
+    const int chipChan;
 };
 
 #define SHARP_IR_H
