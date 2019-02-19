@@ -16,7 +16,7 @@
  *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "adc.h"
+#include "SPIadc.h"
 
 using namespace std;
 
