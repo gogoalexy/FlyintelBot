@@ -20,7 +20,7 @@
 
 using namespace std;
 
-SharpIR::SharpIR()
+SharpIR::SharpIR() : chipChan(0)
 {
     cout<<"ADC is undefined."<<endl;
 }
@@ -28,7 +28,3 @@ SharpIR::SharpIR()
 SharpIR::SharpIR(const ADC& mcp3008, int sensorID) : adc(mcp3008), chipChan(sensorID)
 { }
 
-unsigned int SharpIR::range()
-{
-    return adc.readChan(chipChan);
-}
