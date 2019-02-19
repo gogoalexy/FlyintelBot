@@ -19,16 +19,14 @@
 #ifndef SHARP_IR_H
 
 #include <wiringPi.h>
-#include <SPIadc.h>
+#include "SPIadc.h"
 #include <iostream>
-#include "sensor.h"
 
-class SharpIR : public Sensor
+class SharpIR
 {
 public:
     SharpIR();
     SharpIR(const ADC&, int);
-    unsigned int range() override;
     inline int IRrange()
     {
 	    return adc.readChan(chipChan);

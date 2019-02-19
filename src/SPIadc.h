@@ -17,6 +17,7 @@
  */
 #ifndef SPI_ADC_H
 
+#include <wiringPi.h>
 #include <mcp3004.h>
 
 class ADC
@@ -25,7 +26,7 @@ public:
     ADC();
     bool initSPI();
     bool initSPI(int, int);
-    inline bool isInit()
+    inline bool isSPIinit()
     {
         return isInit;
     };
