@@ -15,29 +15,37 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#ifndef SPI_ADC_H
 
-#ifndef SHARP_IR_H
+#include <mcp3004.h>
 
-#include <wiringPi.h>
-#include <SPIadc.h>
-#include <iostream>
-#include "sensor.h"
-
-class SharpIR : public Sensor
+class ADC
 {
 public:
-    SharpIR();
-    SharpIR(const ADC&, int);
-    unsigned int range() override;
-    inline int IRrange()
+    ADC();
+    bool initSPI();
+    bool initSPI(int, int);
+    inline bool isInit()
     {
-	    return adc.readChan(chipChan);
+        return isInit;
+    };
+    inline int whichPin()
+    {
+        return pinBase;
+    };
+    inline int readChan(int chipChan)
+    {
+        return analogRead(pinBase + chipChan);
     };
 
-private:
-    ADC adc;
-    const int chipChan;
+protected:
+    const int pinBaseDefault;
+    const int spiChanDefault;
+    const int spiSpeedDefault;
+    int pinBase;
+    int spiChan;
+    bool isInit;
 };
 
-#define SHARP_IR_H
+#define SPI_ADC_H
 #endif
