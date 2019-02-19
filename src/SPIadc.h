@@ -15,7 +15,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ADC_H
+#ifndef SPI_ADC_H
 
 #include <mcp3004.h>
 
@@ -47,5 +47,5 @@ protected:
     bool isInit;
 };
 
-#define ADC_H
+#define SPI_ADC_H
 #endif

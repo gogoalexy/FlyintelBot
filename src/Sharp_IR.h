@@ -19,11 +19,9 @@
 #ifndef SHARP_IR_H
 
 #include <wiringPi.h>
-#include <adc.h>
+#include <SPIadc.h>
 #include <iostream>
 #include "sensor.h"
-
-extern bool chkSPI;
 
 class SharpIR : public Sensor
 {
