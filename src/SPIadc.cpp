@@ -16,28 +16,38 @@
  *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SHARP_IR_H
+#include "SPIadc.h"
 
-#include <wiringPi.h>
-#include <SPIadc.h>
-#include <iostream>
-#include "sensor.h"
+using namespace std;
 
-class SharpIR : public Sensor
+ADC::ADC() : pinBaseDefault(88), spiChanDefault(0), spiSpeedDefault(1000000), isInit(false)
 {
-public:
-    SharpIR();
-    SharpIR(const ADC&, int);
-    unsigned int range() override;
-    inline int IRrange()
+    /*SPI speed is defined in mcp3004Setup().*/
+}
+
+bool ADC::initSPI()
+{
+    this->pinBase = pinBaseDefault;
+    this->spiChan = spiChanDefault;
+    if(mcp3004Setup(pinBase, spiChan))
     {
-	    return adc.readChan(chipChan);
-    };
+        isInit = true;
+        return true;
+    }
 
-private:
-    ADC adc;
-    const int chipChan;
-};
+    return false;
+}
 
-#define SHARP_IR_H
-#endif
+bool ADC::initSPI(int pinBase, int spiChan)
+{
+    this->pinBase = pinBase;
+    this->spiChan = spiChan;
+    if(mcp3004Setup(pinBase, spiChan))
+    {
+        isInit = true;
+        return true;
+    }
+
+    return false;
+}
+
