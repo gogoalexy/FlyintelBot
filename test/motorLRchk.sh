@@ -2,7 +2,7 @@
 
 ENA=1
 ENB=26
-IN=(2 3 4 5)
+IN=(3 2 5 4)
 
 echo "Left motor"
 
@@ -15,8 +15,8 @@ do
 	gpio mode ${IN[2]} out
 	gpio mode ${IN[3]} out
 
-	gpio pwm ${ENA} 500
-	gpio pwm ${ENB} 500
+	gpio pwm ${ENA} 450
+	gpio pwm ${ENB} 450
 
 	echo "D"
 	gpio write ${IN[0]} 1
@@ -42,7 +42,7 @@ do
 
 	ENA=23
 	ENB=24
-	IN=(22 21 27 25)
+	IN=(21 22 25 27)
 	echo "Right motor"
 done
 
