@@ -25,11 +25,10 @@
 #include "connect_to_flysim.cpp"
 #include "flyintel.h"
 #include "DCmotor.h"
+#include "SPIadc.h"
 #include "Sharp_IR.h"
 #include "HC_SR04.h"
 #include "pixycam.h"
-
-bool chkSPI = false;
 
 using namespace std;
 
@@ -60,20 +59,17 @@ int main(int argc, char *argv[]){
 		return -3;
 	}
 
-	pinMode(4, OUTPUT);
-	pinMode(5, OUTPUT);
-	pinMode(6, OUTPUT);
-	pinMode(27, OUTPUT);
-
 	HCSR04 rescue0(15, 16, 10000);
-	SharpIR rescue1(0, 0);
-	SharpIR rescue2(0, 1);
-	DCmotor Mleft(22, 21, 27, 25, 1, 26);
-	DCmotor Mright(2, 3, 4, 5, 23, 24);
+        ADC mcp3008;
+        mcp3008.initSPI(100, 0);
+	SharpIR rescue1(mcp3008, 0);
+	SharpIR rescue2(mcp3008, 1);
+	DCmotor Mfront(22, 21, 25, 27, 1, 26);
+	DCmotor Mrear(3, 2, 4, 5, 23, 24);
 	PixyCam pixy;
 	Flyintel flyintel;
 
-	string conf_file = "./network/network21.conf", pro_file = "./network/network21.pro";
+	string conf_file = "./networks/network21.conf", pro_file = "./networks/network21.pro";
 	fstream fp;
 	fp.open("FlyintelBot.log", ios::out);
 
@@ -204,26 +200,72 @@ Pixy: <float>, <float>, <float>
 		<<"Spikes:"<<endl<<Spikes<<endl;
 		fp<<"Spikes: "<<Spikes<<endl;
 
+		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
+		char dir = motorNeuron.first;
+		int speed = motorNeuron.second;
+		Mfront.velocity(speed, speed);
+		Mrear.velocity(speed, speed);
+		if(dir == 'F')
+		{
+			cout<<'F'<<endl;
+			Mfront.forward();
+			Mrear.forward();
+		}
+		else if(dir == 'B')
+		{
+			cout<<'B'<<endl;
+			Mfront.backward();
+			Mrear.backward();
+		}
+		else if(dir == 'L')
+		{
+			cout<<'L'<<endl;
+			Mfront.left();
+			Mrear.left();
+		}
+		else if(dir == 'R')
+		{
+			cout<<'R'<<endl;
+			Mfront.right();
+			Mrear.right();
+		}
+		else
+		{
+			cout<<'S'<<endl;
+			Mfront.stop();
+			Mrear.stop();
+		}
 
-		vmotor motorNeuron = flyintel.getSpeed(flyintel.cstoi(Spikes));
+
+/*		vmotor motorNeuron = flyintel.getSpeed(flyintel.cstoi(Spikes));
 		int vleft = motorNeuron.first;
 		int vright = motorNeuron.second;
 		if(vleft < 0)
 		{
 			vleft = -vleft;
-			if(vleft > 400)
+			if(vleft > 800)
 			{
-				vleft = 400;
+				vleft = 800;
 			}
+			if(vleft < 500 && vleft > 200)
+			{
+				vleft = 500;
+			}
+			cout<<"Vl: "<<-vleft<<endl;
 			Mleft.velocity(vleft, vleft);
 			Mleft.reverse();
 		}
 		else
 		{
-			if(vleft > 400)
+			if(vleft > 800)
 			{
-				vleft = 400;
+				vleft = 800;
 			}
+			if(vleft < 500 && vleft > 200)
+			{
+				vleft = 500;
+			}
+			cout<<"Vl: "<<vleft<<endl;
 			Mleft.velocity(vleft, vleft);
 			Mleft.proceed();
 		}
@@ -231,22 +273,33 @@ Pixy: <float>, <float>, <float>
 		if(vright < 0)
 		{
 			vright = -vright;
-			if(vright > 400)
+			if(vright > 800)
 			{
-				vright = 400;
+				vright = 800;
 			}
+			if(vright < 500 && vright > 200)
+			{
+				vright = 500;
+			}
+			cout<<"Vr: "<<-vright<<endl;
 			Mright.velocity(vright, vright);
 			Mright.reverse();
 		}
 		else
 		{
-			if(vright > 400)
+			if(vright > 800)
 			{
-				vright = 400;
+				vright = 800;
 			}
+			if(vright < 500 && vright > 200)
+			{
+				vright = 500;
+			}
+			cout<<"Vr: "<<vright<<endl;
 			Mright.velocity(vright, vright);
 			Mright.proceed();
 		}
+*/
 
 	}
 	fp.close();

@@ -2,7 +2,7 @@
 
 ENA=1
 ENB=26
-IN=(8 9 7 0)
+IN=(3 2 4 5)
 
 echo "Front motor"
 
@@ -56,7 +56,7 @@ do
 
 	ENA=23
 	ENB=24
-	IN=(22 21 3 2)
+	IN=(22 21 25 27)
 	echo "Rear motor"
 done
 

@@ -23,7 +23,7 @@
 #include <utility>
 #include <cmath>
 #include "net_struct_def.h"
-#include "monitor.h"
+//#include "monitor.h"
 
 #define MOTOR_REFRAC 10
 #define STEP_TIME 50
@@ -47,7 +47,7 @@ struct Ratio
 	float rright;
 };
 
-typedef std::pair<unsigned char, short> motor;
+typedef std::pair<char, short> motor;
 typedef std::pair<int, int> vmotor;
 
 class Flyintel
@@ -55,19 +55,19 @@ class Flyintel
 public:
     Flyintel();
     int cstoi(char*);
-    void sortinghat();
+    //void sortinghat();
     motor getMotor(int);
     vmotor getSpeed(int);
-    vmotor getSpeedSorted(int);
+    //vmotor getSpeedSorted(int);
     void refresh();
 
 private:
     Container count;
     Ratio decision;
     int spiketrain[500];
-    NetStruct neurogroup;
+    //NetStruct neurogroup;
 
-    NeuroMonitor led;
+    //NeuroMonitor led;
 
     int maxspikes;
     const int MAX_SPIKES;
