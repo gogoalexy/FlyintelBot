@@ -151,7 +151,8 @@ char *ActiveSimGetSpike(string RunTime)
 		<<"You can change port and restart if flysim is running"<<endl
 		<<"or just restart flysim."
 		<<endl;*/
-		return "-3";			
+		char tmp[] = "-3";
+		return tmp;
 	}
 	CltInit();
 	#ifdef DEBUG

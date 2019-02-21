@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
 	PixyCam pixy;
 	Flyintel flyintel;
 
-	string conf_file = "./networks/network21.conf", pro_file = "./networks/network21.pro";
+	string conf_file = "./networks/network22.conf", pro_file = "./networks/network22.pro";
 	fstream fp;
 	fp.open("FlyintelBot.log", ios::out);
 
@@ -111,8 +111,8 @@ Pixy: <float>, <float>, <float>
 		//baseline stimuli
 		SendDist(1500, 1);
 		SendDist(1500, 2);
-		SendDist(1500, 3);
-		SendDist(1500, 4);
+		SendDist(1700, 3);
+		SendDist(1700, 4);
 
 		++frame;
 
@@ -128,11 +128,11 @@ Pixy: <float>, <float>, <float>
 		unsigned int soundtime = rescue0.UsoundRange();
 		if(soundtime < 1500)
 		{
-			SendDist(9500, 5);
+			SendDist(9800, 5);
 		}
 		else
 		{
-			SendDist(9500-(9500/500.0)*(soundtime-1500), 5);
+			SendDist(9800-(9800/500.0)*(soundtime-1500), 5);
 		}
 
 		cout<<"Ultra: "<<soundtime<<"; ";
@@ -163,14 +163,15 @@ Pixy: <float>, <float>, <float>
 
 		float dx = retina[0].second - PIXY2_CENTER_X;
 		float area = retina[0].first;
-		if(area > 5000)
+		if(area > 5500)
+		{
+			area = 5500;
+		}
+		else if(area >= 2500 && area < 5000)
 		{
 			area = 5000;
 		}
-		else if(area >= 1000 && area < 2000)
-		{
-			area = 2000;
-		}
+
 		if(dx > 120)
 		{
 			SendDist(0, 8);
