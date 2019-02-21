@@ -16,7 +16,7 @@
  *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#ifndef DCMOTOR_H
+#ifndef DC_MOTOR_H
 
 #include <wiringPi.h>
 #include <softPwm.h>
@@ -30,12 +30,19 @@ public:
 	void backward();
 	void left();
 	void right();
+	void forward(int);
+	void backward(int);
+	void left(int);
+	void right(int);
 	void stop();
+
+	void proceed();
+	void reverse();
+
 	void velocity(int, int);
 	int soft_init(short, short);
 	void softvelocity(int, int);
-	void proceed();
-	void reverse();
+
 private:
 	short motorIN1;
 	short motorIN2;
@@ -45,5 +52,5 @@ private:
 	short enableB;
 };
 
-#define DCMOTOR_H
+#define DC_MOTOR_H
 #endif

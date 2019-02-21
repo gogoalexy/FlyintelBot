@@ -126,36 +126,36 @@ Pixy: <float>, <float>, <float>
 		flyintel.refresh();
 
 		unsigned int soundtime = rescue0.UsoundRange();
-		if(soundtime < 875)
+		if(soundtime < 1500)
 		{
 			SendDist(9500, 5);
 		}
 		else
 		{
-			SendDist(9500-(9500/500.0)*(soundtime-875), 5);
+			SendDist(9500-(9500/500.0)*(soundtime-1500), 5);
 		}
 
 		cout<<"Ultra: "<<soundtime<<"; ";
 
 
 		float irL = rescue1.IRrange();
-		if(irL > 600)
+		if(irL > 400)
 		{
 			SendDist(9000, 6);
 		}
 		else
 		{
-			SendDist(9000-(9000/90.0)*(600-irL), 6);
+			SendDist(9000-(9000/90.0)*(400-irL), 6);//negative issue
 		}
 
 		float irR = rescue2.IRrange();
-		if(irR > 600)
+		if(irR > 400)
 		{
 			SendDist(9000, 7);
 		}
 		else
 		{
-			SendDist(9000-(9000/90.0)*(600-irR), 7);
+			SendDist(9000-(9000/90.0)*(400-irR), 7);
 		}
 
 		cout<<"IR: "<<irL<<", "<<irR<<endl;

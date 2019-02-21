@@ -97,6 +97,42 @@ void DCmotor::right()
 	digitalWrite(motorIN4, 1);
 }
 
+void DCmotor::forward(int v)
+{
+    velocity(v, v);
+	digitalWrite(motorIN1, 1);
+	digitalWrite(motorIN2, 0);
+	digitalWrite(motorIN3, 1);
+	digitalWrite(motorIN4, 0);
+}
+
+void DCmotor::backward(int v)
+{
+    velocity(v, v);
+	digitalWrite(motorIN1, 0);
+	digitalWrite(motorIN2, 1);
+	digitalWrite(motorIN3, 0);
+	digitalWrite(motorIN4, 1);
+}
+
+void DCmotor::left(int v)
+{
+    velocity(v, v);
+	digitalWrite(motorIN1, 0);
+	digitalWrite(motorIN2, 1);
+	digitalWrite(motorIN3, 1);
+	digitalWrite(motorIN4, 0);
+}
+
+void DCmotor::right(int v)
+{
+    velocity(v, v);
+	digitalWrite(motorIN1, 1);
+	digitalWrite(motorIN2, 0);
+	digitalWrite(motorIN3, 0);
+	digitalWrite(motorIN4, 1);
+}
+
 void DCmotor::stop()
 {
 	digitalWrite(motorIN1, 0);
