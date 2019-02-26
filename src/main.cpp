@@ -165,20 +165,20 @@ Pixy: <float>, <float>, <float>
 		float area = retina[0].first;
 		if(area > 5500)
 		{
-			area = 5500;
-		}
-		else if(area >= 2500 && area < 5000)
-		{
 			area = 5000;
 		}
+		else if(area >= 2500 && area < 4000)
+		{
+			area = 4000;
+		}
 
-		if(dx > 120)
+		if(dx > 110)
 		{
 			SendDist(0, 8);
 			SendDist(0, 9);
 			SendDist(area, 10);
 		}
-		else if(dx < -120)
+		else if(dx < -110)
 		{
 			SendDist(0, 8);
 			SendDist(area, 9);
@@ -194,7 +194,7 @@ Pixy: <float>, <float>, <float>
 		cout<<"area="<<area<<", dx="<<dx<<endl;
 
 
-		Spikes=ActiveSimGetSpike("500");
+		Spikes=ActiveSimGetSpike("300");
 		//-3: connect error
 		cout
 		<<"receving\n"
@@ -204,8 +204,10 @@ Pixy: <float>, <float>, <float>
 		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
 		char dir = motorNeuron.first;
 		int speed = motorNeuron.second;
-		Mfront.velocity(speed, speed);
-		Mrear.velocity(speed, speed);
+		//Mfront.velocity(speed, speed);
+		//Mrear.velocity(speed, speed);
+		Mfront.velocity(500, 500);
+		Mfront.velocity(500, 500);
 		if(dir == 'F')
 		{
 			cout<<'F'<<endl;

@@ -198,30 +198,30 @@ motor Flyintel::getMotor(int max)
 	}
 	else if(decision.rforward>0.5)
 	{
-		short speed = 700*decision.rforward;
-		if(speed < 550 && speed > 350)
-			speed = 550;
+		short speed = 800*decision.rforward;
+		if(speed < 800 && speed > 400)
+			speed = 800;
 		return make_pair('F', speed); //F
 	}
 	else if(decision.rbackward>0.5)
 	{
-		short speed = 700*decision.rbackward;
-		if(speed < 550 && speed > 350)
-			speed = 550;
+		short speed = 800*decision.rbackward;
+		if(speed < 800 && speed > 400)
+			speed = 800;
 		return make_pair('B', speed); //B
 	}
 	else if(decision.rleft>0.5)
 	{
-		short speed = 700*decision.rleft;
-		if(speed < 550 && speed > 350)
-			speed = 550;
+		short speed = 800*decision.rleft;
+		if(speed < 800 && speed > 400)
+			speed = 800;
 		return make_pair('L', speed); //L
 	}
 	else if(decision.rright>0.5)
 	{
-		short speed = 700*decision.rright;
-		if(speed < 550 && speed > 350)
-			speed = 550;
+		short speed = 800*decision.rright;
+		if(speed < 800 && speed > 400)
+			speed = 800;
 		return make_pair('R', speed); //R
 	}
 	else

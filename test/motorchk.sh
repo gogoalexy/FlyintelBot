@@ -8,15 +8,15 @@ echo "Front motor"
 
 for (( c=1; c<=2; c++))
 do
-	gpio mode ${ENA} out
-	gpio mode ${ENB} out
+	gpio mode ${ENA} pwm
+	gpio mode ${ENB} pwm
 	gpio mode ${IN[0]} out
 	gpio mode ${IN[1]} out
 	gpio mode ${IN[2]} out
 	gpio mode ${IN[2]} out
 
-	gpio write ${ENA} 1
-	gpio write ${ENB} 1
+	gpio pwm ${ENA} 600
+	gpio pwm ${ENB} 600
 
 	echo "F"
 	gpio write ${IN[0]} 1
