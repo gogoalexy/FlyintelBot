@@ -15,8 +15,8 @@ do
 	gpio mode ${IN[2]} out
 	gpio mode ${IN[2]} out
 
-	gpio pwm ${ENA} 600
-	gpio pwm ${ENB} 600
+	gpio pwm ${ENA} 500
+	gpio pwm ${ENB} 500
 
 	echo "F"
 	gpio write ${IN[0]} 1
