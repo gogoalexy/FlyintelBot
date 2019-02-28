@@ -1,6 +1,7 @@
 #ifndef CONNECT_TO_FLYSIM_H
 
 #include <vector>
+#include <map>
 #include <string>
 #include <utility>
 #include <iostream>
@@ -20,26 +21,23 @@ class TypeFreqModule
 		std::string Type;
 		std::string Label;
 		std::string PopulationText;
-		int Population; //Population: Exc1
+		std::string Population;
 		std::string Receptor;
 		std::string FreqExtText;
 		float FreqExt;
 		std::string EndText;
 };
 
-class TypeMacroModule
+class MacroModule
 {
     public:
-        TypeMacroModule();
-        ~TypeMacroModule();
-        
-        std::string StartHeader;
+        MacroModule();
+        ~MacroModule();
+
+        std::vector<std::string> members;
         std::string GroupNameText;
-        std::string GroupName;
         std::string GroupMemberText;
-        std::string GroupMember;
-        std::string EndMember;
-        std::string EndHeader;
+        std::string EndMemberText;
 };
 
 class ProFileModule
@@ -48,27 +46,23 @@ class ProFileModule
 		ProFileModule();
 		~ProFileModule();
 		
-		std::vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
-		std::string FirstEventTime;
+		std::map<std::string, MacroModule> macro;
+		std::string StartMacroHeader;
+		std::string EndMacroHeader;
+		//std::vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
+		std::string TypeFreq;
+		std::string EventTimeText;
 		std::string TypeMem; //Type=ChangeMembraneNoise
 };
 
-class FindMacroModule
-{
-    public:
-        FindMacroModule();
-        ~FindMacroModule();
-
-};
 
 static std::string ConfFile="";
-static std::string ProFileComplete="";
 static ProFileModule ProFile;
 static int Round=0;
 
 int ReadFile(const std::string ConfFilename, const std::string ProFilename);
-void SendFreq(float DisFreq, int SensorID);
 void SendFreq(float, std::string);
+void SendMacroFreq(float, std::string);
 char *ActiveSimGetSpike(std::string RunTime);
 char *GetChAry(std::string tmp);
 void CloseSim();

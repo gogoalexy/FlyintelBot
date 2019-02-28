@@ -12,8 +12,8 @@ TypeFreqModule::TypeFreqModule()
 	EventTime="EventTime 0";
 	Type="Type=ChangeExtFreq";
 	Label="Label=#1#";
-	PopulationText="Population: Exc";
-	Population=0;
+	PopulationText="Population";
+	Population="";
 	Receptor="Receptor: AMPA";
 	FreqExtText="FreqExt=";
 	FreqExt=0;
@@ -23,31 +23,21 @@ TypeFreqModule::TypeFreqModule()
 TypeFreqModule::~TypeFreqModule()
 {}
 
-TypeMacroModule::TypeMacroModule()
+MacroModule::MacroModule()
 {
-    StartHeader="DefineMacro";
     GroupNameText="GroupName:";
-    GroupName='\0';
     GroupMemberText="GroupMembers:";
-    GroupMember='\0';
-    EndMember="EndGroupMembers";
-    EndHeader="EndDefineMacro";
+    EndMemberText="EndGroupMembers";
 }
 
-TypeMacroModule::~TypeMacroModule()
-{}
-
-FindMacroModule::FindMacroModule()
-{
-
-}
-
-FindMacroModule::~FindMacroModule()
+MacroModule::~MacroModule()
 {}
 
 ProFileModule::ProFileModule()
 {
-	FirstEventTime="EventTime 0";
+    StartMacroHeader="DefineMacro";
+    EndMacroHeader="EndDefineMacro";
+	EventTimeText="EventTime";
 }
 
 ProFileModule::~ProFileModule()
@@ -80,15 +70,77 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	}
 	
 	string tmp="";
-	int FindFreq=0;
+	bool isFreq = false;
 	string tmp2line[2];
 	
-	while(!ReadPro.eof()){	
+	while(!ReadPro.eof())
+	{
 		getline(ReadPro, tmp);
+
+		//Parse macro
+		if(tmp.find(ProFile.StartMacroHeader) != string::npos)
+		{
+		    bool newMacro = false;
+		    while(true)
+		    {
+		        getline(ReadPro, tmp);
+		        if(tmp.find(ProFile.EndMacroHeader) != string::npos)
+		        {
+		            tmp2line[0].clear();
+		            tmp2line[1].clear();
+		            break;
+		        }
+		            
+		        if(tmp.find("GroupName") != string::npos)
+		        {
+		            tmp2line[0]=tmp;//add 1st line
+		            getline(ReadPro, tmp);
+		            if(tmp.find("GroupMembers") != string::npos)
+		            {
+		                newMacro = true;
+		                tmp2line[1]=tmp;
+		            }
+		            else
+		            {
+		                continue;
+		            }
+		        }
+		        else if(tmp.find("EndGroupMembers") != string::npos)
+		        {
+		            newMacro = false;
+		            tmp2line[0].clear();
+		            tmp2line[1].clear();
+		            continue;
+		        }
+		        
+		        if(newMacro)
+		        {
+		            int found = tmp2line[0].find_first_of(":");
+                    tmp2line[0].erase(tmp2line[0].begin(), tmp2line[0].begin()+found);
+                    found = tmp2line[1].find_first_of(":");
+                    tmp2line[1].erase(tmp2line[1].begin(), tmp2line[1].begin()+found);
+
+				    MacroModule tmpMacro;
+				    string name;
+				    for(int i=0; i<tmp2line[1].length(); i++)
+				    {
+				        while(tmp2line[1].at(i) != ',')
+				        {
+				            name.push_back(tmp2line[1].at(i));
+				            i++;
+				        }
+				        tmpMacro.members.push_back(name);
+				        name.clear();
+				    }
+				    ProFile.macro.insert( pair<string, MacroModule>(tmp2line[0],tmpMacro) );
+		        }
+
+		    }
+		}
 		
-		//if(tmp.find())
-		
-		if(tmp.find(ProFile.FirstEventTime)!=string::npos){
+		//Parse stimuli
+		if(tmp.find(ProFile.EventTimeText) != string::npos)
+		{
 			tmp2line[0]=tmp;//add 1st line
 			getline(ReadPro, tmp);
 			if(tmp.find("Type")!=string::npos)
@@ -96,74 +148,76 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 			else
 				continue;
 				
-			if(tmp.find("ChangeExtFreq")!=string::npos)//find Type=ChangeExtFreq
+			if(tmp.find("ChangeExtFreq") != string::npos)//find Type=ChangeExtFreq
 			{
-				FindFreq=1;
-				tmp2line[0]="";
-				tmp2line[1]="";
-			}else if(tmp.find("ChangeMembraneNoise")!=string::npos){
-			 FindFreq=0;
-			 ProFile.TypeMem=ProFile.TypeMem+'\n'+tmp2line[0]+'\n'+tmp2line[1]+'\n';
-			 tmp2line[0]="";
-			 tmp2line[1]="";
+			    ProFile.TypeFreq = ProFile.TypeFreq+'\n'+tmp2line[0]+'\n'+tmp2line[1]+'\n';
+				tmp2line[0].clear();
+				tmp2line[1].clear();
+				isFreq = true;
+			}
+			else if(tmp.find("ChangeMembraneNoise") != string::npos)
+			{
+			    //FindFreq=0;
+			    ProFile.TypeMem = ProFile.TypeMem+'\n'+tmp2line[0]+'\n'+tmp2line[1]+'\n';
+			    tmp2line[0].clear();
+			    tmp2line[1].clear();
 			}
 			continue;
 
-		}else if((tmp.find("EndEvent")!=string::npos)&&(FindFreq==1)){
-			FindFreq=0;
+		}
+		else if((tmp.find("EndEvent") != string::npos)&&(isFreq))
+		{
+			isFreq = false;
 			continue;
 		}
 		
-		if(FindFreq==1){
-			
-			if(tmp.find("Population")!=string::npos)
-			{
-				int found=tmp.find_first_of("Exc");
-				string tmpnum="";
-				for(int c=found+3; tmp[c]>' '; c++)
-					tmpnum+=tmp[c];
-				
-				TypeFreqModule tmpTypeFreq;
-				tmpTypeFreq.Population=atoi(tmpnum.c_str());
-				ProFile.TypeFreq.insert(ProFile.TypeFreq.end(), tmpTypeFreq);
-			}
-		}else if(FindFreq==0 && tmp[0]>' '){
-
+		if(!isFreq && tmp[0]>' ' && tmp[0]!='%')
+		{
 			ProFile.TypeMem=ProFile.TypeMem+tmp+"\n";
-			tmp2line[0]="";
-			tmp2line[1]="";
+		}	
+		else if(isFreq && tmp[0]>' ' && tmp[0]!='%')
+		{
+			ProFile.TypeFreq = ProFile.TypeFreq+tmp+"\n";
 		}
+
 	}
 	ReadPro.close();
 	
 	//end of reading pro file
-		
-	for(int i=0; i<ProFile.TypeFreq.size(); i++){
-		cout
-		<<ProFile.TypeFreq[i].EventTime<<endl
-		<<ProFile.TypeFreq[i].Type<<endl
-		<<ProFile.TypeFreq[i].Label<<endl
-		<<ProFile.TypeFreq[i].PopulationText
-		<<ProFile.TypeFreq[i].Population<<endl
-		<<ProFile.TypeFreq[i].Receptor<<endl
-		<<ProFile.TypeFreq[i].FreqExtText
-		<<ProFile.TypeFreq[i].FreqExt<<endl
-		<<ProFile.TypeFreq[i].EndText<<endl<<endl;
-	}
-	
-	cout<<ProFile.TypeMem<<endl;
-	
+	#ifdef DEBUG
+	    cout<<ProFile.TypeFreq<<endl;
+	    cout<<ProFile.TypeMem<<endl;
+	#endif
+
 	return 0;
 };
 
-void SendFreq(float DisFreq, int SensorID)
+void SendFreq(float DisFreq, string SensorID)
 {
-	#ifdef DEBUG
-		DEBUG(ProFile.TypeFreq[SensorID-1].FreqExt);
-	#endif
+    TypeFreqModule typeFreq;
+    string tmpPro;
+    
+    tmpPro = typeFreq.EventTime + '\n'
+            + typeFreq.Type + '\n'
+            + typeFreq.Label + '\n'
+            + typeFreq.PopulationText + SensorID + '\n'
+            + typeFreq.Receptor + '\n'
+            + typeFreq.FreqExtText + to_string(DisFreq) + '\n'
+            + typeFreq.EndText + '\n';
 
-	ProFile.TypeFreq[SensorID-1].FreqExt=DisFreq;
+	ProFile.TypeFreq += tmpPro;
 };
+
+void SendMacroFreq(float DisFreq, string MacroID)
+{
+    MacroModule macroContent = ProFile.macro.at(MacroID);
+	
+	for(int i=0; i<macroContent.members.size(); i++)
+	{
+	    SendFreq(DisFreq, macroContent.members.at(i));
+	}
+};
+
 char *ActiveSimGetSpike(string RunTime)
 {
 	if(CltInit()<0) //connect error
@@ -216,21 +270,8 @@ char *ActiveSimGetSpike(string RunTime)
 		Round++;
 		ProString+=ProFile.TypeMem;
 	}
-	
-	
-	for(int i=0; i<ProFile.TypeFreq.size(); i++)
-	{
-		ProString=
-		ProString+ProFile.TypeFreq[i].EventTime+"\n"
-		+ProFile.TypeFreq[i].Type+"\n"
-		+ProFile.TypeFreq[i].Label+"\n"
-		+ProFile.TypeFreq[i].PopulationText
-		+to_string(ProFile.TypeFreq[i].Population)+"\n"
-		+ProFile.TypeFreq[i].Receptor+"\n"
-		+ProFile.TypeFreq[i].FreqExtText
-		+to_string(ProFile.TypeFreq[i].FreqExt)+"\n"
-		+ProFile.TypeFreq[i].EndText+"\n"+"\n";
-	}
+
+		ProString += ProFile.TypeFreq;
 
         #ifdef DEBUG
 		DEBUG("ProFile checking");
