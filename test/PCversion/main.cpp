@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
 	int n = 0;
 
 	Flyintel flyintel;
-	string conf_file = "ringnetwork.conf", pro_file = "verysimple.pro";
+	string conf_file = "standard.conf", pro_file = "standard.pro";
 	fstream fp;
 	fp.open("Speed.log", ios::out);
 
@@ -68,8 +68,8 @@ int main(int argc, char *argv[]){
 		++n;
 		clock_t tik = clock();
 		//baseline stimuli
-		SendFreq(1500, 1);
-		SendFreq(1500, 2);
+		SendFreq(1500, "Exc1");
+		SendFreq(1500, "Exc4");
 		//SendDist(1500, 3);
 		//SendDist(1500, 4);
     	Spikes=ActiveSimGetSpike("300");

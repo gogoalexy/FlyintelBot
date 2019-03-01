@@ -12,3 +12,4 @@ build/**
 *.dat
 Spikeslog.txt
 *.save
+*.orig
