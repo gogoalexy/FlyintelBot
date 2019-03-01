@@ -12,20 +12,20 @@
 
 class TypeFreqModule
 {
-	//for storing information of Type=ChangeExtFreq in network.pro
-	public:
-		TypeFreqModule();
-		~TypeFreqModule();
-		
-		std::string EventTime;
-		std::string Type;
-		std::string Label;
-		std::string PopulationText;
-		std::string Population;
-		std::string Receptor;
-		std::string FreqExtText;
-		float FreqExt;
-		std::string EndText;
+    //for storing information of Type=ChangeExtFreq in network.pro
+    public:
+        TypeFreqModule();
+        ~TypeFreqModule();
+        
+        std::string EventTime;
+        std::string Type;
+        std::string Label;
+        std::string PopulationText;
+        std::string Population;
+        std::string Receptor;
+        std::string FreqExtText;
+        float FreqExt;
+        std::string EndText;
 };
 
 class MacroModule
@@ -42,17 +42,17 @@ class MacroModule
 
 class ProFileModule
 {
-	public:
-		ProFileModule();
-		~ProFileModule();
-		
-		std::map<std::string, MacroModule> macro;
-		std::string StartMacroHeader;
-		std::string EndMacroHeader;
-		//std::vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
-		std::string TypeFreq;
-		std::string EventTimeText;
-		std::string TypeMem; //Type=ChangeMembraneNoise
+    public:
+        ProFileModule();
+        ~ProFileModule();
+        
+        std::map<std::string, MacroModule> macro;
+        std::string StartMacroHeader;
+        std::string EndMacroHeader;
+        //std::vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
+        std::string TypeFreq;
+        std::string EventTimeText;
+        std::string TypeMem; //Type=ChangeMembraneNoise
 };
 
 
