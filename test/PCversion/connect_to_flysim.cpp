@@ -184,7 +184,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
 	ReadPro.close();
 	
 	//end of reading pro file
-	#ifdef DEBUG
+	#ifdef DEBUG_FILE
 	    cout<<ProFile.TypeFreq<<endl;
 	    cout<<ProFile.TypeMem<<endl;
 	#endif
