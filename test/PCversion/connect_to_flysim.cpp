@@ -237,7 +237,7 @@ char *ActiveSimGetSpike(string RunTime)
         <<"You can change port and restart if flysim is running"<<endl
         <<"or just restart flysim."
         <<endl;*/
-        return "-3";
+        return (char*)"-3";
     }
     CltInit();
     #ifdef DEBUG
@@ -291,7 +291,7 @@ char *ActiveSimGetSpike(string RunTime)
     //strcpy(ForSendPro, ProString.c_str());
     //ForSendPro[ProString.size()]='\0';    
     CltCmd(cmd7,defaultproname,ForSendPro);
-    CltCmd(cmd5,defaultproname,"0");//DO_EVENTS, pro
+    CltCmd(cmd5,defaultproname,(char*)"0");//DO_EVENTS, pro
     //char *SetRunTime=nullptr;
     //strcpy(SetRunTime, RunTime.c_str());
     return CltCmd(cmd6,opt8,GetChAry(RunTime));
