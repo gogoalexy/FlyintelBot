@@ -199,7 +199,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
     #endif
 
     return 0;
-};
+}
 
 void SendFreq(float DisFreq, string SensorID)
 {
@@ -225,7 +225,7 @@ void SendMacroFreq(float DisFreq, string MacroID)
     {
         SendFreq(DisFreq, macroContent.members.at(i));
     }
-};
+}
 
 char *ActiveSimGetSpike(string RunTime)
 {
@@ -295,7 +295,7 @@ char *ActiveSimGetSpike(string RunTime)
     //char *SetRunTime=nullptr;
     //strcpy(SetRunTime, RunTime.c_str());
     return CltCmd(cmd6,opt8,GetChAry(RunTime));
-};
+}
 
 char *GetChAry(string tmp) //char *GetChAry(char *argv)
 {
@@ -306,7 +306,7 @@ char *GetChAry(string tmp) //char *GetChAry(char *argv)
     s2[tmp.size()]='\0';
 
     return s2;
-};
+}
 
 void CloseSim()
 {
