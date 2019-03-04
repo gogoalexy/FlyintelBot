@@ -1,8 +1,9 @@
 #ifndef CX_MODEL_H
 
 #include "connect_to_flysim.h"
+#include "monitor.h"
 
-class CentralComplex
+class CentralComplex : public NeuroMonitor
 {
 public:
     CentralComplex();
@@ -10,6 +11,7 @@ public:
     void switchState();
     void shiftRight();
     void shiftLeft();
+
 
 private:
     const float PB_HALF_FR;

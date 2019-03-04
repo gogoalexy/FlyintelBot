@@ -27,6 +27,7 @@ public:
     void updateMatrix();
 
 private:
+    const std::array<BYTE, 8> defaultMatrixConfig;
     std::array<BYTE, 8> matrixConfig;
     max7219 chip;
 };
