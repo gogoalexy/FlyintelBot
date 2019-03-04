@@ -61,8 +61,8 @@ static ProFileModule ProFile;
 static int Round=0;
 
 int ReadFile(const std::string ConfFilename, const std::string ProFilename);
-void SendFreq(float, std::string);
-void SendMacroFreq(float, std::string);
+void SendFreq(std::string, float);
+void SendMacroFreq(std::string, float);
 char *ActiveSimGetSpike(std::string RunTime);
 char *GetChAry(std::string tmp);
 void CloseSim();

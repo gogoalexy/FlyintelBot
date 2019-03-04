@@ -20,7 +20,7 @@
 
 using namespace std;
 
-Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3), turnSmooth(0.3), baseSmooth(0.5)
+Flyintel::Flyintel(): MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3), turnSmooth(0.3), baseSmooth(0.5)
 {
 	count = {0, 0, 0, 0};
 	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
@@ -32,7 +32,7 @@ Flyintel::Flyintel():MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3), tu
 int Flyintel::cstoi(char* Spikes)
 {
 	int j=0, k=0, max;
-	while(1){
+	while(true){
 		if(Spikes[j] == ' ')
 		{
 			k++;

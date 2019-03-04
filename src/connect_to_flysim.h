@@ -1,53 +1,71 @@
-
 #ifndef CONNECT_TO_FLYSIM_H
-#define CONNECT_TO_FLYSIM_H
 
 #include <vector>
+#include <map>
 #include <string>
+#include <utility>
 #include <iostream>
 #include <fstream>
+#include "cltcmd.h"
 
 #define TotalSensor 9 //FS(4) + TS(4) + NPY(1) when building neural circuit in Hanitu rule
 
-using namespace std;
-
 class TypeFreqModule
 {
-	//for storing information of Type=ChangeExtFreq in network.pro
-	public:
-		TypeFreqModule();
-		~TypeFreqModule();
-		
-		string EventTime;
-		string Type;
-		string Label;
-		string PopulationText;
-		int Population; //Population: Exc1
-		string Receptor;
-		string FreqExtText;
-		float FreqExt;
-		string EndText;
+    //for storing information of Type=ChangeExtFreq in network.pro
+    public:
+        TypeFreqModule();
+        ~TypeFreqModule();
+        
+        std::string EventTime;
+        std::string Type;
+        std::string Label;
+        std::string PopulationText;
+        std::string Population;
+        std::string Receptor;
+        std::string FreqExtText;
+        float FreqExt;
+        std::string EndText;
+};
+
+class MacroModule
+{
+    public:
+        MacroModule();
+        ~MacroModule();
+
+        std::vector<std::string> members;
+        std::string GroupNameText;
+        std::string GroupMemberText;
+        std::string EndMemberText;
 };
 
 class ProFileModule
 {
-	public:
-		ProFileModule();
-		~ProFileModule();
-		
-		vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
-		string FirstEventTime;
-		string TypeMem; //Type=ChangeMembraneNoise
+    public:
+        ProFileModule();
+        ~ProFileModule();
+        
+        std::map<std::string, MacroModule> macro;
+        std::string StartMacroHeader;
+        std::string EndMacroHeader;
+        //std::vector<TypeFreqModule> TypeFreq; //Type=ChangeExtFreq
+        std::string TypeFreq;
+        std::string EventTimeText;
+        std::string TypeMem; //Type=ChangeMembraneNoise
 };
 
-static string ConfFile="";
-static string ProFileComplete="";
+
+static std::string ConfFile="";
 static ProFileModule ProFile;
 static int Round=0;
 
-int ReadFile(const string ConfFilename, const string ProFilename);
-void SendDist(float DisFreq, int SensorID);
-char *ActiveSimGetSpike(string RunTime);
-char *GetChAry(string tmp);
+int ReadFile(const std::string ConfFilename, const std::string ProFilename);
+void SendFreq(std::string, float);
+void SendMacroFreq(std::string, float);
+char *ActiveSimGetSpike(std::string RunTime);
+char *GetChAry(std::string tmp);
+void CloseSim();
 
-#endif //CONNECT_TO_FLYSIM_H
+#define CONNECT_TO_FLYSIM_H
+#endif

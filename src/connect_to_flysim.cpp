@@ -1,237 +1,314 @@
-#include "cltcmd.h"
 #include "connect_to_flysim.h"
 
-//#define DEBUG
 #ifdef DEBUG
-	#define DEBUG(x) cout<<__FILE__<<" "<<__LINE__<<" "<<__PRETTY_FUNCTION__<<" : "<<x<<endl
+    #define DEBUG(x) cout<<__FILE__<<" "<<__LINE__<<" "<<__PRETTY_FUNCTION__<<" : "<<x<<endl
 #endif
+
+using namespace std;
 
 TypeFreqModule::TypeFreqModule()
 {
-	EventTime="EventTime 0";
-	Type="Type=ChangeExtFreq";
-	Label="Label=#1#";
-	PopulationText="Population: Exc";
-	Population=0;
-	Receptor="Receptor: AMPA";
-	FreqExtText="FreqExt=";
-	FreqExt=0;
-	EndText="EndEvent";
-};
+    EventTime="EventTime 0";
+    Type="Type=ChangeExtFreq";
+    Label="Label=#1#";
+    PopulationText="Population:";
+    Population="";
+    Receptor="Receptor: AMPA";
+    FreqExtText="FreqExt=";
+    FreqExt=0;
+    EndText="EndEvent";
+}
 
 TypeFreqModule::~TypeFreqModule()
-{};
+{}
+
+MacroModule::MacroModule()
+{
+    GroupNameText="GroupName:";
+    GroupMemberText="GroupMembers:";
+    EndMemberText="EndGroupMembers";
+}
+
+MacroModule::~MacroModule()
+{}
 
 ProFileModule::ProFileModule()
 {
-	FirstEventTime="EventTime 0";
-};
+    StartMacroHeader="DefineMacro";
+    EndMacroHeader="EndDefineMacro";
+    EventTimeText="EventTime";
+}
 
 ProFileModule::~ProFileModule()
-{};
+{}
 
 int ReadFile(const string ConfFilename, const string ProFilename)
 {
-	ifstream ReadCon;
-	//reading conf file
-	ReadCon.open(ConfFilename);
-	if(!ReadCon)
-	{
-		cout<<"Fail to read: "<<ConfFilename<<endl;
-		return -1;
-	}
-	while(!ReadCon.eof())
-		ConfFile+=ReadCon.get(); 
-	ReadCon.close();
+    ifstream ReadCon;
+    //read conf file
+    ReadCon.open(ConfFilename);
+    if(!ReadCon){
+        cout<<"Fail to read: "<<ConfFilename<<endl;
+        return -1;
+    }
+    while(!ReadCon.eof())
+    {
+        ConfFile+=ReadCon.get(); 
+    }
+    ReadCon.close();
+    
+    ConfFile[ConfFile.size() - 1] = '\0';
+    //end of reading conf file
 
-	ConfFile[ConfFile.size()-1]='\0';
+    //read pro file
+    ifstream ReadPro;
+    ReadPro.open(ProFilename);
+    if(!ReadPro){
+        cout<<"Fail to read: "<<ProFilename<<endl;
+        return -2;
+    }
+    
+    string tmp="";
+    bool isFreq = false;
+    string tmp2line[2];
+    
+    while(!ReadPro.eof())
+    {
+        getline(ReadPro, tmp);
 
-	//end of reading conf file
+        //Parse macro
+        if(tmp.find(ProFile.StartMacroHeader) != string::npos)
+        {
+            bool newMacro = false;
+            cout<<"Start parsing macro..."<<endl;
+            while(true)
+            {
+                getline(ReadPro, tmp);
+                if(tmp.find(ProFile.EndMacroHeader) != string::npos)
+                {
+                    tmp2line[0].clear();
+                    tmp2line[1].clear();
+                    break;
+                }
+                    
+                if(tmp.find("GroupName") != string::npos)
+                {
+                    tmp2line[0]=tmp;//add 1st line
+                    getline(ReadPro, tmp);
+                    if(tmp.find("GroupMembers") != string::npos)
+                    {
+                        newMacro = true;
+                        tmp2line[1]=tmp;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if(tmp.find("EndGroupMembers") != string::npos)
+                {
+                    newMacro = false;
+                    tmp2line[0].clear();
+                    tmp2line[1].clear();
+                    continue;
+                }
+                
+                if(newMacro)
+                {
+                    int found = tmp2line[0].find_first_of(":");
+                    tmp2line[0].erase(tmp2line[0].begin(), tmp2line[0].begin()+found+1);
+                    found = tmp2line[1].find_first_of(":");
+                    tmp2line[1].erase(tmp2line[1].begin(), tmp2line[1].begin()+found+1);
 
-	//reading pro file
-	ifstream ReadPro;
-	ReadPro.open(ProFilename);
-	if(!ReadPro)
-	{
-		cout<<"Fail to read: "<<ProFilename<<endl;
-		return -2;
-	}
+                    MacroModule tmpMacro;
+                    string name;
+                    for(int i=0; i<tmp2line[1].length(); ++i)
+                    {
+                        while(tmp2line[1].at(i) != ',')
+                        {
+                            name.push_back(tmp2line[1].at(i));
+                            ++i;
+                            if(i>=tmp2line[1].length())
+                                break;
+                        }
+                        tmpMacro.members.push_back(name);
+                        name.clear();
+                    }
+                    ProFile.macro.insert( pair<string, MacroModule>(tmp2line[0],tmpMacro) );
+                }
 
-	string tmp="";
-	int FindFreq=0;
-	string tmp2line[2];
+            }
+        }
 
-	while(!ReadPro.eof()){	
-		getline(ReadPro, tmp);
+        //Parse stimuli
+        if(tmp.find(ProFile.EventTimeText) != string::npos)
+        {
+            tmp2line[0]=tmp;//add 1st line
+            getline(ReadPro, tmp);
+            if(tmp.find("Type")!=string::npos)
+                tmp2line[1]=tmp;//add 2nd line
+            else
+                continue;
 
-		if(tmp.find(ProFile.FirstEventTime)!=string::npos){
-			tmp2line[0]=tmp;//add 1st line
-			getline(ReadPro, tmp);
-			if(tmp.find("Type")!=string::npos)
-				tmp2line[1]=tmp;//add 2nd line
-			else
-				continue;
+            if(tmp.find("ChangeExtFreq") != string::npos)//find Type=ChangeExtFreq
+            {
+                ProFile.TypeFreq = ProFile.TypeFreq+'\n'+tmp2line[0]+'\n'+tmp2line[1]+'\n';
+                tmp2line[0].clear();
+                tmp2line[1].clear();
+                isFreq = true;
+            }
+            else if(tmp.find("ChangeMembraneNoise") != string::npos)
+            {
+                //FindFreq=0;
+                ProFile.TypeMem = ProFile.TypeMem+'\n'+tmp2line[0]+'\n'+tmp2line[1]+'\n';
+                tmp2line[0].clear();
+                tmp2line[1].clear();
+            }
+            continue;
 
-			if(tmp.find("ChangeExtFreq")!=string::npos)//find Type=ChangeExtFreq
-			{
-				FindFreq=1;
-				tmp2line[0]="";
-				tmp2line[1]="";
-			}else if(tmp.find("ChangeMembraneNoise")!=string::npos){
-			 FindFreq=0;
-			 ProFile.TypeMem=ProFile.TypeMem+'\n'+tmp2line[0]+'\n'+tmp2line[1]+'\n';
-			 tmp2line[0]="";
-			 tmp2line[1]="";
-			}
-			continue;//ChangeMemPot is been neglected?
+        }
+        else if((tmp.find("EndEvent") != string::npos)&&(isFreq))
+        {
+            isFreq = false;
+            continue;
+        }
+        
+        if(!isFreq && tmp[0]>' ' && tmp[0]!='%')
+        {
+            ProFile.TypeMem=ProFile.TypeMem+tmp+"\n";
+        }   
+        else if(isFreq && tmp[0]>' ' && tmp[0]!='%')
+        {
+            ProFile.TypeFreq = ProFile.TypeFreq+tmp+"\n";
+        }
 
-		}else if((tmp.find("EndEvent")!=string::npos)&&(FindFreq==1)){
-			FindFreq=0;
-			continue;
-		}
+    }
+    ReadPro.close();
+    
+    //end of reading pro file
+    #ifdef DEBUG_FILE
+        for(auto it = ProFile.macro.cbegin(); it != ProFile.macro.cend(); ++it)
+        {
+            for(auto vit = it->second.members.cbegin(); vit != it->second.members.cend(); ++vit)
+            {
+                cout << it->first << " " << *vit << "\n";
+            }
+        }
+        cout<<ProFile.TypeFreq<<endl;
+        cout<<ProFile.TypeMem<<endl;
+    #endif
 
-		if(FindFreq==1){
+    return 0;
+}
 
-			if(tmp.find("Population")!=string::npos)
-			{
-				int found=tmp.find_first_of("Exc");
-				string tmpnum="";
-				for(int c=found+3; tmp[c]>' '; c++)
-					tmpnum+=tmp[c];
-
-				TypeFreqModule tmpTypeFreq;
-				tmpTypeFreq.Population=atoi(tmpnum.c_str());
-				ProFile.TypeFreq.insert(ProFile.TypeFreq.end(), tmpTypeFreq);
-			}
-		}else if(FindFreq==0 && tmp[0]>' '){
-
-			ProFile.TypeMem=ProFile.TypeMem+tmp+"\n";
-			tmp2line[0]="";
-			tmp2line[1]="";
-		}
-	}
-	ReadPro.close();
-
-	//end of reading pro file
-	/*
-	for(int i=0; i<ProFile.TypeFreq.size(); i++)
-	{
-		cout
-		<<ProFile.TypeFreq[i].EventTime<<endl
-		<<ProFile.TypeFreq[i].Type<<endl
-		<<ProFile.TypeFreq[i].Label<<endl
-		<<ProFile.TypeFreq[i].PopulationText
-		<<ProFile.TypeFreq[i].Population<<endl
-		<<ProFile.TypeFreq[i].Receptor<<endl
-		<<ProFile.TypeFreq[i].FreqExtText
-		<<ProFile.TypeFreq[i].FreqExt<<endl
-		<<ProFile.TypeFreq[i].EndText<<endl<<endl;
-	}
-
-	cout<<ProFile.TypeMem<<endl;
-	*/
-	return 0;
-};
-
-void SendDist(float DisFreq, int SensorID)
+void SendFreq(string SensorID, float DisFreq)
 {
-	#ifdef DEBUG
-		DEBUG(ProFile.TypeFreq[SensorID-1].FreqExt);
-	#endif
+    TypeFreqModule typeFreq;
+    string tmpPro;
+    
+    tmpPro = typeFreq.EventTime + '\n'
+            + typeFreq.Type + '\n'
+            + typeFreq.Label + '\n'
+            + typeFreq.PopulationText + SensorID + '\n'
+            + typeFreq.Receptor + '\n'
+            + typeFreq.FreqExtText + to_string(DisFreq) + '\n'
+            + typeFreq.EndText + '\n' + '\n';
 
-	ProFile.TypeFreq[SensorID-1].FreqExt=DisFreq;
+    ProFile.TypeFreq += tmpPro;
 };
+
+void SendMacroFreq(string MacroID, float DisFreq)
+{
+    MacroModule macroContent = ProFile.macro.at(MacroID);
+    
+    for(int i=0; i<macroContent.members.size(); i++)
+    {
+        SendFreq(macroContent.members.at(i), DisFreq);
+    }
+}
+
 char *ActiveSimGetSpike(string RunTime)
 {
-	if(CltInit()<0) //connect error
-	{
-		/*cout
-		<<"Flysim error!"<<endl
-		<<"Please check whether flysim is running or not."<<endl
-		<<"You can change port and restart if flysim is running"<<endl
-		<<"or just restart flysim."
-		<<endl;*/
-		char tmp[] = "-3";
-		return tmp;
-	}
-	CltInit();
-	#ifdef DEBUG
-		DEBUG("open port -1");
-	#endif
-	CltInit();
-	#ifdef DEBUG
-		DEBUG("open port -2");
-	#endif
-	string ProString="";
-	
-	char cmd1[]="FILE_WRITE";
-	char cmd2[]="FILE_READ";//read simulator output
-	char cmd3[]="ADD_WORM";
-	char cmd4[]="DEL_WORM";
-	char cmd5[]="DO_EVENTS";
-	char cmd6[]="DATA_READ";
-	char cmd7[]="FILE_SEND";
-	char opt6[]="Spikes_Header";
-	char opt7[]="Spikes";
-	char opt8[]="Spikes_Cont";
-	char defaultconfname[]="network.conf";
-	char defaultproname[]="network.pro";
-	
-	#ifdef DEBUG
-		DEBUG(Round);
-	#endif
-	if(Round==0)
-	{
-		char *ForSendConf=nullptr;
-		ForSendConf=GetChAry(ConfFile);
-		//strcpy(ForSendConf, ConfFile.c_str());	
-		//ForSendConf[ConfFile.size()]='\0';
-		CltCmd(cmd7,defaultconfname,ForSendConf);
-		CltCmd(cmd3,defaultconfname,ForSendConf);
-		#ifdef DEBUG
-			DEBUG("ADD_WORM-1");
-		#endif
-		Round++;
-		ProString+=ProFile.TypeMem;
-	}
-	
-	
-	for(int i=0; i<ProFile.TypeFreq.size(); i++)
-	{
-		ProString=
-		ProString+ProFile.TypeFreq[i].EventTime+"\n"
-		+ProFile.TypeFreq[i].Type+"\n"
-		+ProFile.TypeFreq[i].Label+"\n"
-		+ProFile.TypeFreq[i].PopulationText
-		+to_string(ProFile.TypeFreq[i].Population)+"\n"
-		+ProFile.TypeFreq[i].Receptor+"\n"
-		+ProFile.TypeFreq[i].FreqExtText
-		+to_string(ProFile.TypeFreq[i].FreqExt)+"\n"
-		+ProFile.TypeFreq[i].EndText+"\n"+"\n";
-	}
+    if(CltInit()<0) //connect error
+    {
+        /*cout
+        <<"Flysim error!"<<endl
+        <<"Please check whether flysim is running or not."<<endl
+        <<"You can change port and restart if flysim is running"<<endl
+        <<"or just restart flysim."
+        <<endl;*/
+        return (char*)"-3";
+    }
+    CltInit();
+    #ifdef DEBUG
+        DEBUG("open port -1");
+    #endif
+    CltInit();
+    #ifdef DEBUG
+        DEBUG("open port -2");
+    #endif
+    string ProString="";
+
+    char cmd1[]="FILE_WRITE";
+    char cmd2[]="FILE_READ";//read simulator output
+    char cmd3[]="ADD_WORM";
+    char cmd4[]="DEL_WORM";
+    char cmd5[]="DO_EVENTS";
+    char cmd6[]="DATA_READ";
+    char cmd7[]="FILE_SEND";
+    char opt6[]="Spikes_Header";
+    char opt7[]="Spikes";
+    char opt8[]="Spikes_Cont";
+    char defaultconfname[]="network.conf";
+    char defaultproname[]="network.pro";
+
+    #ifdef DEBUG
+        DEBUG(Round);
+    #endif
+    if(Round==0)
+    {
+        char *ForSendConf=nullptr;
+        ForSendConf=GetChAry(ConfFile);
+        //strcpy(ForSendConf, ConfFile.c_str());    
+        //ForSendConf[ConfFile.size()]='\0';
+        CltCmd(cmd7,defaultconfname,ForSendConf);
+        CltCmd(cmd3,defaultconfname,ForSendConf);
+        #ifdef DEBUG
+            DEBUG("ADD_WORM-1");
+        #endif
+        Round++;
+        ProString+=ProFile.TypeMem;
+    }
+
+        ProString += ProFile.TypeFreq;
 
         #ifdef DEBUG
-		DEBUG("ProFile checking");
-		cout<<ProString<<endl;                
+        DEBUG("ProFile checking");
+        cout<<ProString<<endl;
         #endif
 
-	char *ForSendPro=GetChAry(ProString);
-	//strcpy(ForSendPro, ProString.c_str());
-	//ForSendPro[ProString.size()]='\0';	
-	CltCmd(cmd7,defaultproname,ForSendPro);
-	CltCmd(cmd5,defaultproname,"0");//DO_EVENTS, pro
-	//char *SetRunTime=nullptr;
-	//strcpy(SetRunTime, RunTime.c_str());
-	return CltCmd(cmd6,opt8,GetChAry(RunTime));
-};
+    char *ForSendPro=GetChAry(ProString);
+    //strcpy(ForSendPro, ProString.c_str());
+    //ForSendPro[ProString.size()]='\0';    
+    CltCmd(cmd7,defaultproname,ForSendPro);
+    CltCmd(cmd5,defaultproname,(char*)"0");//DO_EVENTS, pro
+    //char *SetRunTime=nullptr;
+    //strcpy(SetRunTime, RunTime.c_str());
+    return CltCmd(cmd6,opt8,GetChAry(RunTime));
+}
 
 char *GetChAry(string tmp) //char *GetChAry(char *argv)
 {
-  char buf32[32], *s2=nullptr;
-  
-  s2 = (char *) malloc(tmp.size()+1);
-  strcpy(s2,tmp.c_str());
-  s2[tmp.size()]='\0';
+    char buf32[32], *s2=nullptr;
 
-  return s2;
-};
+    s2 = (char *) malloc(tmp.size()+1);
+    strcpy(s2,tmp.c_str());
+    s2[tmp.size()]='\0';
+
+    return s2;
+}
+
+void CloseSim()
+{
+    CltClose();
+}

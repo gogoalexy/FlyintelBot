@@ -22,7 +22,7 @@
 #include <string>
 #include <cmath>
 #include <wiringPi.h>
-#include "connect_to_flysim.cpp"
+#include "connect_to_flysim.h"
 #include "flyintel.h"
 #include "DCmotor.h"
 #include "SPIadc.h"
@@ -45,6 +45,7 @@ void handle_SIGINT(int unused)
     digitalWrite(21, 0);
     digitalWrite(27, 0);
     digitalWrite(25, 0);
+    CloseSim();
 }
 
 char *Spikes = nullptr;
