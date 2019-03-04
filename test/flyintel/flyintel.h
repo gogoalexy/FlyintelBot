@@ -51,29 +51,29 @@ typedef std::pair<int, int> vmotor;
 class Flyintel
 {
 public:
-Flyintel();
-int cstoi(char*);
-motor getMotor(int);
-vmotor getSpeed(int);
+    Flyintel();
+    int cstoi(char*);
+    motor getMotor(int);
+    vmotor getSpeed(int);
 
-void refresh();
+    void refresh();
 
-private:
-Container count;
-Ratio decision;
-int spiketrain[50000];
-int maxspikes;
-const int MAX_SPIKES;
-const float RATE_THRESHOLD;
-int turnConst;
-float turnSmooth;
-float baseSmooth;
-int preturnSpeed;
-int prebaseSpeed;
-float preleftRate;
-float prerightRate;
-float preforwardRate;
-float prebackwardRate;
+protected:
+    Container count;
+    Ratio decision;
+    int spiketrain[3000];
+    int maxspikes;
+    const int MAX_SPIKES;
+    const float RATE_THRESHOLD;
+    int turnConst;
+    float turnSmooth;
+    float baseSmooth;
+    int preturnSpeed;
+    int prebaseSpeed;
+    float preleftRate;
+    float prerightRate;
+    float preforwardRate;
+    float prebackwardRate;
 
 };
 

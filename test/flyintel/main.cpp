@@ -20,10 +20,12 @@
 #include <signal.h>
 #include <iostream>
 #include <string>
+#include <queue>
 #include <time.h>
 #include <cmath>
 #include "connect_to_flysim.h"
 #include "flyintel.h"
+#include "CXmodel.h"
 
 #define NUM_NEURONS 61
 
@@ -43,7 +45,9 @@ int main(int argc, char *argv[]){
 	int n = 0;
 
 	Flyintel flyintel;
-	string conf_file = "standard.conf", pro_file = "standard.pro";
+	CentralComplexStimulator CXsti;
+	CentralComplexDecoder CXdecode;
+	string conf_file = "CXstandard.conf", pro_file = "CXstandard.pro";
 	fstream fp;
 	fp.open("Speed.log", ios::out);
 
@@ -68,19 +72,27 @@ int main(int argc, char *argv[]){
 		++n;
 		clock_t tik = clock();
 		//baseline stimuli
-		SendFreq(1500, "Exc1");
-		SendFreq(1500, "Exc4");
-		//SendDist(1500, 3);
-		//SendDist(1500, 4);
+		SendFreq("Ring_Neuron_PEN", 200);
+		SendMacroFreq("_macro_5", 50);
+		//SendFreq(50, "_macro_3");
+
     	Spikes=ActiveSimGetSpike("300");
     	cout
-		<<"receving\n";
-		//<<"Spikes:"<<endl<<Spikes<<endl;
-
-		vmotor speed = flyintel.getSpeed(flyintel.cstoi(Spikes));
-		int vleft = speed.first;
-		int vright = speed.second;
-
+		<<"receving\n"
+		<<"Spikes:"<<endl<<Spikes<<endl;
+        CXdecode.sortingHat(Spikes);
+        queue<int> ans (CXdecode.findBump());
+        while(!ans.empty())
+        {
+            cout<<ans.front()<<' ';
+            ans.pop();
+        }
+        cout<<endl;
+        CXdecode.clean();
+		//vmotor speed = flyintel.getSpeed(flyintel.cstoi(Spikes));
+		//int vleft = speed.first;
+		//int vright = speed.second;
+/*
 		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
 		if(motorNeuron.first & 0x1){
 			short speed = motorNeuron.second - 350;
@@ -106,8 +118,9 @@ int main(int argc, char *argv[]){
 		}
 
 		flyintel.refresh();
+		*/
 		clock_t tok = clock();
-cout<<"time:"<<(tik-tok)/(double)CLOCKS_PER_SEC<<endl;
+cout<<"time:"<<(tok-tik)/(double)CLOCKS_PER_SEC<<endl;
     }
 	fp.close();
 	return 0;

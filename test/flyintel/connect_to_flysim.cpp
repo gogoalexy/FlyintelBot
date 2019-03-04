@@ -11,7 +11,7 @@ TypeFreqModule::TypeFreqModule()
     EventTime="EventTime 0";
     Type="Type=ChangeExtFreq";
     Label="Label=#1#";
-    PopulationText="Population";
+    PopulationText="Population:";
     Population="";
     Receptor="Receptor: AMPA";
     FreqExtText="FreqExt=";
@@ -201,7 +201,7 @@ int ReadFile(const string ConfFilename, const string ProFilename)
     return 0;
 }
 
-void SendFreq(float DisFreq, string SensorID)
+void SendFreq(string SensorID, float DisFreq)
 {
     TypeFreqModule typeFreq;
     string tmpPro;
@@ -212,18 +212,18 @@ void SendFreq(float DisFreq, string SensorID)
             + typeFreq.PopulationText + SensorID + '\n'
             + typeFreq.Receptor + '\n'
             + typeFreq.FreqExtText + to_string(DisFreq) + '\n'
-            + typeFreq.EndText + '\n';
+            + typeFreq.EndText + '\n' + '\n';
 
     ProFile.TypeFreq += tmpPro;
 };
 
-void SendMacroFreq(float DisFreq, string MacroID)
+void SendMacroFreq(string MacroID, float DisFreq)
 {
     MacroModule macroContent = ProFile.macro.at(MacroID);
     
     for(int i=0; i<macroContent.members.size(); i++)
     {
-        SendFreq(DisFreq, macroContent.members.at(i));
+        SendFreq(macroContent.members.at(i), DisFreq);
     }
 }
 
