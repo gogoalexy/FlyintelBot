@@ -38,21 +38,17 @@ class max7219
 public:
     max7219();
     int max7219Setup(int, int);
-    int max7219Setup(int, int, int);
     void setShutdown(BYTE);
     void setDecode(BYTE);
     void setLimit(BYTE);
     void setBrightness(BYTE);
     void setTest(BYTE);
     void setROW(int, BYTE);
-    void setROW(int, int, BYTE);
     void setMatrix(std::array<BYTE, 8>);
-    void setMatrix(int, std::array<BYTE, 8>);
     ~max7219();
-        void registerWrite(BYTE, BYTE, BYTE, BYTE);//bicolor
+
 protected:
     void registerWrite(BYTE, BYTE);
-    void registerWrite(int, BYTE, BYTE);
 
 private:
     int spiChan;
