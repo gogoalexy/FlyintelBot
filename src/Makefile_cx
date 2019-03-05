@@ -11,17 +11,26 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 
 BUILD_DIR=../build
 
-$(BUILD_DIR)/main_cx.out: $(BUILD_DIR)/main_cx.o $(BUILD_DIR)/flyintel.o
-	$(CXX) $^ -o $@ $(LDLIBS) -O2 -Winline
+$(BUILD_DIR)/main_cx.out: $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/main_cx.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/CXmodel.o $(BUILD_DIR)/max7219.o ${BUILD_DIR}/connect_to_flysim.o
+	$(CXX) $^ -o $@ $(LDLIBS) -Winline
 
 $(BUILD_DIR)/main_cx.o: main_cx.cpp
-	$(CXX) -c main_cx.cpp -o $(BUILD_DIR)/main_cx.o -O2
+	$(CXX) -c main_cx.cpp -o $(BUILD_DIR)/main_cx.o
 
 $(BUILD_DIR)/CXmodel.o: CXmodel.cpp
-	$(CXX) -c CXmodel.cpp -o $(BUILD_DIR)/CXmodel.o -O2
+	$(CXX) -c CXmodel.cpp -o $(BUILD_DIR)/CXmodel.o
 
 $(BUILD_DIR)/flyintel.o: flyintel.cpp
-	$(CXX) -c flyintel.cpp -o $(BUILD_DIR)/flyintel.o -O2
+	$(CXX) -c flyintel.cpp -o $(BUILD_DIR)/flyintel.o
+
+$(BUILD_DIR)/max7219.o: max7219.cpp
+	$(CXX) -c max7219.cpp -o $(BUILD_DIR)/max7219.o
+
+$(BUILD_DIR)/connect_to_flysim.o: connect_to_flysim.cpp
+	$(CXX) -c connect_to_flysim.cpp -o $(BUILD_DIR)/connect_to_flysim.o -O2
+
+$(BUILD_DIR)/cltcmd.o: cltcmd.cpp
+	$(CXX) -c cltcmd.cpp -o $(BUILD_DIR)/cltcmd.o -O2
 
 #dirmake:
 #	mkdir -pv $(BUILD_DIR)
