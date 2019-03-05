@@ -132,35 +132,38 @@ void CentralComplexDecoder::clean()
 //std::tuple<int START_ROW, int END_ROW, BYTE CONTENTS>
 //--------------------------------------
 CentralComplexMonitor::CentralComplexMonitor()
-    : EB2Monitor
-      {
-        {0, 1, 0b00011000},
-        {0, 1, 0b00001110},
-        {0, 1, 0b00000011},
-        {1, 3, 0b00000011},
-        {3, 4, 0b00000011},
-        {4, 6, 0b00000011},
-        {6, 7, 0b00000011},
-        {6, 7, 0b00001110},
-        {6, 7, 0b00011000},
-        {6, 7, 0b01110000},
-        {6, 7, 0b11000000},
-        {4, 6, 0b11000000},
-        {3, 4, 0b11000000},
-        {1, 3, 0b11000000},
-        {0, 1, 0b11000000},
-        {0, 1, 0b01110000},
-      }
-{}
+{
+    EB2Monitor[0] = make_tuple(0, 1, 0b00011000);
+    EB2Monitor[1] = make_tuple(0, 1, 0b00001110);
+    EB2Monitor[2] = make_tuple(0, 1, 0b00000011);
+    EB2Monitor[3] = make_tuple(1, 3, 0b00000011);
+    EB2Monitor[4] = make_tuple(3, 4, 0b00000011);
+    EB2Monitor[5] = make_tuple(4, 6, 0b00000011);
+    EB2Monitor[6] = make_tuple(6, 7, 0b00000011);
+    EB2Monitor[7] = make_tuple(6, 7, 0b00001110);
+    EB2Monitor[8] = make_tuple(6, 7, 0b00011000);
+    EB2Monitor[9] = make_tuple(6, 7, 0b01110000);
+    EB2Monitor[10] = make_tuple(6, 7, 0b11000000);
+    EB2Monitor[11] = make_tuple(4, 6, 0b11000000);
+    EB2Monitor[12] = make_tuple(3, 4, 0b11000000);
+    EB2Monitor[13] = make_tuple(1, 3, 0b11000000);
+    EB2Monitor[14] = make_tuple(0, 1, 0b11000000);
+    EB2Monitor[15] = make_tuple(0, 1, 0b01110000);
+}
 
 void CentralComplexMonitor::init()
-{        
+{
+    chip.max7219Setup(1, 1000000);
     chip.setShutdown(EXIT_SHUTDOWN);
     chip.setDecode(BCD_DECODE_NONE);
     chip.setLimit(SCAN_LIMIT_NONE);
-    chip.setBrightness(BRIGHTNESS_HALF);
-    chip.setMatrix(defaultMatrixConfig);
+    chip.setTest(EXIT_DISPLAY_TEST);
+    chip.setBrightness(BRIGHTNESS_MAX);
     chip.flush();
+    chip.setROW(0, 0b11111111);
+    chip.setROW(1, 0b11110011);
+    chip.setROW(2, 0b10011111);
+    chip.setROW(3, 0b11111100);
 }
 
 void CentralComplexMonitor::showBump(std::queue<int> location)
@@ -168,13 +171,14 @@ void CentralComplexMonitor::showBump(std::queue<int> location)
     while(!location.empty())
     {
         auto bump = location.front();
+cout<<"bump: "<<bump<<' ';
         location.pop();
         auto startROW = get<0>(EB2Monitor.at(bump));
         auto endROW = get<1>(EB2Monitor.at(bump));
-        for(int i=start; i<=end; ++i)
+cout<<startROW<<','<<endROW<<endl;
+        for(int i=startROW; i<=endROW; ++i)
         {
             chip.setROW(i, get<2>(EB2Monitor.at(bump)));
         }
     }
-    
 }

@@ -21,16 +21,16 @@ int main() {
 	led.setDecode(BCD_DECODE_NONE);
 	led.setLimit(SCAN_LIMIT_NONE);
 	led.setBrightness(BRIGHTNESS_HALF);
-	for (;;){
+	//for (;;){
 		led.setROW(0, 0b00000000);
 		led.setROW(1, 0b00000000);
 		led.setROW(2, 0b00000000);
 		led.setROW(3, 0b00000000);
-		led.setROW(4, 0b00000000);
+		led.setROW(4, val1);
 		led.setROW(5, 0b00000000);
-		led.setROW(6, val2);
+		led.setROW(6, 0b00000000);
 		led.setROW(7, 0b00000000);
     		delay(300);
-	}
+	//}
 return 0;
 }

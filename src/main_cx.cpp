@@ -6,6 +6,7 @@
 #include <wiringPi.h>
 #include "connect_to_flysim.h"
 #include "CXmodel.h"
+#include "max7219.h"
 
 using namespace std;
 
@@ -26,16 +27,20 @@ int main()
 		cout<<"wiringPi initialization error"<<endl;
 		return -3;
 	}
-	
+
 	string conf_file = "./networks/CXstandard.conf", pro_file = "./networks/CXstandard.pro";
 
 	CentralComplexStimulator CXsti;
 	CentralComplexDecoder CXdecode;
+        //CentralComplexMonitor CXled;
+       max7219 led;
+       led.max7219Setup(1, 1000000);
 
     int ErrorNumFromReadFile=ReadFile(conf_file, pro_file);
 	cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
     signal(SIGINT, handle_SIGINT);
+    //CXled.init();
 
     while(run_flag)
     {
@@ -50,17 +55,14 @@ int main()
 		//<<"Spikes:"<<endl<<Spikes<<endl;
         CXdecode.sortingHat(Spikes);
         queue<int> ans (CXdecode.findBump());
-        while(!ans.empty())
-        {
-            cout<<ans.front()<<' ';
-            ans.pop();
-        }
+        //CXled.showBump(ans);
+led.setTest(ENTER_DISPLAY_TEST);
         cout<<endl;
         CXdecode.clean();
-
+delay(100);
         clock_t tok = clock();
         cout<<"time:"<<(tok-tik)/(double)CLOCKS_PER_SEC<<endl;
     }
-    
+
     return 0;
 }

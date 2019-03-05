@@ -47,10 +47,10 @@ public:
     CentralComplexMonitor();
     void init();
     void showBump(std::queue<int>);
-    
+
 private:
     max7219 chip;
-    const std::array<LEDpacket, 16> EB2Monitor;
+    std::array<LEDpacket, 16> EB2Monitor;
 
 };
 
