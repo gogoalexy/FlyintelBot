@@ -124,38 +124,32 @@ void CentralComplexDecoder::clean()
     refresh();
 }
 
-//=======================================
+//====================================================
 
 //-------------------------------------
-//encoding: row*10 + column
-//00, 01, 02, 03, 04, 05, 06, 07
-//10, 11, 12, 13, 14, 15, 16, 17
-//20, 21, 22, 23, 24, 25, 26, 27
-//30, 31, 32, 33, 34, 35, 36, 37
-//40, 41, 42, 43, 44, 45, 46, 47
-//50, 51, 52, 43, 54, 55, 56, 57
-//60, 61, 62, 63, 64, 65, 66, 67
-//70, 71, 72, 73, 74, 75, 76, 77
+//odd: 6 LEDs (3*2)
+//even: 4 LEDs (2*2)
+//std::tuple<int START_ROW, int END_ROW, BYTE CONTENTS>
 //--------------------------------------
 CentralComplexMonitor::CentralComplexMonitor()
-    : EB2MonitorOdd
+    : EB2Monitor
       {
-        {0b00011000},
-        {0b00001110},
-        {0b00000011},
-        {0b00000011},
-        {0b00000011},
-        {0b00000011},
-        {0b00000011},
-        {0b00001110},
-        {0b00011000},
-        {0b01110000},
-        {0b11000000},
-        {0b11000000},
-        {0b11000000},
-        {0b11000000},
-        {0b11000000},
-        {0b01110000},
+        {0, 1, 0b00011000},
+        {0, 1, 0b00001110},
+        {0, 1, 0b00000011},
+        {1, 3, 0b00000011},
+        {3, 4, 0b00000011},
+        {4, 6, 0b00000011},
+        {6, 7, 0b00000011},
+        {6, 7, 0b00001110},
+        {6, 7, 0b00011000},
+        {6, 7, 0b01110000},
+        {6, 7, 0b11000000},
+        {4, 6, 0b11000000},
+        {3, 4, 0b11000000},
+        {1, 3, 0b11000000},
+        {0, 1, 0b11000000},
+        {0, 1, 0b01110000},
       }
 {}
 
@@ -164,6 +158,23 @@ void CentralComplexMonitor::init()
     chip.setShutdown(EXIT_SHUTDOWN);
     chip.setDecode(BCD_DECODE_NONE);
     chip.setLimit(SCAN_LIMIT_NONE);
-    chip.setBrightness(BRIGHTNESS_MAX);
+    chip.setBrightness(BRIGHTNESS_HALF);
     chip.setMatrix(defaultMatrixConfig);
+    chip.flush();
+}
+
+void CentralComplexMonitor::showBump(std::queue<int> location)
+{
+    while(!location.empty())
+    {
+        auto bump = location.front();
+        location.pop();
+        auto startROW = get<0>(EB2Monitor.at(bump));
+        auto endROW = get<1>(EB2Monitor.at(bump));
+        for(int i=start; i<=end; ++i)
+        {
+            chip.setROW(i, get<2>(EB2Monitor.at(bump)));
+        }
+    }
+    
 }

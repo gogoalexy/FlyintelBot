@@ -1,0 +1,30 @@
+SHELL = /bin/sh
+.SUFFIXES: .cpp .a .o
+
+CXX=g++
+CXXFLAGS= -I/usr/include/libusb-1.0 -I../../../gitrepos/pixy2/src/host/libpixyusb2/include -I../../../gitrepos/pixy2/src/host/arduino/libraries/Pixy2
+INC=-I/
+LDLIBS=-lwiringPi
+
+SRCS=HC_SR04.cpp Sharp_IR.cpp flyintel.cpp
+OBJS=$(patsubst %.cpp,%.o,$(SRCS))
+
+BUILD_DIR=../build
+
+$(BUILD_DIR)/main_cx.out: $(BUILD_DIR)/main_cx.o $(BUILD_DIR)/flyintel.o
+	$(CXX) $^ -o $@ $(LDLIBS) -O2 -Winline
+
+$(BUILD_DIR)/main_cx.o: main_cx.cpp
+	$(CXX) -c main_cx.cpp -o $(BUILD_DIR)/main_cx.o -O2
+
+$(BUILD_DIR)/CXmodel.o: CXmodel.cpp
+	$(CXX) -c CXmodel.cpp -o $(BUILD_DIR)/CXmodel.o -O2
+
+$(BUILD_DIR)/flyintel.o: flyintel.cpp
+	$(CXX) -c flyintel.cpp -o $(BUILD_DIR)/flyintel.o -O2
+
+#dirmake:
+#	mkdir -pv $(BUILD_DIR)
+
+clean:
+	rm -rf $(BUILD_DIR)/main_cx.out $(BUILD_DIR)/*.o
