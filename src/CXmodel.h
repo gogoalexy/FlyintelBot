@@ -2,8 +2,10 @@
 
 #include "connect_to_flysim.h"
 #include "flyintel.h"
+#include "max7219.h"
 #include <array>
 #include <queue>
+#include <tuple>
 #include <iostream>
 
 class CentralComplexStimulator
@@ -37,15 +39,18 @@ private:
 
 };
 
+typedef std::tuple<int, int, BYTE> LEDpacket;
+
 class CentralComplexMonitor
 {
 public:
     CentralComplexMonitor();
     void init();
+    void showBump(std::queue<int>);
     
 private:
     max7219 chip;
-    const std::array<std::array<BYTE, 3>, 16> EB2Monitor;
+    const std::array<LEDpacket, 16> EB2Monitor;
 
 };
 
