@@ -2,7 +2,7 @@
 
 #include <array>
 #include <cstring>
-#include "net_struct_def.h"
+//#include "net_struct_def.h"
 #include "max7219.h"
 
 const std::array<BYTE, 8> defaultMatrixConfig
@@ -23,7 +23,7 @@ public:
     NeuroMonitor(int, int, int);
     void init();
     void refresh();
-    void recordActivity(int, int, bool);
+    void recordActivity(int, int);
     void updateMatrix();
 
 private:

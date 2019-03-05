@@ -16,16 +16,6 @@ int max7219::max7219Setup(int spiChannel, int spiSpeed)
     return fd;
 }
 
-int max7219::max7219Setup(int spiChannel, int spiSpeed, int num_of_matrix)
-{
-    this->spiChan = spiChannel;
-    this->fd = wiringPiSPISetup(spiChan, spiSpeed);
-
-    this->num_of_matrix = num_of_matrix;
-
-    return fd;
-}
-
 void max7219::registerWrite(const BYTE byte1, const BYTE byte2)
 {
     unsigned char spiData[2];
@@ -36,72 +26,30 @@ void max7219::registerWrite(const BYTE byte1, const BYTE byte2)
     wiringPiSPIDataRW(fd, spiData, 2);
 }
 
-void max7219::registerWrite(int matrix_n, const BYTE byte1, const BYTE byte2)
-{
-    int bytes2send = num_of_matrix * 2;
-    unsigned char spiData[bytes2send];
-
-    for(int i=0; i<bytes2send; i++)
-    {
-        spiData[i] = (unsigned char) NO_OP.to_ulong();
-    }
-    spiData[(num_of_matrix-matrix_n)*2] = (unsigned char) byte1.to_ulong();
-    spiData[(num_of_matrix-matrix_n)*2+1] = (unsigned char) byte2.to_ulong();
-
-    wiringPiSPIDataRW(fd, spiData, bytes2send);
-}
-
-/*for bicolor*/
-void max7219::registerWrite(const BYTE byte0, const BYTE byte1, const BYTE byte2, const BYTE byte3)
-{
-    unsigned char spiData[4];
-
-    spiData[0] = (unsigned char) byte0.to_ulong();
-    spiData[1] = (unsigned char) byte1.to_ulong();
-    spiData[2] = (unsigned char) byte2.to_ulong();
-    spiData[3] = (unsigned char) byte3.to_ulong();
-
-    wiringPiSPIDataRW(fd, spiData, 4);
-}
 
 void max7219::setShutdown(const BYTE command)
 {
-    for(int n=1; n<=num_of_matrix; n++)
-    {
-        registerWrite(n, SHUTDOWN_MODE, command);
-    }
+    registerWrite(SHUTDOWN_MODE, command);
 }
 
 void max7219::setDecode(const BYTE command)
 {
-    for(int n=1; n<=num_of_matrix; n++)
-    {
-        registerWrite(n, BCD_DECODE_MODE, command);
-    }
+    registerWrite(BCD_DECODE_MODE, command);
 }
 
 void max7219::setLimit(const BYTE limit)
 {
-    for(int n=1; n<=num_of_matrix; n++)
-    {
-        registerWrite(n, SCAN_LIMIT, limit);
-    }
+    registerWrite(SCAN_LIMIT, limit);
 }
 
 void max7219::setBrightness(const BYTE intensity)
 {
-    for(int n=1; n<=num_of_matrix; n++)
-    {
-        registerWrite(n, BRIGHTNESS, intensity);
-    }
+    registerWrite(BRIGHTNESS, intensity);
 }
 
 void max7219::setTest(const BYTE command)
 {
-    for(int n=0; n<num_of_matrix; n++)
-    {
-        registerWrite(DISPLAY_TEST_MODE, command);
-    }
+    registerWrite(DISPLAY_TEST_MODE, command);
 }
 
 /*row counts from zero*/
@@ -114,25 +62,11 @@ void max7219::setROW(int row, const BYTE rowConf)
     registerWrite(reg, rowConf);
 }
 
-void max7219::setROW(int matrix_n, int row, const BYTE rowConf)
-{
-    BYTE reg(row+1);
-    registerWrite(matrix_n, reg, rowConf);
-}
-
 void max7219::setMatrix(const array<BYTE, 8> allConf)
 {
     for(int i=0; i<allConf.size(); i++)
     {
         setROW(i, allConf.at(i));
-    }
-}
-
-void max7219::setMatrix(int matrix_num, const array<BYTE, 8> allConf)
-{
-    for(int i=0; i<allConf.size(); i++)
-    {
-        setROW(matrix_num, i, allConf.at(i));
     }
 }
 
