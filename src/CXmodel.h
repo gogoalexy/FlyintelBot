@@ -37,13 +37,15 @@ private:
 
 };
 
-class CentralComplexMonitor : public NeuroMonitor
+class CentralComplexMonitor
 {
 public:
     CentralComplexMonitor();
+    void init();
     
 private:
-    const std::array<std::array<int, 3>, 16> EB2Monitor;
+    max7219 chip;
+    const std::array<std::array<BYTE, 3>, 16> EB2Monitor;
 
 };
 

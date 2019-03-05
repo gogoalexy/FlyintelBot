@@ -138,25 +138,32 @@ void CentralComplexDecoder::clean()
 //70, 71, 72, 73, 74, 75, 76, 77
 //--------------------------------------
 CentralComplexMonitor::CentralComplexMonitor()
-    : EB2Monitor
+    : EB2MonitorOdd
       {
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
+        {0b00011000},
+        {0b00001110},
+        {0b00000011},
+        {0b00000011},
+        {0b00000011},
+        {0b00000011},
+        {0b00000011},
+        {0b00001110},
+        {0b00011000},
+        {0b01110000},
+        {0b11000000},
+        {0b11000000},
+        {0b11000000},
+        {0b11000000},
+        {0b11000000},
+        {0b01110000},
       }
 {}
 
-CentralComplexMonitor::
+void CentralComplexMonitor::init()
+{        
+    chip.setShutdown(EXIT_SHUTDOWN);
+    chip.setDecode(BCD_DECODE_NONE);
+    chip.setLimit(SCAN_LIMIT_NONE);
+    chip.setBrightness(BRIGHTNESS_MAX);
+    chip.setMatrix(defaultMatrixConfig);
+}
