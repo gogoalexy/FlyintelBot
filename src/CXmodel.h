@@ -37,6 +37,15 @@ private:
 
 };
 
+class CentralComplexMonitor : public NeuroMonitor
+{
+public:
+    CentralComplexMonitor();
+    
+private:
+    const std::array<std::array<int, 3>, 16> EB2Monitor;
+
+};
 
 #define CX_MODEL_H
 #endif
