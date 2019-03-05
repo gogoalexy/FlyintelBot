@@ -37,6 +37,17 @@ private:
 
 };
 
+class CentralComplexMonitor
+{
+public:
+    CentralComplexMonitor();
+    void init();
+    
+private:
+    max7219 chip;
+    const std::array<std::array<BYTE, 3>, 16> EB2Monitor;
+
+};
 
 #define CX_MODEL_H
 #endif
