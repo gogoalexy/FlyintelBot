@@ -53,7 +53,6 @@ protected:
 private:
     int spiChan;
     int fd;
-    int num_of_matrix;
 };
 
 #define MAX7219_H
