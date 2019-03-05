@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 		clock_t tik = clock();
 		//baseline stimuli
 		SendFreq("Ring_Neuron_PEN", 200);
-		SendMacroFreq("_macro_5", 50);
+		SendMacroFreq("_macro_7", 50);
 		//SendFreq(50, "_macro_3");
 
     	Spikes=ActiveSimGetSpike("300");
@@ -89,9 +89,7 @@ int main(int argc, char *argv[]){
         }
         cout<<endl;
         CXdecode.clean();
-		//vmotor speed = flyintel.getSpeed(flyintel.cstoi(Spikes));
-		//int vleft = speed.first;
-		//int vright = speed.second;
+
 /*
 		motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
 		if(motorNeuron.first & 0x1){

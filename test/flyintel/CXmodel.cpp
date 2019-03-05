@@ -105,7 +105,7 @@ queue<int> CentralComplexDecoder::findBump()
             }
             bump.push(index);
         }
-        else if(activityEB.at(index) == tmpMax && activityEB.at(index) != 0)
+        else if(activityEB.at(index) != 0 && activityEB.at(index) == tmpMax)
         {
             bump.push(index);
         }
