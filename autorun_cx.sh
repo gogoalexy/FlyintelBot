@@ -5,7 +5,7 @@ FLYSIM=$!
 
 echo ${FLYSIM}
 
-sudo ./build/main_cx.out
+./build/main_cx.out
 FLYINTEL=$!
 
 echo ${FLYINTEL}
