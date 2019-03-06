@@ -59,18 +59,18 @@ int main()
 	if(move == 4)    	
 		state = Right;
 */
-        if(round <= 3)
+        if(round <= 10)
             state = Stop;
-        else if(round == 4)
+        else if(round <= 20)
         {
             state = Stop;
             newTarget = true;
         }
-        else if(round <= 10)
-            state = Forward;
-        else if(round <= 20)
-            state = Backward;
         else if(round <= 50)
+            state = Forward;
+        else if(round <= 160)
+            state = Backward;
+        else if(round <= 200)
             state = Stop;
         else
             state = Right;
@@ -99,25 +99,25 @@ int main()
     	    if(state == Stop)
     	    {
     	        cout<<"stop"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.keepState();
     	    }
     	    else if(state == Forward)
     	    {
     	        cout<<"straight"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.keepState();
     	    }
     	    else if(state == Backward)
     	    {
     	        cout<<"back"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.keepState();
     	    }
         	else if(state == Left)
     	    {
     	        cout<<"left"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.shiftLeft();
     	    }
         	else if(state == Right)
@@ -134,12 +134,12 @@ int main()
         Spikes = ActiveSimGetSpike("250");
     	cout
 		<<"receving\n";
-		//cout<<"Spikes:"<<endl<<Spikes<<endl;
+		cout<<"Spikes:"<<endl<<Spikes<<endl;
         auto tmp = CXdecode.sortingHat(Spikes);
-        //for(auto it = tmp.cbegin(); it != tmp.cend(); ++it)
-         //   fp<<*it<<' ';
+        for(auto it = tmp.cbegin(); it != tmp.cend(); ++it)
+           fp<<*it<<' ';
         
-        //fp<<endl;
+        fp<<endl;
         queue<int> ans (CXdecode.findBump());
         cout<<endl;
         CXdecode.clean();
@@ -147,6 +147,6 @@ int main()
         clock_t tok = clock();
         cout<<"time:"<<(tok-tik)/(double)CLOCKS_PER_SEC<<endl;
     }
-    //fp.close();
+    fp.close();
     return 0;
 }

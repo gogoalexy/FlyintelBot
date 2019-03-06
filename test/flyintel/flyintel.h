@@ -61,7 +61,7 @@ public:
 protected:
     Container count;
     Ratio decision;
-    int spiketrain[4000];
+    int spiketrain[6000];
     int maxspikes;
     const int MAX_SPIKES;
     const float RATE_THRESHOLD;
