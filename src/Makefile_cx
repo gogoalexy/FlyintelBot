@@ -11,8 +11,8 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 
 BUILD_DIR=../build
 
-$(BUILD_DIR)/main_cx.out: $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/main_cx.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/CXmodel.o $(BUILD_DIR)/max7219.o ${BUILD_DIR}/connect_to_flysim.o
-	$(CXX) $^ -o $@ $(LDLIBS) -Winline
+$(BUILD_DIR)/main_cx.out: $(BUILD_DIR)/cltcmd.o ${BUILD_DIR}/connect_to_flysim.o $(BUILD_DIR)/max7219.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/CXmodel.o $(BUILD_DIR)/main_cx.o
+	$(CXX) $^ -o $@ $(LDLIBS) -Wall
 
 $(BUILD_DIR)/main_cx.o: main_cx.cpp
 	$(CXX) -c main_cx.cpp -o $(BUILD_DIR)/main_cx.o

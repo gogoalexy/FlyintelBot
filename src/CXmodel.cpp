@@ -153,7 +153,10 @@ CentralComplexMonitor::CentralComplexMonitor()
 
 void CentralComplexMonitor::init()
 {
-    chip.max7219Setup(1, 1000000);
+    if(chip.max7219Setup(1, 1000000) == -1)
+    {
+        exit(1);
+    }
     chip.setShutdown(EXIT_SHUTDOWN);
     chip.setDecode(BCD_DECODE_NONE);
     chip.setLimit(SCAN_LIMIT_NONE);
