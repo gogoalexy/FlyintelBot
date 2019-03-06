@@ -28,7 +28,7 @@ class CentralComplexDecoder : public Flyintel
 {
 public:
     CentralComplexDecoder();
-    void sortingHat(char*);
+    std::array<int, 16> sortingHat(char*);
     std::queue<int> findBump();
     void clean();
 
@@ -46,6 +46,7 @@ class CentralComplexMonitor
 public:
     CentralComplexMonitor();
     void init();
+    void flush();
     void showBump(std::queue<int>);
 
 private:
