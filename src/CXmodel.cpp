@@ -163,10 +163,11 @@ void CentralComplexMonitor::init()
     chip.setTest(EXIT_DISPLAY_TEST);
     chip.setBrightness(BRIGHTNESS_MAX);
     chip.flush();
-    chip.setROW(0, 0b11111111);
-    chip.setROW(1, 0b11110011);
-    chip.setROW(2, 0b10011111);
-    chip.setROW(3, 0b11111100);
+}
+
+void CentralComplexMonitor::flush()
+{
+    chip.flush();
 }
 
 void CentralComplexMonitor::showBump(std::queue<int> location)
