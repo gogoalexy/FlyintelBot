@@ -5,22 +5,10 @@
 //#include "net_struct_def.h"
 #include "max7219.h"
 
-const std::array<BYTE, 8> defaultMatrixConfig
-{
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000
-};
-
 class NeuroMonitor
 {
 public:
-    NeuroMonitor(int, int, int);
+    NeuroMonitor(int, int);
     void init();
     void refresh();
     void recordActivity(int, int);

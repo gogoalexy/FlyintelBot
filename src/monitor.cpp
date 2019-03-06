@@ -2,7 +2,7 @@
 
 using namespace std;
 
-NeuroMonitor::NeuroMonitor(int spiChannel = 1, int spiSpeed = 1000000, int num_of_matrix = 2) : 
+NeuroMonitor::NeuroMonitor(int spiChannel = 1, int spiSpeed = 1000000) : 
     defaultMatrixConfig(0b00000000,
                         0b00000000,
                         0b00000000,
@@ -15,7 +15,7 @@ NeuroMonitor::NeuroMonitor(int spiChannel = 1, int spiSpeed = 1000000, int num_o
     
     memcpy(matrixConfig.data(), defaultMatrixConfig.data(), matrixConfig.size());
 
-    if(chip.max7219Setup(spiChannel, spiSpeed, num_of_matrix) == -1)
+    if(chip.max7219Setup(spiChannel, spiSpeed) == -1)
     {
         exit(1);
     }
@@ -44,6 +44,6 @@ void NeuroMonitor::recordActivity(int row, int col)
 
 void NeuroMonitor::updateMatrix()
 {
-    chip.setMatrix(2, matrixConfig);
+    chip.setMatrix(matrixConfig);
 }
 
