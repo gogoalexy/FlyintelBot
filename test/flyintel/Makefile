@@ -1,9 +1,9 @@
-main.out: main.o CXmodel.o flyintel.o connect_to_flysim.o cltcmd.o
-	g++ -g cltcmd.o connect_to_flysim.o flyintel.o CXmodel.o main.o -std=c++14 -o main.out -Wall
-main.o: main.cpp
-	g++ -c main.cpp
-CXmodel.o: CXmodel.cpp
-	g++ -c CXmodel.cpp
+main_scx.out: main_scx.o SCXmodel.o flyintel.o connect_to_flysim.o cltcmd.o
+	g++ -g cltcmd.o connect_to_flysim.o flyintel.o SCXmodel.o main_scx.o -std=c++14 -o main_scx.out -Wall
+main_scx.o: main_scx.cpp
+	g++ -c main_scx.cpp
+SCXmodel.o: SCXmodel.cpp
+	g++ -c SCXmodel.cpp
 flyintel.o: flyintel.cpp
 	g++ -c flyintel.cpp
 connect_to_flysim.o: connect_to_flysim.cpp
