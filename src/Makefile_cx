@@ -2,7 +2,7 @@ SHELL = /bin/sh
 .SUFFIXES: .cpp .a .o
 
 CXX=g++
-CXXFLAGS= -I/usr/include/libusb-1.0 -I../../../gitrepos/pixy2/src/host/libpixyusb2/include -I../../../gitrepos/pixy2/src/host/arduino/libraries/Pixy2
+CXXFLAGS= -DDEBUG_FILE -I/usr/include/libusb-1.0 -I../../../gitrepos/pixy2/src/host/libpixyusb2/include -I../../../gitrepos/pixy2/src/host/arduino/libraries/Pixy2
 INC=-I/
 LDLIBS=-lwiringPi
 

@@ -39,7 +39,7 @@ int main()
     fstream fp;
     fp.open("Flyintel.log", ios::out);
 
-    string conf_file = "CXstandard.conf", pro_file = "CXstandard.pro";
+    string conf_file = "./networks/CXstandard.conf", pro_file = "./networks/CXstandard.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
 	cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
@@ -64,7 +64,7 @@ int main()
             state = Stop;
         else
             state = Right;
-        
+
        
         if(!pastNew.empty())
     	{
@@ -80,7 +80,7 @@ int main()
     	    string pos;
   	        CXsti.switchState();
    		    SendFreq("Ring_Neuron_PEN", 200);
-            SendMacroFreq("_macro_6", 50);
+            SendMacroFreq("_macro_6", 100);
             newTarget = false;
             holdTarget = false;
             pastNew = "_macro_6";
@@ -90,25 +90,25 @@ int main()
     	    if(state == Stop)
     	    {
     	        cout<<"stop"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.keepState();
     	    }
     	    else if(state == Forward)
     	    {
     	        cout<<"straight"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.keepState();
     	    }
     	    else if(state == Backward)
     	    {
     	        cout<<"back"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.keepState();
     	    }
         	else if(state == Left)
     	    {
     	        cout<<"left"<<'\n';
-    	        //CXsti.switchState();
+    	        CXsti.switchState();
     	        CXsti.shiftLeft();
     	    }
         	else if(state == Right)
