@@ -2,39 +2,39 @@
 
 using namespace std;
 
-CentralComplexStimulator::CentralComplexStimulator() : PB_HALF_FR(70), RING_PEI_FR(200), RING_PEN_FR(200)
+CentralComplexStimulator::CentralComplexStimulator() : PB_HALF_FR(150), RING_PEI_FR(200), RING_PEN_FR(200)
 {}
 
 void CentralComplexStimulator::keepState()
 {
-    SendMacroFreq("Ring_Neuron_PEI", 0);
-    SendMacroFreq("Ring_Neuron_PEN", RING_PEN_FR);
-    SendMacroFreq("half_pb_left", 0);
-    SendMacroFreq("half_pb_right", 0);
+    SendFreq("Ring_Neuron_PEI", 0);
+    SendFreq("Ring_Neuron_PEN", RING_PEN_FR);
+    SendFreq("half_pb_left", 0);
+    SendFreq("half_pb_right", 0);
 }
 
 void CentralComplexStimulator::switchState()
 {
-    SendMacroFreq("Ring_Neuron_PEI", 0);
-    SendMacroFreq("Ring_Neuron_PEN", 0);
-    SendMacroFreq("half_pb_left", 0);
-    SendMacroFreq("half_pb_right", 0);
+    SendFreq("Ring_Neuron_PEI", 0);
+    SendFreq("Ring_Neuron_PEN", 0);
+    SendFreq("half_pb_left", 0);
+    SendFreq("half_pb_right", 0);
 }
 
 void CentralComplexStimulator::shiftRight()
 {
-    SendMacroFreq("Ring_Neuron_PEI", RING_PEI_FR);
-    SendMacroFreq("Ring_Neuron_PEN", 0);
-    SendMacroFreq("half_pb_left", 0);
-    SendMacroFreq("half_pb_right", PB_HALF_FR);
+    SendFreq("Ring_Neuron_PEI", RING_PEI_FR);
+    SendFreq("Ring_Neuron_PEN", 0);
+    SendFreq("half_pb_left", 0);
+    SendFreq("half_pb_right", PB_HALF_FR);
 }
 
 void CentralComplexStimulator::shiftLeft()
 {
-    SendMacroFreq("Ring_Neuron_PEI", RING_PEI_FR);
-    SendMacroFreq("Ring_Neuron_PEN", 0);
-    SendMacroFreq("half_pb_left", PB_HALF_FR);
-    SendMacroFreq("half_pb_right", 0);
+    SendFreq("Ring_Neuron_PEI", RING_PEI_FR);
+    SendFreq("Ring_Neuron_PEN", 0);
+    SendFreq("half_pb_left", PB_HALF_FR);
+    SendFreq("half_pb_right", 0);
 }
 
 //====================================================
@@ -62,11 +62,11 @@ CentralComplexDecoder::CentralComplexDecoder()
      , SIZE_POPULATION(10)
 {}
 
-void CentralComplexDecoder::sortingHat(char* inSpikes)
+array<int, 16> CentralComplexDecoder::sortingHat(char* inSpikes)
 {
     array<int, 18> sortedEIP = {0};
     int max = cstoi(inSpikes);
-    
+
     for(int i=2; i<max; i+=3)
 	{
 	    if(spiketrain[i] < 18*SIZE_POPULATION)
@@ -74,8 +74,8 @@ void CentralComplexDecoder::sortingHat(char* inSpikes)
 	    //cout<<" !"<<spiketrain[i];
             sortedEIP.at(spiketrain[i] / SIZE_POPULATION) += 1;
         }
-	}
-	
+}
+
     for(int j=0; j<16; ++j)
     {
         for(int k=0; k<3; ++k)
@@ -88,6 +88,7 @@ void CentralComplexDecoder::sortingHat(char* inSpikes)
         cout<<*it<<' ';
         
     cout<<endl;
+    return activityEB;
 }
 
 queue<int> CentralComplexDecoder::findBump()
