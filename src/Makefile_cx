@@ -27,10 +27,10 @@ $(BUILD_DIR)/max7219.o: max7219.cpp
 	$(CXX) -c max7219.cpp -o $(BUILD_DIR)/max7219.o
 
 $(BUILD_DIR)/connect_to_flysim.o: connect_to_flysim.cpp
-	$(CXX) -c connect_to_flysim.cpp -o $(BUILD_DIR)/connect_to_flysim.o -O2
+	$(CXX) -c connect_to_flysim.cpp -o $(BUILD_DIR)/connect_to_flysim.o
 
 $(BUILD_DIR)/cltcmd.o: cltcmd.cpp
-	$(CXX) -c cltcmd.cpp -o $(BUILD_DIR)/cltcmd.o -O2
+	$(CXX) -c cltcmd.cpp -o $(BUILD_DIR)/cltcmd.o
 
 #dirmake:
 #	mkdir -pv $(BUILD_DIR)
