@@ -20,14 +20,9 @@
 
 using namespace std;
 
-DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4, short enableA, short enableB)
+DCmotor::DCmotor(short IN1, short IN2, short IN3, short IN4, short enA, short enB)
+ : motorIN1(IN1), motorIN2(IN2), motorIN3(IN3), motorIN4(IN4), enableA(enA), enableB(enB)
 {
-    this->motorIN1 = motorIN1;
-    this->motorIN2 = motorIN2;
-    this->motorIN3 = motorIN3;
-    this->motorIN4 = motorIN4;
-    this->enableA = enableA;
-    this->enableB = enableB;
 	pinMode(motorIN1, OUTPUT);
 	pinMode(motorIN2, OUTPUT);
 	pinMode(motorIN3, OUTPUT);
@@ -36,13 +31,9 @@ DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4,
 	pinMode(enableB, PWM_OUTPUT);
 }
 
-DCmotor::DCmotor(short motorIN1, short motorIN2, short motorIN3, short motorIN4)
-{
-    this->motorIN1 = motorIN1;
-    this->motorIN2 = motorIN2;
-    this->motorIN3 = motorIN3;
-    this->motorIN4 = motorIN4;
-    
+DCmotor::DCmotor(short IN1, short IN2, short IN3, short IN4)
+ : motorIN1(IN1), motorIN2(IN2), motorIN3(IN3), motorIN4(IN4)
+{  
 	pinMode(motorIN1, OUTPUT);
 	pinMode(motorIN2, OUTPUT);
 	pinMode(motorIN3, OUTPUT);
