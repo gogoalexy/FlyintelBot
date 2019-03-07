@@ -22,7 +22,7 @@ void SimpleCXStimulator::shiftLeft(int fr)
 
 array<int, 16> SimpleCXDecoder::sortingHat(char* inSpikes)
 {
-    array<int, 16> eb = {0};
+    eb = {0};
     int max = cstoi(inSpikes);
     
     for(int i=2; i<max; i+=3)
@@ -118,9 +118,11 @@ void SimpleCXMonitor::showBump(std::queue<int> location)
     while(!location.empty())
     {
         auto bump = location.front();
+        cout<<"bump: "<<bump<<' ';
         location.pop();
         auto startROW = get<0>(EB2Monitor.at(bump));
         auto endROW = get<1>(EB2Monitor.at(bump));
+        cout<<startROW<<','<<endROW<<endl;
         for(int i=startROW; i<=endROW; ++i)
         {
             chip.setROW(i, get<2>(EB2Monitor.at(bump)));
