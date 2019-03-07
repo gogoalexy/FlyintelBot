@@ -60,7 +60,7 @@ queue<int> SimpleCXDecoder::findBump()
             bump.push(index);
         }
         else
-	{
+	    {
             continue;
         }
     }

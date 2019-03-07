@@ -34,8 +34,7 @@ int main()
 	SimpleCXMonitor CXled;
 	CXled.init();
 
-    fstream fp;
-    fp.open("Flyintel.log", ios::out);
+    //fstream fp;
 
     string conf_file = "./networks/network_scxhz.conf", pro_file = "./networks/network_scx.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
@@ -49,16 +48,16 @@ int main()
 
         if(round <=10)
             state = Stop;
-        else if(round <= 11)
+        else if(round <= 20)
         {
             state = Stop;
             newTarget = true;
         }
         else if(round <= 50)
             state = Forward;
-        else if(round <= 70)
+        else if(round <= 160)
             state = Backward;
-        else if(round <= 100)
+        else if(round <= 200)
             state = Stop;
         else
             state = Right;
@@ -75,7 +74,7 @@ int main()
     	{
     	    //.......locate
     	    cout<<"newTar"<<'\n';
-  	    CXsti.stiLoc(6, 180);
+  	    CXsti.stiLoc(6, 100);
             newTarget = false;
             holdTarget = false;
             pastNew = 6;
@@ -113,7 +112,7 @@ int main()
         Spikes = ActiveSimGetSpike("250");
     	cout
 		<<"receving\n";
-		//cout<<"Spikes:"<<endl<<Spikes<<endl;
+		cout<<"Spikes:"<<endl<<Spikes<<endl;
         CXled.flush();
         auto tmp = CXdecode.sortingHat(Spikes);
         auto ans (CXdecode.findBump());
