@@ -34,7 +34,8 @@ int main()
 	SimpleCXMonitor CXled;
 	CXled.init();
 
-    //fstream fp;
+    fstream fp;
+    fp.open("FlyintelBot.log", ios::out);
 
     string conf_file = "./networks/network_scxhz.conf", pro_file = "./networks/network_scx.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
@@ -111,12 +112,17 @@ int main()
 
         Spikes = ActiveSimGetSpike("250");
     	cout
-		<<"receving\n";
-		cout<<"Spikes:"<<endl<<Spikes<<endl;
+	<<"receving\n";
+//		cout<<"Spikes:"<<endl<<Spikes<<endl;
         CXled.flush();
         auto tmp = CXdecode.sortingHat(Spikes);
+        for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
+        {
+            fp<<*it<<' ';
+        }
         auto ans (CXdecode.findBump());
         CXled.showBump(ans);
+        fp<<endl;
         cout<<endl;
         CXdecode.clean();
 
