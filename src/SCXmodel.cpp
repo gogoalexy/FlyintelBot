@@ -31,6 +31,7 @@ array<int, 16> SimpleCXDecoder::sortingHat(char* inSpikes)
         {
             eb.at(spiketrain[i]) += 1;
         }
+
     }
 
     for(auto it = eb.cbegin(); it != eb.cend(); ++it)
