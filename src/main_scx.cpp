@@ -7,6 +7,8 @@
 #include "connect_to_flysim.h"
 #include "SCXmodel.h"
 #include "max7219.h"
+#include "SPIadc.h"
+#include "ADXL335.h"
 
 using namespace std;
 
@@ -29,6 +31,12 @@ int main()
     enum Actions{Stop, Forward, Backward, Left, Right};
     Actions state = Stop;
 
+    ADC mcp3008;
+    mcp3008.initSPI(88, 0);
+    ADXL335 accel(mcp3008, 3);
+   	SharpIR rescue1(mcp3008, 0);
+	SharpIR rescue2(mcp3008, 1);
+
 	SimpleCXStimulator CXsti;
 	SimpleCXDecoder CXdecode;
 	SimpleCXMonitor CXled;
@@ -37,33 +45,23 @@ int main()
     fstream fp;
     fp.open("FlyintelBot.log", ios::out);
 
-    string conf_file = "./networks/network_scxhz.conf", pro_file = "./networks/network_scx.pro";
+    string conf_file = "./networks/network30.conf", pro_file = "./networks/network30.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
 	cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
+
+    Flyintel flyintel;
 
     signal(SIGINT, handle_SIGINT);
 
     for(int round=0; round<1000; ++round)
     {
     	clock_t tik = clock();
-
-        if(round <=10)
-            state = Stop;
-        else if(round <= 20)
-        {
-            state = Stop;
-            newTarget = true;
-        }
-        else if(round <= 50)
-            state = Forward;
-        else if(round <= 160)
-            state = Backward;
-        else if(round <= 200)
-            state = Stop;
-        else
-            state = Right;
-
-       
+    	flyintel.refresh();
+		SendFreq("random1", 1500);
+		SendFreq("random2", 1500);
+		SendFreq("random3", 1700);
+		SendFreq("random4", 1700);
+   
         if(pastNew >= 0)
     	{
     	    cout<<"pastnew"<<pastNew<<'\n';
@@ -110,12 +108,49 @@ int main()
             cout<<"No sti"<<'\n';
         }
 
+		float irL = rescue1.IRrange();
+		if(irL > 400)
+		{
+			SendDist(9000, 6);
+		}
+		else
+		{
+			SendDist(9000-(9000/90.0)*(400-irL), 6);//negative issue
+		}
+
+		float irR = rescue2.IRrange();
+		if(irR > 400)
+		{
+			SendDist(9000, 7);
+		}
+		else
+		{
+			SendDist(9000-(9000/90.0)*(400-irR), 7);
+		}
+
+		cout<<"IR: "<<irL<<", "<<irR<<endl;
+
+
         Spikes = ActiveSimGetSpike("250");
     	cout
 	<<"receving\n";
 //		cout<<"Spikes:"<<endl<<Spikes<<endl;
         CXled.flush();
         auto tmp = CXdecode.sortingHat(Spikes);
+        motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
+		char dir = motorNeuron.first;
+		if(dir == 'S')
+            state = Stop;
+        else if(dir == 'F')
+            state = Forward;
+        else if(dir == 'B')
+            state = Backward;
+        else if(dir == 'L')
+            state = Left;
+        else if(dir == 'R')
+            state = Right;
+
+		int speed = motorNeuron.second;
         for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
         {
             fp<<*it<<' ';

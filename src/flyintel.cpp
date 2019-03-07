@@ -58,16 +58,16 @@ motor Flyintel::getMotor(int max)
 	{
 		switch(spiketrain[i])
 		{
-			case 5:
+			case 94:
 				count.forward++;
 				break;
-			case 11:
+			case 100:
 				count.backward++;
 				break;
-			case 17:
+			case 106:
 				count.left++;
 				break;
-			case 23:
+			case 112:
 				count.right++;
 				break;
 			default:
