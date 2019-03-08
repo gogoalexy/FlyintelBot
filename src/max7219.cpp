@@ -5,6 +5,15 @@ using namespace std;
 max7219::max7219()
 {
     this->fd = -1;
+    cout<<"Warning: No SPI parameters provided."<<endl;
+}
+
+max7219::max7219(int spiChannel, int spiSpeed)
+{
+    if( max7219Setup(spiChannel, spiSpeed) < 0 )
+    {
+        cout<<"Warning: max7219 SPI setup failed."<<endl;
+    }
 }
 
 int max7219::max7219Setup(int spiChannel, int spiSpeed)
@@ -77,7 +86,3 @@ void max7219::flush()
     }
 }
 
-max7219::~max7219()
-{
-
-}

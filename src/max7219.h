@@ -1,9 +1,6 @@
 #ifndef MAX7219_H
 
-#ifdef DEBUG
-    #include <iostream>
-#endif
-
+#include <iostream>
 #include <bitset>
 #include <array>
 #include <wiringPiSPI.h>
@@ -37,7 +34,8 @@ class max7219
 {
 public:
     max7219();
-    int max7219Setup(int, int);
+    max7219(int, int);
+    
     void setShutdown(BYTE);
     void setDecode(BYTE);
     void setLimit(BYTE);
@@ -46,9 +44,9 @@ public:
     void setROW(int, BYTE);
     void setMatrix(std::array<BYTE, 8>);
     void flush();
-    ~max7219();
 
 protected:
+    int max7219Setup(int, int);
     void registerWrite(BYTE, BYTE);
 
 private:
