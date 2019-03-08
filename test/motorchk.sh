@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ENA=1
-ENB=26
+ENA=23
+ENB=24
 IN=(3 2 4 5)
 
 echo "Front motor"
@@ -54,8 +54,8 @@ do
 	gpio write ${ENA} 0
 	gpio write ${ENB} 0
 
-	ENA=23
-	ENB=24
+	ENA=1
+	ENB=26
 	IN=(22 21 25 27)
 	echo "Rear motor"
 done
