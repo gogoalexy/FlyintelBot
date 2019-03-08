@@ -22,7 +22,7 @@ void max7219::registerWrite(const BYTE byte1, const BYTE byte2)
     spiData[0] = (unsigned char) byte1.to_ulong();
     spiData[1] = (unsigned char) byte2.to_ulong();
 
-    wiringPiSPIDataRW(fd, spiData, 2);
+    wiringPiSPIDataRW(spiChan, spiData, 2);
 }
 
 

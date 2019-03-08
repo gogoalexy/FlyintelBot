@@ -9,6 +9,7 @@
 #include "max7219.h"
 #include "SPIadc.h"
 #include "ADXL335.h"
+#include "Sharp_IR.h"
 
 using namespace std;
 
@@ -111,21 +112,21 @@ int main()
 		float irL = rescue1.IRrange();
 		if(irL > 400)
 		{
-			SendDist(9000, 6);
+			SendFreq("TS2", 9000);
 		}
 		else
 		{
-			SendDist(9000-(9000/90.0)*(400-irL), 6);//negative issue
+			SendFreq(9000-(9000/90.0)*(400-irL), 6);//negative issue
 		}
 
 		float irR = rescue2.IRrange();
 		if(irR > 400)
 		{
-			SendDist(9000, 7);
+			SendFreq("TS3", 9000);
 		}
 		else
 		{
-			SendDist(9000-(9000/90.0)*(400-irR), 7);
+			SendFreq("TS3", (int)(9000-(9000/90.0)*(400-irR)));
 		}
 
 		cout<<"IR: "<<irL<<", "<<irR<<endl;

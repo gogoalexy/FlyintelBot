@@ -1,6 +1,7 @@
 #ifndef ADXL335_H
 
 #include <cmath>
+#include <iostream>
 #include "SPIadc.h"
 
 class ADXL335
@@ -15,10 +16,10 @@ public:
     inline int getAction()
     {
         int action = adc.readChan(chipChan)-voltage_0g;
-        if(abs(action) > threshold)
+        if(std::abs(action) > threshold)
             return action;
         else
-            return 0; 
+            return 0;
     };
 private:
     ADC adc;

@@ -11,7 +11,7 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 
 BUILD_DIR=../build
 
-$(BUILD_DIR)/main.out: $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
+$(BUILD_DIR)/main.out: $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDLIBS) -Winline
 
 $(BUILD_DIR)/main.o: main.cpp
@@ -29,8 +29,17 @@ $(BUILD_DIR)/Sharp_IR.o: Sharp_IR.cpp
 $(BUILD_DIR)/SPIadc.o: SPIadc.cpp
 	$(CXX) -c SPIadc.cpp -o $(BUILD_DIR)/SPIadc.o
 
+$(BUILD_DIR)/connect_to_flysim.o: connect_to_flysim.cpp
+	$(CXX) -c connect_to_flysim.cpp -o $(BUILD_DIR)/connect_to_flysim.o
+
 $(BUILD_DIR)/HC_SR04.o: HC_SR04.cpp
 	$(CXX) -c HC_SR04.cpp -o $(BUILD_DIR)/HC_SR04.o
+
+$(BUILD_DIR)/cltcmd.o: cltcmd.cpp
+	$(CXX) -c cltcmd.cpp -o $(BUILD_DIR)/cltcmd.o
+
+$(BUILD_DIR)/SPIadc.o: SPIadc.cpp
+	$(CXX) -c SPIadc.cpp -o $(BUILD_DIR)/SPIadc.o
 
 $(BUILD_DIR)/DCmotor.o: DCmotor.cpp
 	$(CXX) -c DCmotor.cpp -o $(BUILD_DIR)/DCmotor.o
