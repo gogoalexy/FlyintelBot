@@ -110,10 +110,10 @@ Pixy: <float>, <float>, <float>
 	while(run_flag){
 
 		//baseline stimuli
-		SendDist(1500, 1);
-		SendDist(1500, 2);
-		SendDist(1700, 3);
-		SendDist(1700, 4);
+		SendFreq("Exc20", 1500);
+		SendFreq("Exc21", 1500);
+		SendFreq("Exc22", 1700);
+		SendFreq("Exc23", 1700);
 
 		++frame;
 
@@ -129,11 +129,11 @@ Pixy: <float>, <float>, <float>
 		unsigned int soundtime = rescue0.UsoundRange();
 		if(soundtime < 1500)
 		{
-			SendDist(9800, 5);
+			SendFreq("Exc14", 9800);
 		}
 		else
 		{
-			SendDist(9800-(9800/500.0)*(soundtime-1500), 5);
+			SendFreq("Exc14", (int)(9800-(9800/500.0)*(soundtime-1500)) );
 		}
 
 		cout<<"Ultra: "<<soundtime<<"; ";
@@ -142,21 +142,21 @@ Pixy: <float>, <float>, <float>
 		float irL = rescue1.IRrange();
 		if(irL > 400)
 		{
-			SendDist(9000, 6);
+			SendFreq("Exc16", 9000);
 		}
 		else
 		{
-			SendDist(9000-(9000/90.0)*(400-irL), 6);//negative issue
+			SendFreq("Exc16", (int)(9000-(9000/90.0)*(400-irL)) );//negative issue
 		}
 
 		float irR = rescue2.IRrange();
 		if(irR > 400)
 		{
-			SendDist(9000, 7);
+			SendFreq("Exc18", 9000);
 		}
 		else
 		{
-			SendDist(9000-(9000/90.0)*(400-irR), 7);
+			SendFreq("Exc18", (int) (9000-(9000/90.0)*(400-irR)));
 		}
 
 		cout<<"IR: "<<irL<<", "<<irR<<endl;
@@ -175,27 +175,27 @@ Pixy: <float>, <float>, <float>
 
 		if(dx > 110)
 		{
-			SendDist(0, 8);
-			SendDist(0, 9);
-			SendDist(area, 10);
+			SendFreq("Exc1", 0);
+			SendFreq("Exc4", 0);
+			SendFreq("Exc7", area);
 		}
 		else if(dx < -110)
 		{
-			SendDist(0, 8);
-			SendDist(area, 9);
-			SendDist(0, 10);
+			SendFreq("Exc1", 0);
+			SendFreq("Exc4", area);
+			SendFreq("Exc7", 0);
 		}
 		else
 		{
-			SendDist(area, 8);
-			SendDist(0, 9);
-			SendDist(0, 10);
+			SendFreq("Exc1", area);
+			SendFreq("Exc4", 0);
+			SendFreq("Exc7", 0);
 		}
 
 		cout<<"area="<<area<<", dx="<<dx<<endl;
 
 
-		Spikes=ActiveSimGetSpike("300");
+		Spikes=ActiveSimGetSpike("500");
 		//-3: connect error
 		cout
 		<<"receving\n"
