@@ -12,19 +12,21 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 BUILD_DIR=../build
 
 $(BUILD_DIR)/main_scx.out: $(BUILD_DIR)/cltcmd.o ${BUILD_DIR}/connect_to_flysim.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/max7219.o $(BUILD_DIR)/ADXL335.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/SCXmodel.o $(BUILD_DIR)/main_scx.o
-	$(CXX) $^ -o $@ $(LDLIBS) -Wall
+	$(CXX) $^ -o $@ $(LDLIBS) -O1 -Wall
 
 $(BUILD_DIR)/main_scx.o: main_scx.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) -c $< -o $@ -O1
 
-$(BUILD_DIR)/SCXmodel.o: SCXmodel.cpp
-$(BUILD_DIR)/flyintel.o: flyintel.cpp
-$(BUILD_DIR)/max7219.o: max7219.cpp
-$(BUILD_DIR)/SPIadc.o: SPIadc.cpp
-$(BUILD_DIR)/ADXL335.o: ADXL335.cpp
-$(BUILD_DIR)/Sharp_IR.o: Sharp_IR.cpp
-$(BUILD_DIR)/connect_to_flysim.o: connect_to_flysim.cpp
-$(BUILD_DIR)/cltcmd.o: cltcmd.cpp
+$(BUILD_DIR)/SCXmodel.o: SCXmodel.cpp SCXmodel.h
+	$(CXX) -c $< -o $@ -O1
+
+$(BUILD_DIR)/flyintel.o: flyintel.cpp flyintel.h
+$(BUILD_DIR)/max7219.o: max7219.cpp max7219.h
+$(BUILD_DIR)/SPIadc.o: SPIadc.cpp SPIadc.h
+$(BUILD_DIR)/ADXL335.o: ADXL335.cpp ADXL335.h
+$(BUILD_DIR)/Sharp_IR.o: Sharp_IR.cpp Sharp_IR.h
+$(BUILD_DIR)/connect_to_flysim.o: connect_to_flysim.cpp connect_to_flysim.h
+$(BUILD_DIR)/cltcmd.o: cltcmd.cpp cltcmd.h
 
 .PHONY: clean
 clean:
