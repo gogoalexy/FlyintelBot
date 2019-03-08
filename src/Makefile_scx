@@ -15,34 +15,17 @@ $(BUILD_DIR)/main_scx.out: $(BUILD_DIR)/cltcmd.o ${BUILD_DIR}/connect_to_flysim.
 	$(CXX) $^ -o $@ $(LDLIBS) -Wall
 
 $(BUILD_DIR)/main_scx.o: main_scx.cpp
-	$(CXX) -c main_scx.cpp -o $(BUILD_DIR)/main_scx.o
+	$(CXX) -c $< -o $@
 
 $(BUILD_DIR)/SCXmodel.o: SCXmodel.cpp
-	$(CXX) -c SCXmodel.cpp -o $(BUILD_DIR)/SCXmodel.o
-
 $(BUILD_DIR)/flyintel.o: flyintel.cpp
-	$(CXX) -c flyintel.cpp -o $(BUILD_DIR)/flyintel.o
-
 $(BUILD_DIR)/max7219.o: max7219.cpp
-	$(CXX) -c max7219.cpp -o $(BUILD_DIR)/max7219.o
-
 $(BUILD_DIR)/SPIadc.o: SPIadc.cpp
-	$(CXX) -c SPIadc.cpp -o $(BUILD_DIR)/SPIadc.o
-
 $(BUILD_DIR)/ADXL335.o: ADXL335.cpp
-	$(CXX) -c ADXL335.cpp -o $(BUILD_DIR)/ADXL335.o
-
 $(BUILD_DIR)/Sharp_IR.o: Sharp_IR.cpp
-	$(CXX) -c Sharp_IR.cpp -o $(BUILD_DIR)/Sharp_IR.o
-
 $(BUILD_DIR)/connect_to_flysim.o: connect_to_flysim.cpp
-	$(CXX) -c connect_to_flysim.cpp -o $(BUILD_DIR)/connect_to_flysim.o
-
 $(BUILD_DIR)/cltcmd.o: cltcmd.cpp
-	$(CXX) -c cltcmd.cpp -o $(BUILD_DIR)/cltcmd.o
 
-#dirmake:
-#	mkdir -pv $(BUILD_DIR)
-
+.PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)/main_cx.out $(BUILD_DIR)/*.o
