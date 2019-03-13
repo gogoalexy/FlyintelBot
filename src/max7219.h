@@ -44,10 +44,9 @@ public:
     void setROW(int, BYTE);
     void setMatrix(std::array<BYTE, 8>);
     void flush();
-
-protected:
     int max7219Setup(int, int);
-    void registerWrite(BYTE, BYTE);
+protected:
+   void registerWrite(BYTE, BYTE);
 
 private:
     int spiChan;

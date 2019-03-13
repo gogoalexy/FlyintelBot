@@ -1,8 +1,12 @@
 #include "signal.h"
 #include <iostream>
+#include <fstream>
 #include <array>
+#include <wiringPi.h>
 #include "connect_to_flysim.h"
 #include "SCXmodel.h"
+#include "pixycam.h"
+#include "DCmotor.h"
 
 using namespace std;
 
@@ -18,20 +22,28 @@ char *Spikes = nullptr;
 
 int main()
 {
-    bool lastBlock false;
+    wiringPiSetupGpio();
+    bool lastBlock = false;
     bool holdTarget = false;
     bool newTarget = false;
     int pastNew = -1;
     enum Actions{Stop, Forward, Backward, Left, Right};
     Actions state = Stop;
 
+    fstream fp;
+    fp.open("Flyintel.log", ios::out);
+
     SimpleCXStimulator CXsti;
     SimpleCXDecoder CXdecode;
     SimpleCXMonitor CXled;
     CXled.init();
 
-    PixyCam eye;
-    eye.init();
+//    PixyCam eye;
+  //  eye.init();
+    DCmotor front(22, 23, 24, 25, 18, 12);
+    DCmotor rear(4, 0, 1, 5, 13, 19);
+    front.velocity(500, 500);
+    rear.velocity(500, 500);
 
     string conf_file = "./networks/network30.conf", pro_file = "./networks/network30.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
@@ -43,11 +55,11 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
     {
         clock_t tik = clock();
 
-        eye.refresh();
-        eye.capture();
-        eye.pickLarge();
-        array<Obj, 2> retina;
-        retina = eye.pickLarge();
+    //    eye.refresh();
+  //      eye.capture();
+//        eye.pickLarge();
+      //  array<Obj, 2> retina;
+        //retina = eye.pickLarge();
         /*if(retina.first && !lastBlock)
         {
             newTarget = true;
@@ -63,12 +75,15 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         }*/
         if(round == 5)
         {
-            newTarget true;
+            newTarget = true;
             state = Stop;
         }
         else if(round > 100)
         {
-            state = Right;
+            state = Left;
+           front.left();
+            rear.left();
+             delay(300);
         }
 
         if(pastNew >= 0)
@@ -77,13 +92,12 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
             CXsti.stiLoc(pastNew, 0);
             pastNew = -1;
             holdTarget = true;
-            newT
         }
         else if(newTarget)
         {
             //.......locate
             cout<<"newTar"<<'\n';
-        CXsti.stiLoc(6, 100);
+        CXsti.stiLoc(6, 250);
             newTarget = false;
             holdTarget = false;
             pastNew = 6;
@@ -162,8 +176,8 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
         int speed = motorNeuron.second;*/
         for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
-        {
-            fp<<*it<<' ';
+      {
+           fp<<*it<<' ';
         }
         auto ans (CXdecode.findBump());
         CXled.showBump(ans);

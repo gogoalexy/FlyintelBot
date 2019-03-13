@@ -10,7 +10,7 @@ int main()
     DCmotor rear(4, 0, 1, 5, 13, 19);
     
     front.velocity(600, 600);
-    rear.velocity(600, 600);
+    rear.velocity(800, 800);
     
     front.forward();
     delay(1000);
