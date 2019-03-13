@@ -18,8 +18,8 @@ fp.open("rotation.log", ios::out);
 
 int main()
 {
-    DCmotor front();
-    DCmotor rear();
+    DCmotor front(22, 21, 25, 27, 1, 26);
+    DCmotor rear(3, 2, 4, 5, 23, 24);
     
     SimpleCXStimulator sti;
     SimpleCXDecoder deco;
