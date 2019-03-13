@@ -19,14 +19,13 @@
 #ifndef HC_SR04_H
 
 #include <wiringPi.h>
-#include "sensor.h"
 
-class HCSR04 : public Sensor
+class HCSR04
 {
 public:
 	HCSR04(short, short, int);
-	void init() override;
-	unsigned int range() override;
+	void init();
+	unsigned int range();
 	unsigned long UsoundRange();
 private:
 	short TrigPin;

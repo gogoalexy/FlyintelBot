@@ -1,6 +1,6 @@
 #include <iostream>
 #include <wiringPi.h>
-#include "../src/HC_SR04.h"
+#include "HC_SR04.h"
 
 using namespace std;
 
