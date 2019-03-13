@@ -5,11 +5,12 @@
 using namespace std;
 
 int main() {
-	if(wiringPiSetup() == -1){
+	if(wiringPiSetupGpio() == -1){
 		return -1;
 	}
-	pinMode(15, OUTPUT);
-	HCSR04 sound(15, 16, 10000);
+
+	HCSR04 sound(21, 26, 10000);
+	sound.init();
 
 	while(true){
 		cout<<sound.UsoundRange()<<endl;
