@@ -281,7 +281,7 @@ char *ActiveSimGetSpike(string RunTime)
     }
 
         ProString += ProFile.TypeFreq;
-        ProFile.TypeFreq.clear();
+        ProFile.TypeFreq.clear();//why
 
         #ifdef DEBUG
         DEBUG("ProFile checking");
