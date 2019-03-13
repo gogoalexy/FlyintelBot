@@ -4,7 +4,11 @@
 #include <array>
 #include <wiringPi.h>
 #include "connect_to_flysim.h"
+#include "flyintel.h"
 #include "SCXmodel.h"
+#include "SPIadc.h"
+#include "Sharp_IR.h"
+#include "HC_SR04.h"
 #include "pixycam.h"
 #include "DCmotor.h"
 
@@ -30,44 +34,58 @@ char *Spikes = nullptr;
 
 int main()
 {
+    //wiringPi init in BCM pinout
     wiringPiSetupGpio();
+
     bool lastBlock = false;
     bool holdTarget = false;
     bool newTarget = false;
     int pastNew = -1;
+    int newTargetInterval = 3;
     enum Actions{Stop, Forward, Backward, Left, Right};
     Actions state = Stop;
 
+    //log file
     fstream fp;
     fp.open("Flyintel.log", ios::out);
 
+    //init sensors
+    HCSR04 rescue0(21, 26, 10000);
+    ADC mcp3008;
+        mcp3008.initSPI(88, 0);
+    SharpIR rescue1(mcp3008, 0);
+    SharpIR rescue2(mcp3008, 1);
+    PixyCam eye;
+    eye.init();
+
+    //init interface
+    Flyintel flyintel;
     SimpleCXStimulator CXsti;
     SimpleCXDecoder CXdecode;
     SimpleCXMonitor CXled;
     CXled.init();
 
-//    PixyCam eye;
-  //  eye.init();
+    //init motors
     DCmotor front(22, 23, 24, 25, 13, 19);
     DCmotor rear(4, 0, 1, 5, 13, 19);
     front.velocity(300, 300);//400 for carpet
     rear.velocity(300, 300);
 
+    //open conf pro files
     string conf_file = "./networks/network30.conf", pro_file = "./networks/network30.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
-cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
+    cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
     signal(SIGINT, handle_SIGINT);
 
-    for(int round=0; round<1000; ++round)
+    //main loop
+    for(int round=0; round<800; ++round)
     {
-        clock_t tik = clock();
-
-    //    eye.refresh();
-  //      eye.capture();
-//        eye.pickLarge();
-      //  array<Obj, 2> retina;
-        //retina = eye.pickLarge();
+        //pixy cam
+        eye.refresh();
+        eye.capture();
+        array<Obj, 2> retina;
+        retina = eye.pickLarge();
         /*if(retina.first && !lastBlock)
         {
             newTarget = true;
@@ -81,6 +99,9 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         {
             lastBlock = false;
         }*/
+
+//==============================================================================
+/*
         if(round == 5)
         {
             newTarget = true;
@@ -89,11 +110,11 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         else if(round > 100)
         {
             state = Left;
-           front.right();
+            front.right();
             rear.right();
-             delay(200);
-	front.stop();
-	rear.stop();
+            delay(200);
+            front.stop();
+            rear.stop();
         }
 
         if(pastNew >= 0)
@@ -141,7 +162,22 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         {
             cout<<"No sti"<<'\n';
         }
-/*
+*/
+//==============================================================================
+
+        //ultra
+        unsigned int soundtime = rescue0.UsoundRange();
+        if(soundtime < 1500)
+        {
+            SendFreq("TS1", 9800);
+        }
+        else
+        {
+            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1500)) );
+        }
+        cout<<"Ultra: "<<soundtime<<"; ";
+
+        //IR
         float irL = rescue1.IRrange();
         if(irL > 400)
         {
@@ -149,7 +185,7 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         }
         else
         {
-            SendFreq(9000-(9000/90.0)*(400-irL), 6);//negative issue
+            SendFreq("TS2", 9000-(9000/90.0)*(400-irL));
         }
 
         float irR = rescue2.IRrange();
@@ -159,34 +195,66 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         }
         else
         {
-            SendFreq("TS3", (int)(9000-(9000/90.0)*(400-irR)));
+            SendFreq("TS3", (9000-(9000/90.0)*(400-irR)));
+        }
+        cout<<"IR: "<<irL<<", "<<irR<<endl;
+
+//==============================================================================
+
+        Spikes = ActiveSimGetSpike("500");
+        cout
+        <<"receving\n";
+        //cout<<"Spikes:"<<endl<<Spikes<<endl;
+
+//==============================================================================
+
+        //Decode motor neurons
+        flyintel.refresh();
+        motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
+        char dir = motorNeuron.first;
+        int speed = motorNeuron.second;
+
+        if(dir & 0x01)
+        {
+            cout<<'F'<<endl;
+            front.forward();
+            rear.forward();
+            state = Forward;
+        }
+        else if(dir & 0x02)
+        {
+            cout<<'B'<<endl;
+            front.backward();
+            rear.backward();
+            state = Backward;
+        }
+        else if(dir & 0x04)
+        {
+            cout<<'L'<<endl;
+            front.left();
+            rear.left();
+            state = Left;
+        }
+        else if(dir & 0x08)
+        {
+            cout<<'R'<<endl;
+            front.right();
+            rear.right();
+            state = Right;
+        }
+        else
+        {
+            cout<<'S'<<endl;
+            front.stop();
+            rear.stop();
+            state = Stop;
         }
 
-        cout<<"IR: "<<irL<<", "<<irR<<endl;
-*/
-
-        Spikes = ActiveSimGetSpike("600");
-        cout
-    <<"receving\n";
-//      cout<<"Spikes:"<<endl<<Spikes<<endl;
+        //Decode CX
         CXled.flush();
         auto tmp = CXdecode.sortingHat(Spikes);
-/*        motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
-        char dir = motorNeuron.first;
-        if(dir == 'S')
-            state = Stop;
-        else if(dir == 'F')
-            state = Forward;
-        else if(dir == 'B')
-            state = Backward;
-        else if(dir == 'L')
-            state = Left;
-        else if(dir == 'R')
-            state = Right;
-
-        int speed = motorNeuron.second;*/
         for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
-      {
+        {
            fp<<*it<<' ';
         }
         auto ans (CXdecode.findBump());
@@ -194,9 +262,18 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         fp<<endl;
         cout<<endl;
         CXdecode.clean();
-
-        clock_t tok = clock();
-        cout<<"time:"<<(tok-tik)/(double)CLOCKS_PER_SEC<<endl;
     }
+
+    pwmWrite(19, 0);
+    pwmWrite(13, 0);
+    digitalWrite(22, LOW);
+    digitalWrite(23, LOW);
+    digitalWrite(24, LOW);
+    digitalWrite(25, LOW);
+    digitalWrite(4, LOW);
+    digitalWrite(0, LOW);
+    digitalWrite(1, LOW);
+    digitalWrite(5, LOW);
+    CloseSim();
     return 0;
 }
