@@ -15,6 +15,14 @@ void handle_SIGINT(int unused)
 {
    //On CTRL+C - abort! //
     run_flag = false;
+    digitalWrite(22, LOW);
+    digitalWrite(23, LOW);
+    digitalWrite(24, LOW);
+    digitalWrite(25, LOW);
+    digitalWrite(4, LOW);
+    digitalWrite(0, LOW);
+    digitalWrite(1, LOW);
+    digitalWrite(5, LOW);
     CloseSim();
 }
 
@@ -40,10 +48,10 @@ int main()
 
 //    PixyCam eye;
   //  eye.init();
-    DCmotor front(22, 23, 24, 25, 18, 12);
+    DCmotor front(22, 23, 24, 25, 13, 19);
     DCmotor rear(4, 0, 1, 5, 13, 19);
-    front.velocity(500, 500);
-    rear.velocity(500, 500);
+    front.velocity(300, 300);//400 for carpet
+    rear.velocity(300, 300);
 
     string conf_file = "./networks/network30.conf", pro_file = "./networks/network30.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
@@ -81,9 +89,11 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         else if(round > 100)
         {
             state = Left;
-           front.left();
-            rear.left();
-             delay(300);
+           front.right();
+            rear.right();
+             delay(200);
+	front.stop();
+	rear.stop();
         }
 
         if(pastNew >= 0)
@@ -155,7 +165,7 @@ cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
         cout<<"IR: "<<irL<<", "<<irR<<endl;
 */
 
-        Spikes = ActiveSimGetSpike("250");
+        Spikes = ActiveSimGetSpike("600");
         cout
     <<"receving\n";
 //      cout<<"Spikes:"<<endl<<Spikes<<endl;
