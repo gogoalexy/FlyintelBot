@@ -29,9 +29,6 @@ $(BUILD_DIR)/flyintel.o: flyintel.cpp
 $(BUILD_DIR)/Sharp_IR.o: Sharp_IR.cpp
 	$(CXX) -c Sharp_IR.cpp -o $(BUILD_DIR)/Sharp_IR.o
 
-$(BUILD_DIR)/SPIadc.o: SPIadc.cpp
-	$(CXX) -c SPIadc.cpp -o $(BUILD_DIR)/SPIadc.o
-
 $(BUILD_DIR)/max7219.o: max7219.cpp
 	$(CXX) -c max7219.cpp -o $(BUILD_DIR)/max7219.o
 
