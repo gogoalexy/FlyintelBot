@@ -55,8 +55,8 @@ int main()
         mcp3008.initSPI(88, 0);
     SharpIR rescue1(mcp3008, 0);
     SharpIR rescue2(mcp3008, 1);
-    PixyCam eye;
-    eye.init();
+//    PixyCam eye;
+//    eye.init();
 
     //init interface
     Flyintel flyintel;
@@ -68,8 +68,8 @@ int main()
     //init motors
     DCmotor front(22, 23, 24, 25, 13, 19);
     DCmotor rear(4, 0, 1, 5, 13, 19);
-    front.velocity(300, 300);//400 for carpet
-    rear.velocity(300, 300);
+    front.velocity(400, 400);//400 for carpet
+    rear.velocity(400, 400);
 
     //open conf pro files
     string conf_file = "./networks/network30.conf", pro_file = "./networks/network30.pro";
@@ -81,11 +81,15 @@ int main()
     //main loop
     for(int round=0; round<800; ++round)
     {
+        SendFreq("random1", 1500);
+        SendFreq("random2", 1500);
+        SendFreq("random3", 1700);
+        SendFreq("random4", 1700);
         //pixy cam
-        eye.refresh();
-        eye.capture();
-        array<Obj, 2> retina;
-        retina = eye.pickLarge();
+//        eye.refresh();
+//        eye.capture();
+//        array<Obj, 2> retina;
+//        retina = eye.pickLarge();
         /*if(retina.first && !lastBlock)
         {
             newTarget = true;
