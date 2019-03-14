@@ -231,13 +231,13 @@ int main()
 
         //ultra
         unsigned int soundtime = rescue0.UsoundRange();
-        if(soundtime < 1800)
+        if(soundtime < 2000)
         {
             SendFreq("TS1", 9800);
         }
         else
         {
-            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1800)) );
+            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-2000)) );
         }
         cout<<"Ultra: "<<soundtime<<"; ";
 
