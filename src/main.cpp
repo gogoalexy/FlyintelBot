@@ -76,7 +76,7 @@ int main()
     rear.velocity(1000, 1000);
 
     //open conf pro files
-    string conf_file = "./networks/network30.conf", pro_file = "./networks/network30.pro";
+    string conf_file = "./networks/network31.conf", pro_file = "./networks/network31.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
