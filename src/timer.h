@@ -13,7 +13,7 @@ public:
 
 private:
     std::chrono::system_clock::time_point m_start;
-}
+};
 
 #define TIMER_H
 #endif

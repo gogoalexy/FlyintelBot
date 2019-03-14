@@ -8,13 +8,21 @@ void SimpleCXStimulator::stiLoc(int loc, int fr)
     SendFreq(neuron, fr);
 }
 
+void SimpleCXStimulator::switchState()
+{
+    SendFreq("L_ring", 0);
+    SendFreq("R_ring", 0);
+}
+
 void SimpleCXStimulator::shiftRight(int fr)
 {
+    SendFreq("L_ring", 0);
     SendFreq("R_ring", fr);
 }
 
 void SimpleCXStimulator::shiftLeft(int fr)
 {
+    SendFreq("R_ring", 0);
     SendFreq("L_ring", fr);
 }
 
