@@ -1,3 +1,4 @@
+
 #include "signal.h"
 #include <iostream>
 #include <fstream>
@@ -11,6 +12,7 @@
 #include "HC_SR04.h"
 #include "pixycam.h"
 #include "DCmotor.h"
+//#include "timer.h"
 
 using namespace std;
 
@@ -45,6 +47,8 @@ int main()
     enum Actions{Stop, Forward, Backward, Left, Right};
     Actions state = Stop;
 
+//    Timer timer;
+
     //log file
     fstream fp;
     fp.open("Flyintel.log", ios::out);
@@ -55,8 +59,8 @@ int main()
         mcp3008.initSPI(88, 0);
     SharpIR rescue1(mcp3008, 0);
     SharpIR rescue2(mcp3008, 1);
-//    PixyCam eye;
-//    eye.init();
+    PixyCam eye;
+    eye.init();
 
     //init interface
     Flyintel flyintel;
@@ -68,8 +72,8 @@ int main()
     //init motors
     DCmotor front(22, 23, 24, 25, 13, 19);
     DCmotor rear(4, 0, 1, 5, 13, 19);
-    front.velocity(400, 400);//400 for carpet
-    rear.velocity(400, 400);
+    front.velocity(1000, 1000);//400 for carpet
+    rear.velocity(1000, 1000);
 
     //open conf pro files
     string conf_file = "./networks/network30.conf", pro_file = "./networks/network30.pro";
@@ -81,28 +85,63 @@ int main()
     //main loop
     for(int round=0; round<800; ++round)
     {
+
+  //      timer.start();
+
         SendFreq("random1", 1500);
         SendFreq("random2", 1500);
         SendFreq("random3", 1700);
         SendFreq("random4", 1700);
         //pixy cam
-//        eye.refresh();
-//        eye.capture();
-//        array<Obj, 2> retina;
-//        retina = eye.pickLarge();
-        /*if(retina.first && !lastBlock)
+        eye.refresh();
+        eye.capture();
+        array<Obj, 2> retina;
+        retina = eye.pickLarge();
+
+        float dx = retina[0].second - PIXY2_CENTER_X;
+        float area = retina[0].first;
+        if(area > 5500)
+        {
+            area = 5000;
+        }
+        else if(area >= 2500 && area < 4000)
+        {
+             area = 4000;
+        }
+
+        if(dx > 100)
+        {
+            SendFreq("FS1", 0);
+            SendFreq("FS3", 0);
+            SendFreq("FS4", area);
+        }
+        else if(dx < -100)
+        {
+            SendFreq("FS1", 0);
+            SendFreq("FS3", area);
+            SendFreq("FS4", 0);
+        }
+        else
+        {
+            SendFreq("FS1", area);
+            SendFreq("FS3", 0);
+            SendFreq("FS4", 0);
+        }
+        cout<<"area="<<area<<", dx"<<dx<<endl;
+
+        if(retina[0].first && !lastBlock)
         {
             newTarget = true;
             lastBlock = true;
         }
-        else if(retina.first && lastBlock)
+        else if(retina[0].first && lastBlock)
         {
             newTarget = false;
         }
-        else if(!retina.first && lastBlock)
+        else if(!retina[0].first && lastBlock)
         {
             lastBlock = false;
-        }*/
+        }
 
 //==============================================================================
 /*
@@ -111,7 +150,7 @@ int main()
             newTarget = true;
             state = Stop;
         }
-        else if(round > 100)
+        else if(round > 100 && round < 150)
         {
             state = Left;
             front.right();
@@ -119,8 +158,24 @@ int main()
             delay(200);
             front.stop();
             rear.stop();
-        }
-
+        }else if(round > 150 && round < 200)
+	{
+		state = Right;
+		front.left();
+		rear.left();
+		delay(200);
+		front.stop();
+		rear.stop();
+	}else
+	{
+		state = Left;
+		front.right();
+		rear.right();
+		delay(200);
+		front.stop();
+		rear.stop();
+	}
+*/
         if(pastNew >= 0)
         {
             cout<<"pastnew"<<pastNew<<'\n';
@@ -142,42 +197,47 @@ int main()
             if(state == Stop)
             {
                 cout<<"stop"<<'\n';
+                CXsti.switchState();
             }
             else if(state == Forward)
             {
                 cout<<"straight"<<'\n';
+                CXsti.switchState();
             }
             else if(state == Backward)
             {
                 cout<<"back"<<'\n';
+                CXsti.switchState();
             }
             else if(state == Left)
             {
                 cout<<"left"<<'\n';
-                CXsti.shiftLeft(200);
+                CXsti.switchState();
+                CXsti.shiftRight(200);
             }
             else if(state == Right)
             {
                 cout<<"right"<<'\n';
-                CXsti.shiftRight(200);
+                CXsti.switchState();
+                CXsti.shiftLeft(200);
             }
         }
         else
         {
             cout<<"No sti"<<'\n';
         }
-*/
+
 //==============================================================================
 
         //ultra
         unsigned int soundtime = rescue0.UsoundRange();
-        if(soundtime < 1500)
+        if(soundtime < 1800)
         {
             SendFreq("TS1", 9800);
         }
         else
         {
-            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1500)) );
+            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1800)) );
         }
         cout<<"Ultra: "<<soundtime<<"; ";
 
@@ -223,6 +283,9 @@ int main()
             cout<<'F'<<endl;
             front.forward();
             rear.forward();
+            delay(200);
+            front.stop();
+            rear.stop();
             state = Forward;
         }
         else if(dir & 0x02)
@@ -230,6 +293,9 @@ int main()
             cout<<'B'<<endl;
             front.backward();
             rear.backward();
+            delay(200);
+            front.stop();
+            rear.stop();
             state = Backward;
         }
         else if(dir & 0x04)
@@ -237,6 +303,9 @@ int main()
             cout<<'L'<<endl;
             front.left();
             rear.left();
+            delay(200);
+            front.stop();
+            rear.stop();
             state = Left;
         }
         else if(dir & 0x08)
@@ -244,6 +313,9 @@ int main()
             cout<<'R'<<endl;
             front.right();
             rear.right();
+            delay(200);
+            front.stop();
+            rear.stop();
             state = Right;
         }
         else
@@ -266,6 +338,7 @@ int main()
         fp<<endl;
         cout<<endl;
         CXdecode.clean();
+//        cout<<"loop time: "<<timer.getMillis()<<endl;
     }
 
     pwmWrite(19, 0);

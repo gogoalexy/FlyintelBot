@@ -47,6 +47,9 @@ $(BUILD_DIR)/SPIadc.o: SPIadc.cpp
 $(BUILD_DIR)/DCmotor.o: DCmotor.cpp
 	$(CXX) -c DCmotor.cpp -o $(BUILD_DIR)/DCmotor.o
 
+#$(BUILD_DIR)/timer.o: timer.cpp
+#	$(CXX) -c timer.cpp -o $(BUILD_DIR)/timer.o
+
 #dirmake:
 #	mkdir -pv $(BUILD_DIR)
 
