@@ -12,7 +12,7 @@
 #include "HC_SR04.h"
 #include "pixycam.h"
 #include "DCmotor.h"
-//#include "timer.h"
+#include "timer.h"
 
 using namespace std;
 
@@ -36,6 +36,9 @@ char *Spikes = nullptr;
 
 int main()
 {
+    auto timer0;
+    timerStart(timer0);
+
     //wiringPi init in BCM pinout
     wiringPiSetupGpio();
 
@@ -47,7 +50,6 @@ int main()
     enum Actions{Stop, Forward, Backward, Left, Right};
     Actions state = Stop;
 
-//    Timer timer;
 
     //log file
     fstream fp;
@@ -76,22 +78,28 @@ int main()
     rear.velocity(1000, 1000);
 
     //open conf pro files
-    string conf_file = "./networks/network31.conf", pro_file = "./networks/network31.pro";
+    string conf_file = "./networks/network32.conf", pro_file = "./networks/network32.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
     signal(SIGINT, handle_SIGINT);
 
+    cout<<"TIME init: "<<timerGetMillis(timer0)<<" ms"<<endl;
+
     //main loop
     for(int round=0; round<800; ++round)
     {
-
+        auto timer1;
+        timerStart(timer1);
   //      timer.start();
 
         SendFreq("random1", 1500);
         SendFreq("random2", 1500);
         SendFreq("random3", 1700);
         SendFreq("random4", 1700);
+
+        auto timer4;
+        timerStart(timer4);
         //pixy cam
         eye.refresh();
         eye.capture();
@@ -231,13 +239,13 @@ int main()
 
         //ultra
         unsigned int soundtime = rescue0.UsoundRange();
-        if(soundtime < 2000)
+        if(soundtime < 1800)
         {
             SendFreq("TS1", 9800);
         }
         else
         {
-            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-2000)) );
+            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1800)) );
         }
         cout<<"Ultra: "<<soundtime<<"; ";
 
@@ -263,14 +271,22 @@ int main()
         }
         cout<<"IR: "<<irL<<", "<<irR<<endl;
 
+        cout<<"TIME sensor: "<<timerGetMillis(timer4)<<" ms"<<endl;
+
 //==============================================================================
+        auto timer2;
+        timerStart(timer2);
 
         Spikes = ActiveSimGetSpike("500");
         cout
         <<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
 
+       cout<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<endl;
 //==============================================================================
+
+        auto timer3;
+        timerStart(timer3);
 
         //Decode motor neurons
         flyintel.refresh();
@@ -338,7 +354,10 @@ int main()
         fp<<endl;
         cout<<endl;
         CXdecode.clean();
-//        cout<<"loop time: "<<timer.getMillis()<<endl;
+
+        cout<<"TIME decode: "<<timerGetMillis(timer3)<<" ms"<<endl;
+
+        cout<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<endl;
     }
 
     pwmWrite(19, 0);
