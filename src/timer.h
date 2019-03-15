@@ -4,7 +4,7 @@
 
 using steadyClock = std::chrono::steady_clock;
 
-//auto (system_clock::time_point) m_start;
+//std::chrono::system_clock::time_point m_start;
 
 inline void timerToZero(auto &m_start)
 {

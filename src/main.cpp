@@ -34,6 +34,9 @@ void handle_SIGINT(int unused)
 
 char *Spikes = nullptr;
 
+enum Actions{Stop, Forward, Backward, Left, Right};
+enum TargetLocation{NA, CL, CC, CR};
+
 int main()
 {
     chrono::steady_clock::time_point timer0;
@@ -47,7 +50,8 @@ int main()
     bool newTarget = false;
     int pastNew = -1;
     int newTargetInterval = 3;
-    enum Actions{Stop, Forward, Backward, Left, Right};
+    
+    TargetLocation viewField = NA;
     Actions state = Stop;
 
 
@@ -94,7 +98,6 @@ int main()
         tfp<<"Round:"<<round<<'\n';
         chrono::steady_clock::time_point timer1;
         timerStart(timer1);
-  //      timer.start();
 
         SendFreq("random1", 1500);
         SendFreq("random2", 1500);
@@ -125,18 +128,21 @@ int main()
             SendFreq("FS1", 0);
             SendFreq("FS3", 0);
             SendFreq("FS4", area);
+            viewField = CR;
         }
         else if(dx < -100)
         {
             SendFreq("FS1", 0);
             SendFreq("FS3", area);
             SendFreq("FS4", 0);
+            viewField = CL;
         }
         else
         {
             SendFreq("FS1", area);
             SendFreq("FS3", 0);
             SendFreq("FS4", 0);
+            viewField = CC;
         }
         cout<<"area="<<area<<", dx"<<dx<<endl;
 
@@ -187,6 +193,8 @@ int main()
 		rear.stop();
 	}
 */
+
+        //scheduler
         if(pastNew >= 0)
         {
             cout<<"pastnew"<<pastNew<<'\n';
@@ -198,10 +206,10 @@ int main()
         {
             //.......locate
             cout<<"newTar"<<'\n';
-        CXsti.stiLoc(6, 250);
+            CXsti.stiLoc(static_cast<int>(viewField), 250);
             newTarget = false;
             holdTarget = false;
-            pastNew = 6;
+            pastNew = static_cast<int>(viewField);
         }
         else if(holdTarget)
         {
