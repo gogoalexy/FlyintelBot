@@ -36,7 +36,7 @@ char *Spikes = nullptr;
 
 int main()
 {
-    auto timer0;
+    chrono::steady_clock::time_point timer0;
     timerStart(timer0);
 
     //wiringPi init in BCM pinout
@@ -54,6 +54,8 @@ int main()
     //log file
     fstream fp;
     fp.open("Flyintel.log", ios::out);
+    fstream tfp;
+    tfp.open("FlyTime.log", ios::out);
 
     //init sensors
     HCSR04 rescue0(21, 26, 10000);
@@ -87,9 +89,10 @@ int main()
     cout<<"TIME init: "<<timerGetMillis(timer0)<<" ms"<<endl;
 
     //main loop
-    for(int round=0; round<800; ++round)
+    for(int round=0; round<300; ++round)
     {
-        auto timer1;
+        tfp<<"Round:"<<round<<'\n';
+        chrono::steady_clock::time_point timer1;
         timerStart(timer1);
   //      timer.start();
 
@@ -98,7 +101,7 @@ int main()
         SendFreq("random3", 1700);
         SendFreq("random4", 1700);
 
-        auto timer4;
+        chrono::steady_clock::time_point timer4;
         timerStart(timer4);
         //pixy cam
         eye.refresh();
@@ -271,10 +274,10 @@ int main()
         }
         cout<<"IR: "<<irL<<", "<<irR<<endl;
 
-        cout<<"TIME sensor: "<<timerGetMillis(timer4)<<" ms"<<endl;
+        tfp<<"TIME sensor: "<<timerGetMillis(timer4)<<" ms"<<'\n';
 
 //==============================================================================
-        auto timer2;
+        chrono::steady_clock::time_point timer2;
         timerStart(timer2);
 
         Spikes = ActiveSimGetSpike("500");
@@ -282,10 +285,10 @@ int main()
         <<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
 
-       cout<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<endl;
+        tfp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
 //==============================================================================
 
-        auto timer3;
+        chrono::steady_clock::time_point timer3;
         timerStart(timer3);
 
         //Decode motor neurons
@@ -293,6 +296,9 @@ int main()
         motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
         char dir = motorNeuron.first;
         int speed = motorNeuron.second;
+
+        chrono::steady_clock::time_point timer5;
+        timerStart(timer5);
 
         if(dir & 0x01)
         {
@@ -342,6 +348,8 @@ int main()
             state = Stop;
         }
 
+        tfp<<"TIME exc motor: "<<timerGetMillis(timer5)<<" ms"<<'\n';
+
         //Decode CX
         CXled.flush();
         auto tmp = CXdecode.sortingHat(Spikes);
@@ -355,9 +363,9 @@ int main()
         cout<<endl;
         CXdecode.clean();
 
-        cout<<"TIME decode: "<<timerGetMillis(timer3)<<" ms"<<endl;
+        tfp<<"TIME decode: "<<timerGetMillis(timer3)<<" ms"<<'\n';
 
-        cout<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<endl;
+        tfp<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<'\n';
     }
 
     pwmWrite(19, 0);
@@ -371,5 +379,6 @@ int main()
     digitalWrite(1, LOW);
     digitalWrite(5, LOW);
     CloseSim();
+    tfp.close();
     return 0;
 }
