@@ -1,5 +1,5 @@
 /*
- *	  This file is part of FlyintelBot.
+ *    This file is part of FlyintelBot.
  *    Copyright (C) 2018  Alex Huang-Yu Yao
  *
  *    This program is free software: you can redistribute it and/or modify
@@ -18,68 +18,71 @@
 
 #include "HC_SR04.h"
 
-HCSR04::HCSR04(short TrigPin = 0, short EchoPin = 1, int TimeOut = 10000)
+HCSR04::HCSR04() : TrigPin(0), EchoPin(1), TimeOut(10000)
 {
-	this->TrigPin = TrigPin;
-	this->EchoPin = EchoPin;
-	this->timeout = TimeOut;
-	travelTime = 0;
-	pinMode(TrigPin, OUTPUT);
-	pinMode(EchoPin, INPUT);
-	digitalWrite(TrigPin, LOW);
+    std::cout<<"Warning: Parameters undefined! Default: Trig=0, Ech0=1, TimeOut=10000"<<endl;
+}
+
+HCSR04::HCSR04(short trigPin, short echoPin, int timeout)
+ : TrigPin(trigPin), EchoPin(echoPin), TimeOut(timeout)
+{
+    travelTime = 0;
+    pinMode(TrigPin, OUTPUT);
+    pinMode(EchoPin, INPUT);
+    digitalWrite(TrigPin, LOW);
 }
 
 void HCSR04::init()
 {
-  pinMode(TrigPin, OUTPUT);
-	pinMode(EchoPin, INPUT);
-	digitalWrite(TrigPin, LOW);
+    pinMode(TrigPin, OUTPUT);
+    pinMode(EchoPin, INPUT);
+    digitalWrite(TrigPin, LOW);
 }
 
 unsigned int HCSR04::range()
 {
-  travelTime = 0;
-	digitalWrite(TrigPin, HIGH);
-	delayMicroseconds(10);
-	digitalWrite(TrigPin, LOW);
-	unsigned long currtime = micros();
-	while(digitalRead(EchoPin) == LOW){
-		if((micros() - currtime) > timeout){
-			return timeout;
-		}
-	}
-	unsigned long start = micros();
-	while(travelTime < timeout){
-		travelTime = micros() - start;
-		if(digitalRead(EchoPin) == LOW){
-			break;
-		}
-	}
-	return travelTime;
+    travelTime = 0;
+    digitalWrite(TrigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TrigPin, LOW);
+    unsigned long currtime = micros();
+    while(digitalRead(EchoPin) == LOW){
+        if((micros() - currtime) > timeout){
+            return timeout;
+        }
+    }
+    unsigned long start = micros();
+    while(travelTime < timeout){
+        travelTime = micros() - start;
+        if(digitalRead(EchoPin) == LOW){
+            break;
+        }
+    }
+    return travelTime;
 }
 
-unsigned long HCSR04::UsoundRange()
+unsigned int HCSR04::UsoundRange()
 {
     travelTime = 0;
-	digitalWrite(TrigPin, HIGH);
-	delayMicroseconds(10);
-	digitalWrite(TrigPin, LOW);
-	unsigned long currtime = micros();
-	while(digitalRead(EchoPin) == LOW)
-	{
-		if((micros() - currtime) > timeout)
-		{
-			return timeout;
-		}
-	}
-	unsigned long start = micros();
-	while(travelTime < timeout)
-	{
-		travelTime = micros() - start;
-		if(digitalRead(EchoPin) == LOW)
-		{
-			break;
-		}
-	}
-	return travelTime;
+    digitalWrite(TrigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TrigPin, LOW);
+    unsigned long currtime = micros();
+    while(digitalRead(EchoPin) == LOW)
+    {
+        if((micros() - currtime) > timeout)
+        {
+            return timeout;
+        }
+    }
+    unsigned long start = micros();
+    while(travelTime < timeout)
+    {
+        travelTime = micros() - start;
+        if(digitalRead(EchoPin) == LOW)
+        {
+            break;
+        }
+    }
+    return travelTime;
 }

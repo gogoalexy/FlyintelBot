@@ -359,6 +359,9 @@ int main()
         tfp<<"TIME exc motor: "<<timerGetMillis(timer5)<<" ms"<<'\n';
 
         //Decode CX
+        chrono::steady_clock::time_point timer6;
+        timerStart(timer6);
+
         CXled.flush();
         auto tmp = CXdecode.sortingHat(Spikes);
         for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
@@ -370,6 +373,7 @@ int main()
         fp<<endl;
         cout<<endl;
         CXdecode.clean();
+        tfp<<"TIME monitor: "<<timerGetMillis(timer6)<<" ms"<<'\n';
 
         tfp<<"TIME decode: "<<timerGetMillis(timer3)<<" ms"<<'\n';
 

@@ -18,9 +18,9 @@
 
 #ifndef SHARP_IR_H
 
+#include <iostream>
 #include <wiringPi.h>
 #include "SPIadc.h"
-#include <iostream>
 
 class SharpIR
 {
@@ -29,7 +29,7 @@ public:
     SharpIR(const ADC&, int);
     inline int IRrange()
     {
-	    return adc.readChan(chipChan);
+        return adc.readChan(chipChan);
     };
 
 private:

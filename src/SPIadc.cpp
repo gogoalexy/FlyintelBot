@@ -23,6 +23,7 @@ using namespace std;
 ADC::ADC() : pinBaseDefault(88), spiChanDefault(0), spiSpeedDefault(1000000), isInit(false)
 {
     /*SPI speed is defined in mcp3004Setup().*/
+    
 }
 
 bool ADC::initSPI()

@@ -25,6 +25,30 @@ EndEvent
 EventTime 0.0
 Type=ChangeMembraneNoise
 Label=#1#
+Population: TS1
+GaussMean=0.5
+GaussSTD=0.1
+EndEvent
+
+EventTime 0.0
+Type=ChangeMembraneNoise
+Label=#1#
+Population: TS2
+GaussMean=0.5
+GaussSTD=0.1
+EndEvent
+
+EventTime 0.0
+Type=ChangeMembraneNoise
+Label=#1#
+Population: TS3
+GaussMean=0.5
+GaussSTD=0.1
+EndEvent
+
+EventTime 0.0
+Type=ChangeMembraneNoise
+Label=#1#
 Population: FS4
 GaussMean=0.0
 GaussSTD=0.1
