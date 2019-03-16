@@ -21,7 +21,9 @@
 using namespace std;
 
 PixyCam::PixyCam(): pixy(), FOOD(1), TOXIC(2)
-{}
+{
+    cout<<"Default pixy signature tags."<<endl;
+}
 
 PixyCam::PixyCam(int food_sig, int toxic_sig): pixy(), FOOD(food_sig), TOXIC(toxic_sig)
 {}
@@ -55,32 +57,32 @@ void PixyCam::refresh()
 
 void PixyCam::capture()
 {
-	int  block_index;
+    int  block_index;
     // Query Pixy for blocks //
-	pixy.ccc.getBlocks();
-	//The returned blocks are sorted by area, with the largest blocks appearing first in the blocks array.
-	
+    pixy.ccc.getBlocks();
+    //The returned blocks are sorted by area, with the largest blocks appearing first in the blocks array.
+    
     // Were blocks detected? //
-	if (pixy.ccc.numBlocks)
-	{
-		for (block_index = 0; block_index < pixy.ccc.numBlocks; ++block_index)
-	    {
-        	if(pixy.ccc.blocks[block_index].m_signature == FOOD)
-        	{
-            	auto food = make_pair(pixy.ccc.blocks[block_index].m_width*pixy.ccc.blocks[block_index].m_height, pixy.ccc.blocks[block_index].m_x);
-            	foodQ.push(food);
-        	}
-        	else if(pixy.ccc.blocks[block_index].m_signature == TOXIC)
-        	{
-            	auto toxic = make_pair(pixy.ccc.blocks[block_index].m_width*pixy.ccc.blocks[block_index].m_height, pixy.ccc.blocks[block_index].m_x);
-            	toxicQ.push(toxic);
-        	}
-        	else
-        	{
-            	continue;
-        	}
-	    }
-	}
+    if (pixy.ccc.numBlocks)
+    {
+        for (block_index = 0; block_index < pixy.ccc.numBlocks; ++block_index)
+        {
+            if(pixy.ccc.blocks[block_index].m_signature == FOOD)
+            {
+                auto food = make_pair(pixy.ccc.blocks[block_index].m_width*pixy.ccc.blocks[block_index].m_height, pixy.ccc.blocks[block_index].m_x);
+                foodQ.push(food);
+            }
+            else if(pixy.ccc.blocks[block_index].m_signature == TOXIC)
+            {
+                auto toxic = make_pair(pixy.ccc.blocks[block_index].m_width*pixy.ccc.blocks[block_index].m_height, pixy.ccc.blocks[block_index].m_x);
+                toxicQ.push(toxic);
+            }
+            else
+            {
+                continue;
+            }
+        }
+    }
 }
 
 array<Obj, 2> PixyCam::pickLarge()

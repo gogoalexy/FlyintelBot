@@ -18,20 +18,22 @@
 
 #ifndef HC_SR04_H
 
+#include <iostream>
 #include <wiringPi.h>
 
 class HCSR04
 {
 public:
-	HCSR04(short, short, int);
-	void init();
-	unsigned int range();
-	unsigned long UsoundRange();
+    HCSR04();
+    HCSR04(short, short, int);
+    void init();
+    unsigned int range();
+    unsigned int UsoundRange();
 private:
-	short TrigPin;
-	short EchoPin;
-	int timeout;
-	unsigned long travelTime;
+    short TrigPin;
+    short EchoPin;
+    int timeout;
+    unsigned int travelTime;
 };
 
 #define HC_SR04_H

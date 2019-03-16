@@ -83,24 +83,37 @@ void SimpleCXDecoder::clean()
 
 //===================================================
 
+//
+//   0 1 2 3 4 5 6 7
+//___________________
+//0| 0 * * * * * * 0
+//1| * * * * * * * *
+//2| * * * 0 0 * * *
+//3| * * 0 0 0 0 * *
+//4| * * 0 0 0 0 * *
+//5| * * * 0 0 * * *
+//6| * * * * * * * *
+//7| 0 * * * * * * 0
+//
+
 SimpleCXMonitor::SimpleCXMonitor()
 {
-    EB2Monitor[0] = make_tuple(0, 1, 0b00011000);
-    EB2Monitor[1] = make_tuple(0, 1, 0b00001110);
-    EB2Monitor[2] = make_tuple(0, 1, 0b00000011);
-    EB2Monitor[3] = make_tuple(1, 3, 0b00000011);
-    EB2Monitor[4] = make_tuple(3, 4, 0b00000011);
-    EB2Monitor[5] = make_tuple(4, 6, 0b00000011);
-    EB2Monitor[6] = make_tuple(6, 7, 0b00000011);
-    EB2Monitor[7] = make_tuple(6, 7, 0b00001110);
-    EB2Monitor[8] = make_tuple(6, 7, 0b00011000);
-    EB2Monitor[9] = make_tuple(6, 7, 0b01110000);
-    EB2Monitor[10] = make_tuple(6, 7, 0b11000000);
-    EB2Monitor[11] = make_tuple(4, 6, 0b11000000);
-    EB2Monitor[12] = make_tuple(3, 4, 0b11000000);
-    EB2Monitor[13] = make_tuple(1, 3, 0b11000000);
-    EB2Monitor[14] = make_tuple(0, 1, 0b11000000);
-    EB2Monitor[15] = make_tuple(0, 1, 0b01110000);
+    EB2Monitor[0] = make_tuple(0, 1, 0b01100000);
+    EB2Monitor[1] = make_tuple(0, 1, 0b00011000);
+    EB2Monitor[2] = make_tuple(0, 1, 0b00000110);
+    EB2Monitor[3] = make_tuple(1, 2, 0b00000110);
+    EB2Monitor[4] = make_tuple(1, 2, 0b00000011);
+    EB2Monitor[5] = make_tuple(3, 4, 0b00000011);
+    EB2Monitor[6] = make_tuple(5, 6, 0b00000011);
+    EB2Monitor[7] = make_tuple(5, 6, 0b00000110);
+    EB2Monitor[8] = make_tuple(6, 7, 0b00000110);
+    EB2Monitor[9] = make_tuple(6, 7, 0b00011000);
+    EB2Monitor[10] = make_tuple(6, 7, 0b01100000);
+    EB2Monitor[11] = make_tuple(5, 6, 0b01100000);
+    EB2Monitor[12] = make_tuple(5, 6, 0b11000000);
+    EB2Monitor[13] = make_tuple(3, 4, 0b11000000);
+    EB2Monitor[14] = make_tuple(1, 2, 0b11000000);
+    EB2Monitor[15] = make_tuple(1, 2, 0b01100000);
 }
 
 void SimpleCXMonitor::init()
