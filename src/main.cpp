@@ -98,7 +98,7 @@ int main()
     #endif
 
     //main loop
-    for(int round=0; round<700; ++round)
+    for(int round=0; round<800; ++round)
     {
         #ifdef OPTIMIZE
             tfp<<"Round:"<<round<<'\n';
@@ -106,6 +106,7 @@ int main()
             timerStart(timer1);
         #endif
 
+        //baseline activity
         SendFreq("random1", 1500);
         SendFreq("random2", 1500);
         SendFreq("random3", 1700);
@@ -171,25 +172,6 @@ int main()
         }
 
 //==============================================================================
-/*
-else if(round > 150 && round < 200)
-	{
-		state = Right;
-		front.left();
-		rear.left();
-		delay(200);
-		front.stop();
-		rear.stop();
-	}else
-	{
-		state = Left;
-		front.right();
-		rear.right();
-		delay(200);
-		front.stop();
-		rear.stop();
-	}
-*/
 
         //scheduler
         if(pastNew >= 0)
@@ -319,25 +301,24 @@ else if(round > 150 && round < 200)
         cout<<endl;
         CXdecode.clean();
 
-        if(interHoming)
+        //homing stage
+        if(round > 700)
         {
-            --interHoming;
-        }
-        else if(interHoming == 0 && holdTarget)
-        {
-            char homeMotor = 'S';
-            //keep bump at 0
-            for(auto bump : ans)
+            while(!ans.empty())
             {
-                
-                if(bump == 0)
+                if(ans.front() == 0)
                 {
-                    homotor = 'S';
-                    //SendFreq("FS1", 5000);
                     break;
                 }
+                else if(ans.front < 8)
+                {
+                    SendFreq("FS4", 3000);
+                }
+                else if(ans.front > 8)
+                {
+                    SendFreq("FS3", 3000);
+                }
             }
-            
         }
 
         #ifdef OPTIMIZE
