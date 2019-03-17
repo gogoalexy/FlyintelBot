@@ -1,4 +1,3 @@
-
 #include "signal.h"
 #include <iostream>
 #include <fstream>
@@ -35,13 +34,14 @@ void handle_SIGINT(int unused)
 char *Spikes = nullptr;
 
 enum Actions{Stop, Forward, Backward, Left, Right};
-enum TargetLocation{NA, CL, CC, CR};
+enum TargetLocation{NA = -1, CL = 15, CC =0, CR = 1};
 
 int main()
 {
-    chrono::steady_clock::time_point timer0;
-    timerStart(timer0);
-
+    #ifdef OPTIMIZE
+        chrono::steady_clock::time_point timer0;
+        timerStart(timer0);
+    #endif
     //wiringPi init in BCM pinout
     wiringPiSetupGpio();
 
@@ -49,8 +49,9 @@ int main()
     bool holdTarget = false;
     bool newTarget = false;
     int pastNew = -1;
+    int interHoming = 0;
     int newTargetInterval = 3;
-    
+
     TargetLocation viewField = NA;
     Actions state = Stop;
 
@@ -58,8 +59,10 @@ int main()
     //log file
     fstream fp;
     fp.open("Flyintel.log", ios::out);
-    fstream tfp;
-    tfp.open("FlyTime.log", ios::out);
+    #ifdef OPTIMIZE
+        fstream tfp;
+        tfp.open("FlyTime.log", ios::out);
+    #endif
 
     //init sensors
     HCSR04 rescue0(21, 26, 10000);
@@ -90,22 +93,29 @@ int main()
 
     signal(SIGINT, handle_SIGINT);
 
-    cout<<"TIME init: "<<timerGetMillis(timer0)<<" ms"<<endl;
+    #ifdef OPTIMIZE
+        cout<<"TIME init: "<<timerGetMillis(timer0)<<" ms"<<endl;
+    #endif
 
     //main loop
-    for(int round=0; round<300; ++round)
+    for(int round=0; round<700; ++round)
     {
-        tfp<<"Round:"<<round<<'\n';
-        chrono::steady_clock::time_point timer1;
-        timerStart(timer1);
+        #ifdef OPTIMIZE
+            tfp<<"Round:"<<round<<'\n';
+            chrono::steady_clock::time_point timer1;
+            timerStart(timer1);
+        #endif
 
         SendFreq("random1", 1500);
         SendFreq("random2", 1500);
         SendFreq("random3", 1700);
         SendFreq("random4", 1700);
 
-        chrono::steady_clock::time_point timer4;
-        timerStart(timer4);
+        #ifdef OPTIMIZE
+            chrono::steady_clock::time_point timer4;
+            timerStart(timer4);
+        #endif
+
         //pixy cam
         eye.refresh();
         eye.capture();
@@ -123,14 +133,14 @@ int main()
              area = 4000;
         }
 
-        if(dx > 100)
+        if(dx > 90)
         {
             SendFreq("FS1", 0);
             SendFreq("FS3", 0);
             SendFreq("FS4", area);
             viewField = CR;
         }
-        else if(dx < -100)
+        else if(dx < -90)
         {
             SendFreq("FS1", 0);
             SendFreq("FS3", area);
@@ -162,20 +172,7 @@ int main()
 
 //==============================================================================
 /*
-        if(round == 5)
-        {
-            newTarget = true;
-            state = Stop;
-        }
-        else if(round > 100 && round < 150)
-        {
-            state = Left;
-            front.right();
-            rear.right();
-            delay(200);
-            front.stop();
-            rear.stop();
-        }else if(round > 150 && round < 200)
+else if(round > 150 && round < 200)
 	{
 		state = Right;
 		front.left();
@@ -204,12 +201,12 @@ int main()
         }
         else if(newTarget)
         {
-            //.......locate
             cout<<"newTar"<<'\n';
             CXsti.stiLoc(static_cast<int>(viewField), 250);
             newTarget = false;
             holdTarget = false;
             pastNew = static_cast<int>(viewField);
+            interHoming = 20;
         }
         else if(holdTarget)
         {
@@ -250,7 +247,7 @@ int main()
 
         //ultra
         unsigned int soundtime = rescue0.UsoundRange();
-        if(soundtime < 1800)
+        if(soundtime < 1700)
         {
             SendFreq("TS1", 9800);
         }
@@ -282,22 +279,70 @@ int main()
         }
         cout<<"IR: "<<irL<<", "<<irR<<endl;
 
-        tfp<<"TIME sensor: "<<timerGetMillis(timer4)<<" ms"<<'\n';
-
+        #ifdef OPTIMIZE
+            tfp<<"TIME sensor: "<<timerGetMillis(timer4)<<" ms"<<'\n';
+        #endif
 //==============================================================================
-        chrono::steady_clock::time_point timer2;
-        timerStart(timer2);
+        #ifdef OPTIMIZE
+            chrono::steady_clock::time_point timer2;
+            timerStart(timer2);
+        #endif
 
         Spikes = ActiveSimGetSpike("500");
         cout
         <<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
-
-        tfp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
+        #ifdef OPTIMIZE
+            tfp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
+        #endif
 //==============================================================================
+        #ifdef OPTIMIZE
+            chrono::steady_clock::time_point timer3;
+            timerStart(timer3);
+        #endif
 
-        chrono::steady_clock::time_point timer3;
-        timerStart(timer3);
+        //Decode CX
+        #ifdef OPTIMIZE
+            chrono::steady_clock::time_point timer6;
+            timerStart(timer6);
+        #endif
+
+        CXled.flush();
+        auto tmp = CXdecode.sortingHat(Spikes);
+        for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
+        {
+           fp<<*it<<' ';
+        }
+        auto ans (CXdecode.findBump());
+        CXled.showBump(ans);
+        fp<<endl;
+        cout<<endl;
+        CXdecode.clean();
+
+        if(interHoming)
+        {
+            --interHoming;
+        }
+        else if(interHoming == 0 && holdTarget)
+        {
+            char homeMotor = 'S';
+            //keep bump at 0
+            for(auto bump : ans)
+            {
+                
+                if(bump == 0)
+                {
+                    homotor = 'S';
+                    //SendFreq("FS1", 5000);
+                    break;
+                }
+            }
+            
+        }
+
+        #ifdef OPTIMIZE
+            tfp<<"TIME monitor: "<<timerGetMillis(timer6)<<" ms"<<'\n';
+        #endif
 
         //Decode motor neurons
         flyintel.refresh();
@@ -305,8 +350,10 @@ int main()
         char dir = motorNeuron.first;
         int speed = motorNeuron.second;
 
-        chrono::steady_clock::time_point timer5;
-        timerStart(timer5);
+        #ifdef OPTIMIZE
+            chrono::steady_clock::time_point timer5;
+            timerStart(timer5);
+        #endif
 
         if(dir & 0x01)
         {
@@ -356,30 +403,18 @@ int main()
             state = Stop;
         }
 
-        tfp<<"TIME exc motor: "<<timerGetMillis(timer5)<<" ms"<<'\n';
+        #ifdef OPTIMIZE
+            tfp<<"TIME exc motor: "<<timerGetMillis(timer5)<<" ms"<<'\n';
+        #endif
 
-        //Decode CX
-        chrono::steady_clock::time_point timer6;
-        timerStart(timer6);
+        #ifdef OPTIMIZE
 
-        CXled.flush();
-        auto tmp = CXdecode.sortingHat(Spikes);
-        for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
-        {
-           fp<<*it<<' ';
-        }
-        auto ans (CXdecode.findBump());
-        CXled.showBump(ans);
-        fp<<endl;
-        cout<<endl;
-        CXdecode.clean();
-        tfp<<"TIME monitor: "<<timerGetMillis(timer6)<<" ms"<<'\n';
+            tfp<<"TIME decode: "<<timerGetMillis(timer3)<<" ms"<<'\n';
 
-        tfp<<"TIME decode: "<<timerGetMillis(timer3)<<" ms"<<'\n';
-
-        tfp<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<'\n';
+            tfp<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<'\n';
+        #endif
     }
-
+    CXled.flush();
     pwmWrite(19, 0);
     pwmWrite(13, 0);
     digitalWrite(22, LOW);
@@ -391,6 +426,8 @@ int main()
     digitalWrite(1, LOW);
     digitalWrite(5, LOW);
     CloseSim();
-    tfp.close();
+    #ifdef OPTIMIZE
+        tfp.close();
+    #endif
     return 0;
 }

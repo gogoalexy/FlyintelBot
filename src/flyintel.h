@@ -55,7 +55,7 @@ public:
     int cstoi(char*);
     motor getMotor(int);
     vmotor getSpeed(int);
-
+    
     void refresh();
 
 protected:
