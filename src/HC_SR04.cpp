@@ -18,13 +18,13 @@
 
 #include "HC_SR04.h"
 
-HCSR04::HCSR04() : TrigPin(0), EchoPin(1), TimeOut(10000)
+HCSR04::HCSR04() : TrigPin(0), EchoPin(1), timeout(10000)
 {
-    std::cout<<"Warning: Parameters undefined! Default: Trig=0, Ech0=1, TimeOut=10000"<<endl;
+    std::cout<<"Warning: Parameters undefined! Default: Trig=0, Ech0=1, TimeOut=10000"<<std::endl;
 }
 
 HCSR04::HCSR04(short trigPin, short echoPin, int timeout)
- : TrigPin(trigPin), EchoPin(echoPin), TimeOut(timeout)
+ : TrigPin(trigPin), EchoPin(echoPin), timeout(timeout)
 {
     travelTime = 0;
     pinMode(TrigPin, OUTPUT);
