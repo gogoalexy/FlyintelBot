@@ -13,6 +13,7 @@ class SimpleCXStimulator
 {
 public:
     void stiLoc(int, int);
+    void rmAllSti();
     void switchState();
     void shiftRight(int);
     void shiftLeft(int);
