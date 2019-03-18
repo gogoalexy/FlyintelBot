@@ -37,16 +37,15 @@ void SimpleCXStimulator::shiftLeft(int fr)
 
 //====================================================
 
-array<int, 16> SimpleCXDecoder::sortingHat(char* inSpikes)
+array<int, 16> SimpleCXDecoder::sortingHat(const SpikesHandler& spikesData)
 {
     eb = {0};
-    int max = cstoi(inSpikes);
-    
-    for(int i=2; i<max; i+=3)
+
+    for(int i=2; i<spikesData.maxDataBytes; i+=3)
     {
-        if(spiketrain[i] <= 15)
+        if(spikesData.spiketrain[i] <= 15)
         {
-            eb.at(spiketrain[i]) += 1;
+            eb.at(spikesData.spiketrain[i]) += 1;
         }
 
     }

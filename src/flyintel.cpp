@@ -20,178 +20,80 @@
 
 using namespace std;
 
-Flyintel::Flyintel(): MAX_SPIKES(STEP_TIME/MOTOR_REFRAC), RATE_THRESHOLD(0.3), turnSmooth(0.3), baseSmooth(0.5)
+Flyintel::Flyintel(): count{0}, decision{0.0}
+{}
+
+void Flyintel::sortingHat(const SpikesHandler &spikesData)
 {
-	count = {0, 0, 0, 0};
-	decision = {0.0, 0.0, 0.0, 0.0, 0.0};
-	turnConst = 100;
-	preturnSpeed = 0;
-	prebaseSpeed = 0;
+    for(int i=2; i<spikesData.maxDataBytes; i+=3)
+    {
+        switch(spikesData.spiketrain[i])
+        {
+            case 56:
+                count.forward++;
+                break;
+            case 62:
+                count.backward++;
+                break;
+            case 68:
+                count.left++;
+                break;
+            case 74:
+                count.right++;
+                break;
+            default:
+                ;
+        }
+    }
 }
 
-int Flyintel::cstoi(char* Spikes)
+motor Flyintel::getMotor()
 {
-	int j=0, k=0, max;
-	while(true){
-		if(Spikes[j] == ' ')
-		{
-			k++;
-			j++;
-		}
-		else if(Spikes[j] >= '0' && Spikes[j] <= '9')
-		{
-			spiketrain[k] = spiketrain[k]*10 + Spikes[j]-'0';
-			j++;
-		}
-		else if(Spikes[j] == 'E')
-		{
-			this->maxspikes = k-1;
-			return maxspikes;//array elements (count from 0)
-		}
-	}
+    decision.denom = count.forward+count.backward+count.right+count.left;
+    if(decision.denom == 0)
+        decision.denom = 1;
+    if(decision.denom)
+    {
+        decision.rforward = count.forward/decision.denom;
+        decision.rbackward = count.backward/decision.denom;
+        decision.rleft = count.left/decision.denom;
+        decision.rright = count.right/decision.denom;
+        cout<<decision.rforward<<";";
+        cout<<decision.rbackward<<";";
+        cout<<decision.rleft<<";";
+        cout<<decision.rright<<";"<<endl;
+    }
+
+    if(decision.rforward<=0.5 && decision.rbackward<=0.5 && decision.rleft<=0.5 && decision.rright<=0.5)
+    {
+        return make_pair(0x0, 0); //S
+    }
+    else if(decision.rforward>0.5)
+    {
+        return make_pair(0x1, short(1024*decision.rforward)); //F
+    }
+    else if(decision.rbackward>0.5)
+    {
+        return make_pair(0x2, short(1024*decision.rbackward)); //B
+    }
+    else if(decision.rleft>0.5)
+    {
+        return make_pair(0x4, short(1024*decision.rleft)); //L
+    }
+    else if(decision.rright>0.5)
+    {
+        return make_pair(0x8, short(1024*decision.rright)); //R
+    }
+    else
+    {
+        return make_pair(0x0, 0); //S
+    }
 }
 
-
-motor Flyintel::getMotor(int max)
+void Flyintel::clear()
 {
-	for(int i=2; i<max; i+=3)
-	{
-		switch(spiketrain[i])
-		{
-			case 56:
-				count.forward++;
-				break;
-			case 62:
-				count.backward++;
-				break;
-			case 68:
-				count.left++;
-				break;
-			case 74:
-				count.right++;
-				break;
-			default:
-				;
-		}
-	}
-
-	decision.denom = count.forward+count.backward+count.right+count.left;
-	if(decision.denom == 0)
-		decision.denom = 1;
-	if(decision.denom)
-	{
-	    	decision.rforward = count.forward/decision.denom;
-		std::cout<<decision.rforward<<";";
-		decision.rbackward = count.backward/decision.denom;
-		std::cout<<decision.rbackward<<";";
-	   	decision.rleft = count.left/decision.denom;
-		std::cout<<decision.rleft<<";";
-	   	decision.rright = count.right/decision.denom;
-		std::cout<<decision.rright<<";"<<endl;
-	}
-
-	if(decision.rforward<=0.5 && decision.rbackward<=0.5 && decision.rleft<=0.5 && decision.rright<=0.5)
-	{
-		return make_pair(0x0, 0); //S
-	}
-	else if(decision.rforward>0.5)
-	{
-		return make_pair(0x1, short(1024*decision.rforward)); //F
-	}
-	else if(decision.rbackward>0.5)
-	{
-		return make_pair(0x2, short(1024*decision.rbackward)); //B
-	}
-	else if(decision.rleft>0.5)
-	{
-		return make_pair(0x4, short(1024*decision.rleft)); //L
-	}
-	else if(decision.rright>0.5)
-	{
-		return make_pair(0x8, short(1024*decision.rright)); //R
-	}
-	else
-	{
-		return make_pair(0x0, 0); //S
-	}
-}
-
-vmotor Flyintel::getSpeed(int max)
-{
-	for(int i=2; i<max; i+=3)
-	{
-		switch(spiketrain[i])
-		{
-			case 5:
-				count.forward++;
-				break;
-			case 11:
-				count.backward++;
-				break;
-			case 17:
-				count.left++;
-				break;
-			case 23:
-				count.right++;
-				break;
-			default:
-				;
-		}
-	}
-
-	int SpikeThreshold = RATE_THRESHOLD * MAX_SPIKES;
-	float forwardRate = 0, backwardRate = 0, leftRate = 0, rightRate = 0;
-	if(count.forward > SpikeThreshold)
-	{
-		forwardRate = (float)count.forward / (float)MAX_SPIKES;
-	}
-	if(count.backward > SpikeThreshold)
-	{
-		backwardRate = (float)count.backward / (float)MAX_SPIKES;
-	}
-	if(count.left > SpikeThreshold)
-	{
-		leftRate = (float)count.left / (float)MAX_SPIKES;
-	}
-	if(count.right > SpikeThreshold)
-	{
-		rightRate = (float)count.right / (float)MAX_SPIKES;
-	}
-
-	float turnAct = turnConst * ( leftRate - rightRate );
-	float baseAct = ( forwardRate - backwardRate ) * V_MAX;
-	
-	int turnSpeed = turnSmooth * turnAct + (1 - turnSmooth) * preturnSpeed;
-	int baseSpeed =  baseSmooth * baseAct + (1 - baseSmooth) * prebaseSpeed;
-	
-	preleftRate = leftRate;
-	prerightRate = rightRate;
-	preforwardRate = forwardRate;
-	prebackwardRate = backwardRate;
-	preturnSpeed = turnSpeed;
-	prebaseSpeed = baseSpeed;
-
-
-	if(baseSpeed >= 0)
-	{
-		return make_pair(2*(baseSpeed - turnSpeed), 2*(baseSpeed + turnSpeed));//enlarge
-	}
-	else if(baseSpeed < 0)
-	{
-		return make_pair(2*(baseSpeed + turnSpeed), 2*(baseSpeed - turnSpeed));
-	}
-	else
-	{
-		return make_pair(0, 0);
-	}
-
-}
-
-void Flyintel::refresh()
-{
-	memset(spiketrain, 0,sizeof(spiketrain));
-	count.forward=0;
-	count.backward=0;
-	count.left=0;
-	count.right=0;
+    count.forward=0;
+    count.backward=0;
+    count.left=0;
+    count.right=0;
 }

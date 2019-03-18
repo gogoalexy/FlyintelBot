@@ -18,8 +18,13 @@ int SpikesHandler::cstoi(char* Spikes)
 		}
 		else if(Spikes[j] == 'E')
 		{
-			this->maxDataByte = k-1;
-			return maxDataByte;//array elements (count from 0)
+			this->maxDataBytes = k-1;
+			return maxDataBytes;//array elements (count from 0)
 		}
 	}
+}
+
+void SpikesHandler::clear()
+{
+    memset(spiketrain, 0,sizeof(spiketrain));
 }
