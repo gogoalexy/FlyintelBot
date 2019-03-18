@@ -4,6 +4,7 @@
 #include <array>
 #include <wiringPi.h>
 #include "connect_to_flysim.h"
+#include "spikesHadler.h"
 #include "flyintel.h"
 #include "SCXmodel.h"
 #include "SPIadc.h"
@@ -44,6 +45,10 @@ int main()
     #endif
     //wiringPi init in BCM pinout
     wiringPiSetupGpio();
+    pinMode(16, OUTPUT);
+    pinMode(20, OUTPUT);
+    digitalWrite(16, LOW);
+    digitalWrite(20 LOW);
 
     bool lastBlock = false;
     bool holdTarget = false;
@@ -75,6 +80,7 @@ int main()
 
     //init interface
     Flyintel flyintel;
+    SpikeHadler handler;
     SimpleCXStimulator CXsti;
     SimpleCXDecoder CXdecode;
     SimpleCXMonitor CXled;
@@ -271,12 +277,14 @@ int main()
         #endif
 
         Spikes = ActiveSimGetSpike("500");
-        cout
-        <<"receving\n";
+        cout<<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
         #ifdef OPTIMIZE
             tfp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
         #endif
+        
+        //c-string to int array
+        handler.cstoi(Spikes);
 //==============================================================================
         #ifdef OPTIMIZE
             chrono::steady_clock::time_point timer3;
@@ -290,7 +298,7 @@ int main()
         #endif
 
         CXled.flush();
-        auto tmp = CXdecode.sortingHat(Spikes);
+        auto tmp = CXdecode.sortingHat(handler);
         for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
         {
            fp<<*it<<' ';
@@ -304,6 +312,7 @@ int main()
         //homing stage
         if(round > 700)
         {
+            digitalWrite(20, HIGH);
             while(!ans.empty())
             {
                 if(ans.front() == 0)
@@ -326,15 +335,15 @@ int main()
         #endif
 
         //Decode motor neurons
-        flyintel.refresh();
-        motor motorNeuron = flyintel.getMotor(flyintel.cstoi(Spikes));
-        char dir = motorNeuron.first;
-        int speed = motorNeuron.second;
 
         #ifdef OPTIMIZE
             chrono::steady_clock::time_point timer5;
             timerStart(timer5);
         #endif
+
+        flyintel.refresh();
+        motor motorNeuron = flyintel.getMotor(flyintel.sortingHat(handler));
+        char dir = motorNeuron.first;
 
         if(dir & 0x01)
         {

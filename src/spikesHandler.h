@@ -1,12 +1,15 @@
 #ifndef SPIKES_HANDLER_H
 
+#include <cstring>
+
 class SpikesHandler
 {
 public:
     int cstoi(char*);
-protected:
+    void clear();
+
     int spiketrain[7000];
-    int maxDataByte;
+    int maxDataBytes;
 };
 
 #define SPIKES_HANDLER_H

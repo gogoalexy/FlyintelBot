@@ -1,12 +1,11 @@
 #ifndef SCX_MODEL_H
 
-#include "connect_to_flysim.h"
-#include "flyintel.h"
 #include <array>
 #include <queue>
 #include <string>
 #include <iostream>
 #include <tuple>
+#include "connect_to_flysim.h"
 #include "max7219.h"
 
 class SimpleCXStimulator
@@ -20,10 +19,10 @@ public:
 
 };
 
-class SimpleCXDecoder : public Flyintel
+class SimpleCXDecoder
 {
 public:
-    std::array<int, 16> sortingHat(char*);
+    std::array<int, 16> sortingHat(const SpikesHandler&);
     std::queue<int> findBump();
     void clean();
 private:
