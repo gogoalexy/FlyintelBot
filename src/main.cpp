@@ -4,7 +4,7 @@
 #include <array>
 #include <wiringPi.h>
 #include "connect_to_flysim.h"
-#include "spikesHadler.h"
+#include "spikesHandler.h"
 #include "flyintel.h"
 #include "SCXmodel.h"
 #include "SPIadc.h"
@@ -48,7 +48,7 @@ int main()
     pinMode(16, OUTPUT);
     pinMode(20, OUTPUT);
     digitalWrite(16, LOW);
-    digitalWrite(20 LOW);
+    digitalWrite(20, LOW);
 
     bool lastBlock = false;
     bool holdTarget = false;
@@ -80,7 +80,7 @@ int main()
 
     //init interface
     Flyintel flyintel;
-    SpikeHadler handler;
+    SpikesHandler handler;
     SimpleCXStimulator CXsti;
     SimpleCXDecoder CXdecode;
     SimpleCXMonitor CXled;
@@ -282,8 +282,9 @@ int main()
         #ifdef OPTIMIZE
             tfp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
         #endif
-        
+
         //c-string to int array
+        handler.clear();
         handler.cstoi(Spikes);
 //==============================================================================
         #ifdef OPTIMIZE
@@ -307,7 +308,6 @@ int main()
         CXled.showBump(ans);
         fp<<endl;
         cout<<endl;
-        CXdecode.clean();
 
         //homing stage
         if(round > 700)
@@ -319,11 +319,11 @@ int main()
                 {
                     break;
                 }
-                else if(ans.front < 8)
+                else if(ans.front() < 8)
                 {
                     SendFreq("FS4", 3000);
                 }
-                else if(ans.front > 8)
+                else if(ans.front() > 8)
                 {
                     SendFreq("FS3", 3000);
                 }
@@ -341,8 +341,9 @@ int main()
             timerStart(timer5);
         #endif
 
-        flyintel.refresh();
-        motor motorNeuron = flyintel.getMotor(flyintel.sortingHat(handler));
+        flyintel.clear();
+        flyintel.sortingHat(handler);
+        motor motorNeuron = flyintel.getMotor();
         char dir = motorNeuron.first;
 
         if(dir & 0x01)

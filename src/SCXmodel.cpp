@@ -4,11 +4,11 @@ using namespace std;
 
 void SimpleCXStimulator::stiLoc(int loc, int fr)
 {
-    string neuron = "Exc" + to_string(i);
+    string neuron = "Exc" + to_string(loc);
     SendFreq(neuron, fr);
 }
 
-void SimpleCXStimulator::rmAllSti
+void SimpleCXStimulator::rmAllSti()
 {
     for(auto i=0; i<16; ++i)
     {
@@ -52,7 +52,7 @@ array<int, 16> SimpleCXDecoder::sortingHat(const SpikesHandler& spikesData)
 
     for(auto it = eb.cbegin(); it != eb.cend(); ++it)
         cout<<*it<<' ';
-        
+
     cout<<endl;
     return eb;
 }
@@ -84,10 +84,6 @@ queue<int> SimpleCXDecoder::findBump()
     return bump;
 }
 
-void SimpleCXDecoder::clean()
-{
-    refresh();
-}
 
 //===================================================
 
