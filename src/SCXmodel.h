@@ -6,6 +6,7 @@
 #include <iostream>
 #include <tuple>
 #include "connect_to_flysim.h"
+#include "spikesHandler.h"
 #include "max7219.h"
 
 class SimpleCXStimulator
@@ -24,7 +25,7 @@ class SimpleCXDecoder
 public:
     std::array<int, 16> sortingHat(const SpikesHandler&);
     std::queue<int> findBump();
-    void clean();
+
 private:
     std::array<int, 16> eb;
 
