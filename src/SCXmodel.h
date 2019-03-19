@@ -25,6 +25,7 @@ class SimpleCXDecoder
 public:
     std::array<int, 16> sortingHat(const SpikesHandler&);
     std::queue<int> findBump();
+    void clear();
 
 private:
     std::array<int, 16> eb;
