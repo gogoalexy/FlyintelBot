@@ -49,11 +49,13 @@ array<int, 16> SimpleCXDecoder::sortingHat(const SpikesHandler& spikesData)
         }
 
     }
+    #ifdef DEBUG
+        for(auto it = eb.cbegin(); it != eb.cend(); ++it)
+            cout<<*it<<' ';
 
-    for(auto it = eb.cbegin(); it != eb.cend(); ++it)
-        cout<<*it<<' ';
+        cout<<endl;
+    #endif
 
-    cout<<endl;
     return eb;
 }
 
@@ -84,6 +86,11 @@ queue<int> SimpleCXDecoder::findBump()
     return bump;
 }
 
+
+void SimpleCXDecoder::clear()
+{
+
+}
 
 //===================================================
 

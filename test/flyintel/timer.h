@@ -2,24 +2,26 @@
 
 #include <chrono>
 
-//auto system_clock::time_point m_start;
+using steadyClock = std::chrono::steady_clock;
 
-void timerToZero(auto &mstart)
+//std::chrono::system_clock::time_point m_start;
+
+inline void timerToZero(auto &m_start)
 {
-    m_start = steady_clock::time_point::min();
-}
+    m_start = steadyClock::time_point::min();
+};
 
 inline void timerStart(auto &m_start)
 {
-    m_start = steady_clock::now();
-}
+    m_start = steadyClock::now();
+};
 
 inline unsigned long timerGetMillis(auto &m_start)
 {
-    system_clock::duration diff;
-    diff = steady_clock::now() - m_start;
-    return (unsigned)(duration_cast<milliseconds>(diff).count());
-}
+    steadyClock::duration diff;
+    diff = steadyClock::now() - m_start;
+    return (unsigned)(std::chrono::duration_cast<std::chrono::milliseconds>(diff).count());
+};
 
 #define TIMER_H
 #endif
