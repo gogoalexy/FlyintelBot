@@ -123,7 +123,7 @@ Type=ChangeMembraneNoise
 Label=#1#
 Population: random1
 GaussMean=0.25
-GaussSTD=0.1
+GaussSTD=0.2
 EndEvent
 
 EventTime 0.0
@@ -131,7 +131,7 @@ Type=ChangeMembraneNoise
 Label=#1#
 Population: random2
 GaussMean=0.25
-GaussSTD=0.1
+GaussSTD=0.2
 EndEvent
 
 EventTime 0.0
@@ -139,7 +139,7 @@ Type=ChangeMembraneNoise
 Label=#1#
 Population: random3
 GaussMean=0.25
-GaussSTD=0.1
+GaussSTD=0.2
 EndEvent
 
 EventTime 0.0
@@ -147,6 +147,6 @@ Type=ChangeMembraneNoise
 Label=#1#
 Population: random4
 GaussMean=0.25
-GaussSTD=0.1
+GaussSTD=0.2
 EndEvent
 

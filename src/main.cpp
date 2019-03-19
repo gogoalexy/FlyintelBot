@@ -90,6 +90,7 @@ int main()
     //main loop
     for(int round=0; round<300; ++round)
     {
+//delay(1000);
         #ifdef OPTIMIZE
             tfp<<"Round:"<<round<<'\n';
             chrono::steady_clock::time_point timer1;
@@ -97,10 +98,10 @@ int main()
         #endif
 
         //baseline activity
-        SendFreq("random1", 1500);
-        SendFreq("random2", 1500);
-        SendFreq("random3", 1700);
-        SendFreq("random4", 1700);
+        SendFreq("random1", 1200);
+        SendFreq("random2", 1200);
+        SendFreq("random3", 1000);
+        SendFreq("random4", 1200);
 
         #ifdef OPTIMIZE
             chrono::steady_clock::time_point timer4;
@@ -169,16 +170,17 @@ int main()
         //scheduler
         if(pastNew >= 0)
         {
-            cout<<"pastnew"<<pastNew<<'\n';
-            CXsti.rmAllSti();
+            cout<<"******Pastnew"<<pastNew<<'\n';
+            //CXsti.rmAllSti();
             CXsti.stiLoc(pastNew, 0);
             pastNew = -1;
             holdTarget = true;
         }
         else if(newTarget)
         {
-            cout<<"newTar"<<'\n';
-            CXsti.stiLoc(static_cast<int>(viewField), 250);
+            cout<<"*****NewTar"<<'\n';
+            //CXsti.rmAllSti();
+            CXsti.stiLoc(static_cast<int>(viewField), 400);
             newTarget = false;
             holdTarget = false;
             pastNew = static_cast<int>(viewField);
@@ -222,13 +224,13 @@ int main()
 
         //ultra
         unsigned int soundtime = rescue0.UsoundRange();
-        if(soundtime < 1700)
+        if(soundtime < 1900)
         {
             SendFreq("TS1", 9800);
         }
         else
         {
-            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1800)) );
+            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1900)) );
         }
 
         #ifdef DEBUG
@@ -269,7 +271,7 @@ int main()
             timerStart(timer2);
         #endif
 
-        Spikes = ActiveSimGetSpike("500");
+        Spikes = ActiveSimGetSpike("650");
         cout<<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
         #ifdef OPTIMIZE
@@ -311,11 +313,13 @@ int main()
         if(round == 201)
         {
             //homing starts
-            delay(1000);
+            delay(2000);
             digitalWrite(20, HIGH);
         }
         if(round > 200)
         {
+            if(soundtime < 1200)
+                return 0;
             digitalWrite(20, HIGH);
             while(!ans.empty())
             {
@@ -325,12 +329,12 @@ int main()
                 }
                 else if(ans.front() < 8)
                 {
-                    SendFreq("FS4", 3000);
+                    SendFreq("FS4", 4000);
                     ans.pop();
                 }
                 else if(ans.front() >= 8)
                 {
-                    SendFreq("FS3", 3000);
+                    SendFreq("FS3", 4000);
                     ans.pop();
                 }
             }
@@ -358,7 +362,7 @@ int main()
             cout<<'F'<<endl;
             front.forward();
             rear.forward();
-            delay(200);
+            delay(170);
             front.stop();
             rear.stop();
             state = Forward;
@@ -368,7 +372,7 @@ int main()
             cout<<'B'<<endl;
             front.backward();
             rear.backward();
-            delay(200);
+            delay(170);
             front.stop();
             rear.stop();
             state = Backward;
@@ -378,7 +382,7 @@ int main()
             cout<<'L'<<endl;
             front.left();
             rear.left();
-            delay(200);
+            delay(170);
             front.stop();
             rear.stop();
             state = Left;
@@ -388,7 +392,7 @@ int main()
             cout<<'R'<<endl;
             front.right();
             rear.right();
-            delay(200);
+            delay(170);
             front.stop();
             rear.stop();
             state = Right;
