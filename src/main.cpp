@@ -13,6 +13,7 @@
 #include "DCmotor.h"
 #include "timer.h"
 
+
 using namespace std;
 
 char *Spikes = nullptr;
@@ -87,7 +88,7 @@ int main()
     #endif
 //==============================================================================
     //main loop
-    for(int round=0; round<700; ++round)
+    for(int round=0; round<300; ++round)
     {
         #ifdef OPTIMIZE
             tfp<<"Round:"<<round<<'\n';
@@ -307,13 +308,13 @@ int main()
             cout<<endl;
         #endif
         //homing stage
-        if(round == 501)
+        if(round == 201)
         {
             //homing starts
             delay(1000);
             digitalWrite(20, HIGH);
         }
-        if(round > 500)
+        if(round > 200)
         {
             digitalWrite(20, HIGH);
             while(!ans.empty())
@@ -327,7 +328,7 @@ int main()
                     SendFreq("FS4", 3000);
                     ans.pop();
                 }
-                else if(ans.front() > 8)
+                else if(ans.front() >= 8)
                 {
                     SendFreq("FS3", 3000);
                     ans.pop();
@@ -422,6 +423,7 @@ int main()
     digitalWrite(0, LOW);
     digitalWrite(1, LOW);
     digitalWrite(5, LOW);
+    digitalWrite(20, LOW);
     CloseSim();
     #ifdef DEBUG
         fp.close();
