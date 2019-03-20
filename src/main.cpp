@@ -88,7 +88,7 @@ int main()
     #endif
 //==============================================================================
     //main loop
-    for(int round=0; round<300; ++round)
+    for(int round=0; round<400; ++round)
     {
 //delay(1000);
         #ifdef OPTIMIZE
@@ -100,7 +100,7 @@ int main()
         //baseline activity
         SendFreq("random1", 1400);
         SendFreq("random2", 1400);
-        SendFreq("random3", 1200);
+        SendFreq("random3", 1300);
         SendFreq("random4", 1400);
 
         #ifdef OPTIMIZE
@@ -271,7 +271,7 @@ int main()
             timerStart(timer2);
         #endif
 
-        Spikes = ActiveSimGetSpike("550");
+        Spikes = ActiveSimGetSpike("530");
         cout<<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
         #ifdef OPTIMIZE
@@ -310,20 +310,20 @@ int main()
             cout<<endl;
         #endif
         //homing stage
-        if(round == 201)
+        if(round == 281)
         {
             //homing starts
             delay(2000);
             digitalWrite(20, HIGH);
         }
-        if(round > 200)
+        if(round > 280)
         {
-            if(soundtime < 1200 && ans.front() == 0)
+            if(soundtime < 1400 && ans.front() == 0)
                 return 0;
             digitalWrite(20, HIGH);
             while(!ans.empty())
             {
-                if(ans.front() == 0 )
+                if(ans.front() == 0 || ans.front() == 1 || ans.front() == 15)
                 {
                     SendFreq("FS1", 4000);
                     break;
@@ -363,7 +363,7 @@ int main()
             cout<<'F'<<endl;
             front.forward();
             rear.forward();
-            delay(170);
+            delay(200);
             front.stop();
             rear.stop();
             state = Forward;
@@ -373,7 +373,7 @@ int main()
             cout<<'B'<<endl;
             front.backward();
             rear.backward();
-            delay(170);
+            delay(200);
             front.stop();
             rear.stop();
             state = Backward;
@@ -383,7 +383,7 @@ int main()
             cout<<'L'<<endl;
             front.left();
             rear.left();
-            delay(170);
+            delay(200);
             front.stop();
             rear.stop();
             state = Left;
@@ -393,7 +393,7 @@ int main()
             cout<<'R'<<endl;
             front.right();
             rear.right();
-            delay(170);
+            delay(200);
             front.stop();
             rear.stop();
             state = Right;
