@@ -98,10 +98,10 @@ int main()
         #endif
 
         //baseline activity
-        SendFreq("random1", 1200);
-        SendFreq("random2", 1200);
-        SendFreq("random3", 1000);
-        SendFreq("random4", 1200);
+        SendFreq("random1", 1400);
+        SendFreq("random2", 1400);
+        SendFreq("random3", 1200);
+        SendFreq("random4", 1400);
 
         #ifdef OPTIMIZE
             chrono::steady_clock::time_point timer4;
@@ -118,7 +118,7 @@ int main()
         float area = retina[0].first;
         if(area > 5500)
         {
-            area = 5000;
+            area = 5500;
         }
         else if(area >= 2500 && area < 4000)
         {
@@ -224,13 +224,13 @@ int main()
 
         //ultra
         unsigned int soundtime = rescue0.UsoundRange();
-        if(soundtime < 1900)
+        if(soundtime < 1950)
         {
             SendFreq("TS1", 9800);
         }
         else
         {
-            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1900)) );
+            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1950)) );
         }
 
         #ifdef DEBUG
@@ -271,7 +271,7 @@ int main()
             timerStart(timer2);
         #endif
 
-        Spikes = ActiveSimGetSpike("650");
+        Spikes = ActiveSimGetSpike("550");
         cout<<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
         #ifdef OPTIMIZE
@@ -318,13 +318,14 @@ int main()
         }
         if(round > 200)
         {
-            if(soundtime < 1200)
+            if(soundtime < 1200 && ans.front() == 0)
                 return 0;
             digitalWrite(20, HIGH);
             while(!ans.empty())
             {
-                if(ans.front() == 0)
+                if(ans.front() == 0 )
                 {
+                    SendFreq("FS1", 4000);
                     break;
                 }
                 else if(ans.front() < 8)
