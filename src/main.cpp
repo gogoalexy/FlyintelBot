@@ -8,7 +8,6 @@
 #include "SCXmodel.h"
 #include "SPIadc.h"
 #include "Sharp_IR.h"
-#include "HC_SR04.h"
 #include "pixycam.h"
 #include "DCmotor.h"
 #include "timer.h"
@@ -56,11 +55,12 @@ int main()
     #endif
 
     //init sensors
-    HCSR04 rescue0(21, 26, 10000);
     ADC mcp3008;
         mcp3008.initSPI(88, 0);
     SharpIR rescue1(mcp3008, 0);
     SharpIR rescue2(mcp3008, 1);
+    SharpIR rescue3(mcp3008, 2);
+    SharpIR rescue4(mcp3008, 3)
     PixyCam eye;
     eye.init();
 
@@ -222,21 +222,6 @@ int main()
 
 //==============================================================================
 
-        //ultra
-        unsigned int soundtime = rescue0.UsoundRange();
-        if(soundtime < 1950)
-        {
-            SendFreq("TS1", 9800);
-        }
-        else
-        {
-            SendFreq("TS1", (9800-(9800/500.0)*(soundtime-1950)) );
-        }
-
-        #ifdef DEBUG
-            cout<<"Ultra: "<<soundtime<<"; ";
-        #endif
-//------------------------------------------------------------------------------
         //IR
         float irL = rescue1.IRrange();
         if(irL > 400)
@@ -258,8 +243,28 @@ int main()
             SendFreq("TS3", (9000-(9000/90.0)*(400-irR)));
         }
 
+        float irFL = rescue3.IRrange();
+        if(irR > 400)
+        {
+            SendFreq("TS0", 9000);
+        }
+        else
+        {
+            SendFreq("TS0", (9000-(9000/90.0)*(400-irR)));
+        }
+
+        float irFR = rescue4.IRrange();
+        if(irR > 400)
+        {
+            SendFreq("TS1", 9000);
+        }
+        else
+        {
+            SendFreq("TS1", (9000-(9000/90.0)*(400-irR)));
+        }
+
         #ifdef DEBUG
-            cout<<"IR: "<<irL<<", "<<irR<<endl;
+            cout<<"IR: "<<irL<<", "<<irR<<", "<<irFL<<", "<<irFR<<endl;
         #endif
 
         #ifdef OPTIMIZE
