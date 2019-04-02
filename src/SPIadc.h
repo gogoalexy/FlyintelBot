@@ -24,14 +24,15 @@
 class spiADC : public ADC
 {
 public:
-    ADC();
+    spiADC();
     bool initSPI();
     bool initSPI(int, int);
     inline bool isInit() override
     {
-        return isInit;
+        return init;
     }
     inline int whichPin() override
+    {
         return pinBase;
     }
     inline int readChan(int chipChan) override

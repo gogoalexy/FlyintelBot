@@ -46,7 +46,7 @@ $(BUILD_DIR)/HC_SR04.o: HC_SR04.cpp HC_SR04.h
 $(BUILD_DIR)/cltcmd.o: cltcmd.cpp cltcmd.h
 	$(CXX) -c $< -o $(BUILD_DIR)/cltcmd.o $(OPT)
 
-$(BUILD_DIR)/SPIadc.o: SPIadc.cpp SPIadc.h
+$(BUILD_DIR)/SPIadc.o: SPIadc.cpp SPIadc.h adc.h
 	$(CXX) -c $< -o $(BUILD_DIR)/SPIadc.o $(OPT)
 
 $(BUILD_DIR)/DCmotor.o: DCmotor.cpp DCmotor.h

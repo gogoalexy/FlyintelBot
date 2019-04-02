@@ -20,10 +20,9 @@
 
 using namespace std;
 
-spiADC::spiADC() : pinBaseDefault(88), spiChanDefault(0), spiSpeedDefault(1000000), isInit(false)
+spiADC::spiADC() : pinBaseDefault(88), spiChanDefault(0), spiSpeedDefault(1000000)
 {
     /*SPI speed is defined in mcp3004Setup().*/
-
 }
 
 bool spiADC::initSPI()
@@ -32,7 +31,7 @@ bool spiADC::initSPI()
     this->spiChan = spiChanDefault;
     if(mcp3004Setup(pinBase, spiChan))
     {
-        isInit = true;
+        init = true;
         return true;
     }
 
@@ -45,7 +44,7 @@ bool spiADC::initSPI(int pinBase, int spiChan)
     this->spiChan = spiChan;
     if(mcp3004Setup(pinBase, spiChan))
     {
-        isInit = true;
+        init = true;
         return true;
     }
 

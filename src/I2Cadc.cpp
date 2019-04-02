@@ -20,7 +20,7 @@
 
 using namespace std;
 
-i2cADC::i2cADC() : pinBaseDefault(77), i2cChanDefault(0x48), isInit(false)
+i2cADC::i2cADC() : pinBaseDefault(77), i2cChanDefault(0x48)
 {}
 
 bool i2cADC::initI2C()
@@ -29,7 +29,7 @@ bool i2cADC::initI2C()
     this->i2cChan = i2cChanDefault;
     if(pcf8591Setup(pinBase, i2cChan))
     {
-        isInit = true;
+        init = true;
         return true;
     }
 
@@ -42,7 +42,7 @@ bool i2cADC::initI2C(int pinBase, int i2cChan)
     this->i2cChan = i2cChan;
     if(pcf8591Setup(pinBase, i2cChan))
     {
-        isInit = true;
+        init = true;
         return true;
     }
 

@@ -3,6 +3,8 @@
 class ADC
 {
 public:
+    ADC() : init(false)
+    {}
     virtual bool isInit()
     {
         return false;
@@ -11,17 +13,17 @@ public:
     {
         return 0;
     }
-    virtual int readChan()
+    virtual int readChan(int pin)
     {
         return -1;
     }
-    virtual void writeChan()
+    virtual void writeChan(int pin, int value)
     {
         return;
     }
 
 protected:
-    bool isInit;
+    bool init;
 };
 
 #define ADC_H
