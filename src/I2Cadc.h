@@ -29,7 +29,7 @@ public:
     bool initI2C(int, int);
     inline bool isInit() override
     {
-        return isInit;
+        return init;
     }
     inline int whichPin() override
     {

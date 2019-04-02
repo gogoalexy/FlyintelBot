@@ -6,6 +6,7 @@
 #include "spikesHandler.h"
 #include "flyintel.h"
 #include "SCXmodel.h"
+#include "adc.h"
 #include "SPIadc.h"
 #include "Sharp_IR.h"
 #include "pixycam.h"
@@ -55,12 +56,12 @@ int main()
     #endif
 
     //init sensors
-    ADC mcp3008;
+    spiADC mcp3008;
         mcp3008.initSPI(88, 0);
     SharpIR rescue1(mcp3008, 0);
     SharpIR rescue2(mcp3008, 1);
     SharpIR rescue3(mcp3008, 2);
-    SharpIR rescue4(mcp3008, 3)
+    SharpIR rescue4(mcp3008, 3);
     PixyCam eye;
     eye.init();
 
@@ -323,7 +324,7 @@ int main()
         }
         if(round > 280)
         {
-            if(soundtime < 1400 && ans.front() == 0)
+            if( ans.front() == 0)
                 return 0;
             digitalWrite(20, HIGH);
             while(!ans.empty())
