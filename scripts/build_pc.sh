@@ -24,20 +24,20 @@ NORMAL_TEXT
 
 uname -a
 
-TARGET_BUILD_FOLDER=../build
+TARGET_BUILD_FOLDER=../build_pc
 
 mkdir -pv $TARGET_BUILD_FOLDER
 
 if [ -e $TARGET_BUILD_FOLDER/main.out ]
 then
 	cd ../src
-    make clean
+    make -f Makefile_pc clean
 fi
 
 cd ../src
-make
+make -f Makefile_pc
 
-if [ -f ../build/main.out ]
+if [ -f $TARGET_BUILD_FOLDER/main.out ]
 then
   GREEN_TEXT
   printf "SUCCESS "

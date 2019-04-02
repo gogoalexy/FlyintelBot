@@ -4,10 +4,12 @@
 #include <queue>
 #include <string>
 #include <iostream>
-#include <tuple>
 #include "connect_to_flysim.h"
 #include "spikesHandler.h"
-#include "max7219.h"
+#ifdef PI
+    #include <tuple>
+    #include "max7219.h"
+#endif
 
 class SimpleCXStimulator
 {
@@ -32,19 +34,21 @@ private:
 
 };
 
-typedef std::tuple<int, int, BYTE> LEDpacket;
+#ifdef PI
+    typedef std::tuple<int, int, BYTE> LEDpacket;
 
-class SimpleCXMonitor
-{
-public:
-    SimpleCXMonitor();
-    void init();
-    void flush();
-    void showBump(std::queue<int>);
-private:
-    max7219 chip;
-    std::array<LEDpacket, 16> EB2Monitor;
-};
+    class SimpleCXMonitor
+    {
+    public:
+        SimpleCXMonitor();
+        void init();
+        void flush();
+        void showBump(std::queue<int>);
+    private:
+        max7219 chip;
+        std::array<LEDpacket, 16> EB2Monitor;
+    };
+#endif
 
 #define SCX_MODEL_H
 #endif

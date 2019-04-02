@@ -6,13 +6,14 @@
 #include "flyintel.h"
 #include "SCXmodel.h"
 #include "timer.h"
-#include <wiringPi.h>
-#include "adc.h"
-#include "SPIadc.h"
-#include "Sharp_IR.h"
-#include "pixycam.h"
-#include "DCmotor.h"
-
+#ifdef PI
+    #include <wiringPi.h>
+    #include "adc.h"
+    #include "SPIadc.h"
+    #include "Sharp_IR.h"
+    #include "pixycam.h"
+    #include "DCmotor.h"
+#endif
 
 using namespace std;
 
@@ -23,16 +24,14 @@ enum TargetLocation{NA = -1, CL = 15, CC =0, CR = 1};
 
 int main()
 {
-    #ifdef OPTIMIZE
-        chrono::steady_clock::time_point timer0;
-        timerStart(timer0);
+    #ifdef PI
+        //wiringPi init in BCM pinout
+        wiringPiSetupGpio();
+        pinMode(16, OUTPUT);
+        pinMode(20, OUTPUT);
+        digitalWrite(16, LOW);
+        digitalWrite(20, LOW);
     #endif
-    //wiringPi init in BCM pinout
-    wiringPiSetupGpio();
-    pinMode(16, OUTPUT);
-    pinMode(20, OUTPUT);
-    digitalWrite(16, LOW);
-    digitalWrite(20, LOW);
 
     bool lastBlock = false;
     bool holdTarget = false;
@@ -50,50 +49,47 @@ int main()
         fp.open("Flyintel.log", ios::out);
     #endif
 
-    #ifdef OPTIMIZE
-        fstream tfp;
-        tfp.open("FlyTime.log", ios::out);
+    #ifdef PI
+        //init sensors
+        spiADC mcp3008;
+            mcp3008.initSPI(88, 0);
+        SharpIR rescue1(mcp3008, 0);
+        SharpIR rescue2(mcp3008, 1);
+        SharpIR rescue3(mcp3008, 2);
+        SharpIR rescue4(mcp3008, 3);
+        PixyCam eye;
+        eye.init();
     #endif
-
-    //init sensors
-    spiADC mcp3008;
-        mcp3008.initSPI(88, 0);
-    SharpIR rescue1(mcp3008, 0);
-    SharpIR rescue2(mcp3008, 1);
-    SharpIR rescue3(mcp3008, 2);
-    SharpIR rescue4(mcp3008, 3);
-    PixyCam eye;
-    eye.init();
 
     //init interface
     Flyintel flyintel;
     SpikesHandler handler;
     SimpleCXStimulator CXsti;
     SimpleCXDecoder CXdecode;
-    SimpleCXMonitor CXled;
-    CXled.init();
+    #ifdef PI
+        SimpleCXMonitor CXled;
+        CXled.init();
+    #endif
 
-    //init motors
-    DCmotor front(22, 23, 24, 25, 13, 19);
-    DCmotor rear(4, 0, 1, 5, 13, 19);
-    front.velocity(1000, 1000);//400 for carpet
-    rear.velocity(1000, 1000);
+    #ifdef PI
+        //init motors
+        DCmotor front(22, 23, 24, 25, 13, 19);
+        DCmotor rear(4, 0, 1, 5, 13, 19);
+        front.velocity(1000, 1000);//400 for carpet
+        rear.velocity(1000, 1000);
+    #endif
 
     //open conf pro files
     string conf_file = "./networks/network32.conf", pro_file = "./networks/network32.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
-    #ifdef OPTIMIZE
-        cout<<"TIME init: "<<timerGetMillis(timer0)<<" ms"<<endl;
-    #endif
 //==============================================================================
     //main loop
     for(int round=0; round<400; ++round)
     {
-//delay(1000);
-        #ifdef OPTIMIZE
-            tfp<<"Round:"<<round<<'\n';
+        #ifdef DEBUG
+            fp<<"Round:"<<round<<'\n';
             chrono::steady_clock::time_point timer1;
             timerStart(timer1);
         #endif
@@ -104,64 +100,67 @@ int main()
         SendFreq("random3", 1300);
         SendFreq("random4", 1400);
 
-        #ifdef OPTIMIZE
-            chrono::steady_clock::time_point timer4;
-            timerStart(timer4);
-        #endif
 //------------------------------------------------------------------------------
-        //pixy cam
-        eye.refresh();
-        eye.capture();
-        array<Obj, 2> retina;
-        retina = eye.pickLarge();
+        #ifdef PI
+            //pixy cam
+            eye.refresh();
+            eye.capture();
+            array<Obj, 2> retina;
+            retina = eye.pickLarge();
+            float dx = retina[0].second - PIXY2_CENTER_X;
+            float area = retina[0].first;
 
-        float dx = retina[0].second - PIXY2_CENTER_X;
-        float area = retina[0].first;
-        if(area > 5500)
-        {
-            area = 5500;
-        }
-        else if(area >= 2500 && area < 4000)
-        {
-             area = 4000;
-        }
+            if(area > 5500)
+            {
+                area = 5500;
+            }
+            else if(area >= 2500 && area < 4000)
+            {
+                area = 4000;
+            }
 
-        if(dx > 90)
-        {
-            SendFreq("FS1", 0);
-            SendFreq("FS3", 0);
-            SendFreq("FS4", area);
-            viewField = CR;
-        }
-        else if(dx < -90)
-        {
-            SendFreq("FS1", 0);
-            SendFreq("FS3", area);
-            SendFreq("FS4", 0);
-            viewField = CL;
-        }
-        else
-        {
-            SendFreq("FS1", area);
-            SendFreq("FS3", 0);
-            SendFreq("FS4", 0);
+            if(dx > 90)
+            {
+                SendFreq("FS1", 0);
+                SendFreq("FS3", 0);
+                SendFreq("FS4", area);
+                viewField = CR;
+            }
+            else if(dx < -90)
+            {
+                SendFreq("FS1", 0);
+                SendFreq("FS3", area);
+                SendFreq("FS4", 0);
+                viewField = CL;
+            }
+            else
+            {
+                SendFreq("FS1", area);
+                SendFreq("FS3", 0);
+                SendFreq("FS4", 0);
+                viewField = CC;
+            }
+
+            #ifdef DEBUG
+                cout<<"area="<<area<<", dx"<<dx<<endl;
+            #endif
+        #else
+            //artificial target
+            float area = 3000;
+            float dx = 0; 
             viewField = CC;
-        }
-
-        #ifdef DEBUG
-            cout<<"area="<<area<<", dx"<<dx<<endl;
         #endif
 
-        if(retina[0].first && !lastBlock)
+        if(area && !lastBlock)
         {
             newTarget = true;
             lastBlock = true;
         }
-        else if(retina[0].first && lastBlock)
+        else if(area && lastBlock)
         {
             newTarget = false;
         }
-        else if(!retina[0].first && lastBlock)
+        else if(!area && lastBlock)
         {
             lastBlock = false;
         }
@@ -224,55 +223,57 @@ int main()
 //==============================================================================
 
         //IR
-        float irL = rescue1.IRrange();
-        if(irL > 400)
-        {
-            SendFreq("TS2", 9000);
-        }
-        else
-        {
-            SendFreq("TS2", 9000-(9000/90.0)*(400-irL));
-        }
+        #ifdef PI
+            float irL = rescue1.IRrange();
+            float irR = rescue2.IRrange();
+            float irFL = rescue3.IRrange();
+            float irFR = rescue4.IRrange();
+            if(irL > 400)
+            {
+                SendFreq("TS2", 9000);
+            }
+            else
+            {
+                SendFreq("TS2", 9000-(9000/90.0)*(400-irL));
+            }
 
-        float irR = rescue2.IRrange();
-        if(irR > 400)
-        {
-            SendFreq("TS3", 9000);
-        }
-        else
-        {
-            SendFreq("TS3", (9000-(9000/90.0)*(400-irR)));
-        }
+            if(irR > 400)
+            {
+                SendFreq("TS3", 9000);
+            }
+            else
+            {
+                SendFreq("TS3", (9000-(9000/90.0)*(400-irR)));
+            }
 
-        float irFL = rescue3.IRrange();
-        if(irR > 400)
-        {
-            SendFreq("TS0", 9000);
-        }
-        else
-        {
-            SendFreq("TS0", (9000-(9000/90.0)*(400-irR)));
-        }
+            if(irFL > 400)
+            {
+                SendFreq("TS0", 9000);
+            }
+            else
+            {
+                SendFreq("TS0", (9000-(9000/90.0)*(400-irR)));
+            }
 
-        float irFR = rescue4.IRrange();
-        if(irR > 400)
-        {
-            SendFreq("TS1", 9000);
-        }
-        else
-        {
-            SendFreq("TS1", (9000-(9000/90.0)*(400-irR)));
-        }
-
-        #ifdef DEBUG
-            cout<<"IR: "<<irL<<", "<<irR<<", "<<irFL<<", "<<irFR<<endl;
+            if(irFR > 400)
+            {
+                SendFreq("TS1", 9000);
+            }
+            else
+            {
+                SendFreq("TS1", (9000-(9000/90.0)*(400-irR)));
+            }
+            
+            #ifdef DEBUG
+                cout<<"IR: "<<irL<<", "<<irR<<", "<<irFL<<", "<<irFR<<endl;
+            #endif
+            
+        #else
+            //artificial inputs
         #endif
 
-        #ifdef OPTIMIZE
-            tfp<<"TIME sensor: "<<timerGetMillis(timer4)<<" ms"<<'\n';
-        #endif
 //==============================================================================
-        #ifdef OPTIMIZE
+        #ifdef DEBUG
             chrono::steady_clock::time_point timer2;
             timerStart(timer2);
         #endif
@@ -280,26 +281,16 @@ int main()
         Spikes = ActiveSimGetSpike("530");
         cout<<"receving\n";
         //cout<<"Spikes:"<<endl<<Spikes<<endl;
-        #ifdef OPTIMIZE
-            tfp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
+        #ifdef DEBUG
+            fp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
         #endif
 
         //c-string to int array
         handler.clear();
         handler.cstoi(Spikes);
 //==============================================================================
-        #ifdef OPTIMIZE
-            chrono::steady_clock::time_point timer3;
-            timerStart(timer3);
-        #endif
 
         //Decode CX
-        #ifdef OPTIMIZE
-            chrono::steady_clock::time_point timer6;
-            timerStart(timer6);
-        #endif
-
-        CXled.flush();
         auto tmp = CXdecode.sortingHat(handler);
 
         #ifdef DEBUG
@@ -310,54 +301,52 @@ int main()
         #endif
 
         auto ans (CXdecode.findBump());
-        CXled.showBump(ans);
+        #ifdef PI
+            CXled.flush();
+            CXled.showBump(ans);
+        #endif
+
         #ifdef DEBUG
             fp<<endl;
             cout<<endl;
         #endif
-        //homing stage
-        if(round == 281)
-        {
-            //homing starts
-            delay(2000);
-            digitalWrite(20, HIGH);
-        }
-        if(round > 280)
-        {
-            if( ans.front() == 0)
-                return 0;
-            digitalWrite(20, HIGH);
-            while(!ans.empty())
+        
+        #ifdef PI
+            //homing stage
+            if(round == 281)
             {
-                if(ans.front() == 0 || ans.front() == 1 || ans.front() == 15)
+                //homing starts
+                delay(2000);
+                digitalWrite(20, HIGH);
+            }
+            if(round > 280)
+            {
+                if( ans.front() == 0)
+                    return 0;
+                digitalWrite(20, HIGH);
+                while(!ans.empty())
                 {
-                    SendFreq("FS1", 4000);
-                    break;
-                }
-                else if(ans.front() < 8)
-                {
-                    SendFreq("FS4", 4000);
-                    ans.pop();
-                }
-                else if(ans.front() >= 8)
-                {
-                    SendFreq("FS3", 4000);
-                    ans.pop();
+                    if(ans.front() == 0 || ans.front() == 1 || ans.front() == 15)
+                    {
+                        SendFreq("FS1", 4000);
+                        break;
+                    }
+                    else if(ans.front() < 8)
+                    {
+                        SendFreq("FS4", 4000);
+                        ans.pop();
+                    }
+                    else if(ans.front() >= 8)
+                    {
+                        SendFreq("FS3", 4000);
+                        ans.pop();
+                    }
                 }
             }
-        }
-
-        #ifdef OPTIMIZE
-            tfp<<"TIME monitor: "<<timerGetMillis(timer6)<<" ms"<<'\n';
         #endif
-
 //------------------------------------------------------------------------------
-        //Decode motor neurons
 
-        #ifdef OPTIMIZE
-            chrono::steady_clock::time_point timer5;
-            timerStart(timer5);
-        #endif
+        //Decode motor neurons
 
         flyintel.clear();
         flyintel.sortingHat(handler);
@@ -366,81 +355,85 @@ int main()
 
         if(dir & 0x01)
         {
-            cout<<'F'<<endl;
-            front.forward();
-            rear.forward();
-            delay(200);
-            front.stop();
-            rear.stop();
+            #ifdef PI
+                front.forward();
+                rear.forward();
+                delay(200);
+                front.stop();
+                rear.stop();
+            #endif
             state = Forward;
+            cout<<'F'<<endl;
         }
         else if(dir & 0x02)
         {
-            cout<<'B'<<endl;
-            front.backward();
-            rear.backward();
-            delay(200);
-            front.stop();
-            rear.stop();
+            #ifdef PI
+                front.backward();
+                rear.backward();
+                delay(200);
+                front.stop();
+                rear.stop();
+            #endif
             state = Backward;
+            cout<<'B'<<endl;
         }
         else if(dir & 0x04)
         {
-            cout<<'L'<<endl;
-            front.left();
-            rear.left();
-            delay(200);
-            front.stop();
-            rear.stop();
+            #ifdef PI
+                front.left();
+                rear.left();
+                delay(200);
+                front.stop();
+                rear.stop();
+            #endif
             state = Left;
+            cout<<'L'<<endl;
         }
         else if(dir & 0x08)
         {
-            cout<<'R'<<endl;
-            front.right();
-            rear.right();
-            delay(200);
-            front.stop();
-            rear.stop();
+            #ifdef PI
+                front.right();
+                rear.right();
+                delay(200);
+                front.stop();
+                rear.stop();
+            #endif
             state = Right;
+            cout<<'R'<<endl;
         }
         else
         {
-            cout<<'S'<<endl;
-            front.stop();
-            rear.stop();
+            #ifdef PI
+                front.stop();
+                rear.stop();
+            #endif
             state = Stop;
+            cout<<'S'<<endl;
         }
 
-        #ifdef OPTIMIZE
-            tfp<<"TIME exc motor: "<<timerGetMillis(timer5)<<" ms"<<'\n';
-        #endif
-
-        #ifdef OPTIMIZE
-
-            tfp<<"TIME decode: "<<timerGetMillis(timer3)<<" ms"<<'\n';
-
-            tfp<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<'\n';
+        #ifdef DEBUG
+            fp<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<'\n';
         #endif
     }
-    CXled.flush();
-    pwmWrite(19, 0);
-    pwmWrite(13, 0);
-    digitalWrite(22, LOW);
-    digitalWrite(23, LOW);
-    digitalWrite(24, LOW);
-    digitalWrite(25, LOW);
-    digitalWrite(4, LOW);
-    digitalWrite(0, LOW);
-    digitalWrite(1, LOW);
-    digitalWrite(5, LOW);
-    digitalWrite(20, LOW);
+    #ifdef PI
+        CXled.flush();
+        pwmWrite(19, 0);
+        pwmWrite(13, 0);
+        digitalWrite(22, LOW);
+        digitalWrite(23, LOW);
+        digitalWrite(24, LOW);
+        digitalWrite(25, LOW);
+        digitalWrite(4, LOW);
+        digitalWrite(0, LOW);
+        digitalWrite(1, LOW);
+        digitalWrite(5, LOW);
+        digitalWrite(20, LOW);
+    #endif
     CloseSim();
+
     #ifdef DEBUG
         fp.close();
     #endif
-    #ifdef OPTIMIZE
-        tfp.close();
-    #endif
+
     return 0;
 }
