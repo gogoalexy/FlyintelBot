@@ -25,15 +25,15 @@
 class SharpIR
 {
 public:
-    SharpIR();
-    SharpIR(const ADC&, int);
+//    SharpIR();
+    SharpIR(ADC&, int);
     inline int IRrange()
     {
-        return adc.readChan(chipChan);
+        return interface.readChan(chipChan);
     };
 
 private:
-    ADC adc;
+    ADC& interface;
     const int chipChan;
 };
 

@@ -1,17 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include <array>
-#include <wiringPi.h>
 #include "connect_to_flysim.h"
 #include "spikesHandler.h"
 #include "flyintel.h"
 #include "SCXmodel.h"
+#include "timer.h"
+#include <wiringPi.h>
 #include "adc.h"
 #include "SPIadc.h"
 #include "Sharp_IR.h"
 #include "pixycam.h"
 #include "DCmotor.h"
-#include "timer.h"
 
 
 using namespace std;
