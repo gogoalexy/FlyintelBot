@@ -20,10 +20,10 @@
 
 using namespace std;
 
-biADC::biADC() : pinBaseDefault(77), i2cChanDefault(0x48), isInit(false)
+i2cADC::i2cADC() : pinBaseDefault(77), i2cChanDefault(0x48), isInit(false)
 {}
 
-bool biADC::initI2C()
+bool i2cADC::initI2C()
 {
     this->pinBase = pinBaseDefault;
     this->i2cChan = i2cChanDefault;
@@ -36,7 +36,7 @@ bool biADC::initI2C()
     return false;
 }
 
-bool ADC::initI2C(int pinBase, int i2cChan)
+bool i2cADC::initI2C(int pinBase, int i2cChan)
 {
     this->pinBase = pinBase;
     this->i2cChan = i2cChan;
@@ -48,4 +48,3 @@ bool ADC::initI2C(int pinBase, int i2cChan)
 
     return false;
 }
-

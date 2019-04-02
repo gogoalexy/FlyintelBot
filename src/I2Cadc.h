@@ -19,36 +19,36 @@
 
 #include <wiringPi.h>
 #include <pcf8591.h>
+#include "adc.h"
 
-class biADC
+class i2cADC : public ADC
 {
 public:
     biADC();
     bool initI2C();
     bool initI2C(int, int);
-    inline bool isSPIinit()
+    inline bool isInit() override
     {
         return isInit;
-    };
-    inline int whichPin()
+    }
+    inline int whichPin() override
     {
         return pinBase;
-    };
-    inline int readChan(int chipChan)
+    }
+    inline int readChan(int chipChan) override
     {
         return analogRead(pinBase + chipChan);
-    };
-    inline void writeChan(int value)
+    }
+    inline void writeChan(int value) override
     {
         analogWrite(pinBase, value);
-    };
+    }
 
 protected:
     const int pinBaseDefault;
     const int i2cAddressDefault;
     int pinBase;
     int i2cChan;
-    bool isInit;
 };
 
 #define I2C_ADC_H

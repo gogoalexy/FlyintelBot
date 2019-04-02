@@ -19,25 +19,25 @@
 
 #include <wiringPi.h>
 #include <mcp3004.h>
+#include "adc.h"
 
-class ADC
+class spiADC : public ADC
 {
 public:
     ADC();
     bool initSPI();
     bool initSPI(int, int);
-    inline bool isSPIinit()
+    inline bool isInit() override
     {
         return isInit;
-    };
-    inline int whichPin()
-    {
+    }
+    inline int whichPin() override
         return pinBase;
-    };
-    inline int readChan(int chipChan)
+    }
+    inline int readChan(int chipChan) override
     {
         return analogRead(pinBase + chipChan);
-    };
+    }
 
 protected:
     const int pinBaseDefault;
@@ -45,7 +45,6 @@ protected:
     const int spiSpeedDefault;
     int pinBase;
     int spiChan;
-    bool isInit;
 };
 
 #define SPI_ADC_H
