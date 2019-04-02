@@ -1,0 +1,38 @@
+SHELL = /bin/sh
+.SUFFIXES: .cpp .a .o
+.PHONY: clean
+
+CXX=g++
+CXXFLAGS=-DDEBUG
+INC=-I/
+OPT=-O1
+
+SRCS=flyintel.cpp
+OBJS=$(patsubst %.cpp,%.o,$(SRCS))
+
+BUILD_DIR=../build_pc
+
+$(BUILD_DIR)/main.out: $(BUILD_DIR)/spikesHandler.o $(BUILD_DIR)/SCXmodel.o $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/main.o $(BUILD_DIR)/flyintel.o
+	$(CXX) $(CXXFLAGS) $^ -o $@ -Wall $(OPT)
+
+$(BUILD_DIR)/main.o: main.cpp timer.h
+	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $(BUILD_DIR)/main.o $(OPT)
+
+$(BUILD_DIR)/spikesHandler.o: spikesHandler.cpp spikesHandler.h
+	$(CXX) -c $< -o $(BUILD_DIR)/spikesHandler.o $(OPT)
+
+$(BUILD_DIR)/SCXmodel.o: SCXmodel.cpp SCXmodel.h
+	$(CXX) -c $< -o $(BUILD_DIR)/SCXmodel.o $(OPT)
+
+$(BUILD_DIR)/flyintel.o: flyintel.cpp flyintel.h
+	$(CXX) -c $< -o $(BUILD_DIR)/flyintel.o $(OPT)
+
+$(BUILD_DIR)/connect_to_flysim.o: connect_to_flysim.cpp connect_to_flysim.h
+	$(CXX) -c $< -o $(BUILD_DIR)/connect_to_flysim.o $(OPT)
+
+$(BUILD_DIR)/cltcmd.o: cltcmd.cpp cltcmd.h
+	$(CXX) -c $< -o $(BUILD_DIR)/cltcmd.o $(OPT)
+
+
+clean:
+	rm -rf $(BUILD_DIR)/main.out $(BUILD_DIR)/*.o

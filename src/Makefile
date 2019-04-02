@@ -3,7 +3,7 @@ SHELL = /bin/sh
 .PHONY: clean
 
 CXX=g++
-CXXFLAGS= -I/usr/include/libusb-1.0 -I../../../gitrepos/pixy2/src/host/libpixyusb2/include -I../../../gitrepos/pixy2/src/host/arduino/libraries/Pixy2 -DDEBUG -DOPTIMIZE
+CXXFLAGS= -I/usr/include/libusb-1.0 -I../../../gitrepos/pixy2/src/host/libpixyusb2/include -I../../../gitrepos/pixy2/src/host/arduino/libraries/Pixy2 -DDEBUG -DPI
 INC=-I/
 LDLIBS=-lwiringPi ../../../gitrepos/pixy2/build/libpixyusb2/libpixy2.a -lusb-1.0
 OPT=-O1
@@ -13,7 +13,7 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 
 BUILD_DIR=../build
 
-$(BUILD_DIR)/main.out: $(BUILD_DIR)/spikesHandler.o $(BUILD_DIR)/SCXmodel.o $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/max7219.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
+$(BUILD_DIR)/main.out: $(BUILD_DIR)/spikesHandler.o $(BUILD_DIR)/SCXmodel.o $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/max7219.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDLIBS) -Wall $(OPT)
 
 $(BUILD_DIR)/main.o: main.cpp timer.h

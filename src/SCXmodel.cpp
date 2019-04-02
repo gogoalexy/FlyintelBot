@@ -92,73 +92,77 @@ void SimpleCXDecoder::clear()
 
 }
 
-//===================================================
+#ifdef PI
 
-//
-//   0 1 2 3 4 5 6 7
-//___________________
-//0| 0 * * * * * * 0
-//1| * * * * * * * *
-//2| * * * 0 0 * * *
-//3| * * 0 0 0 0 * *
-//4| * * 0 0 0 0 * *
-//5| * * * 0 0 * * *
-//6| * * * * * * * *
-//7| 0 * * * * * * 0
-//
+    //===================================================
 
-SimpleCXMonitor::SimpleCXMonitor()
-{
-    EB2Monitor[0] = make_tuple(3, 4, 0b00000011);
-    EB2Monitor[1] = make_tuple(5, 6, 0b00000011);
-    EB2Monitor[2] = make_tuple(5, 6, 0b00000110);
-    EB2Monitor[3] = make_tuple(6, 7, 0b00000110);
-    EB2Monitor[4] = make_tuple(6, 7, 0b00011000);
-    EB2Monitor[5] = make_tuple(6, 7, 0b01100000);
-    EB2Monitor[6] = make_tuple(5, 6, 0b01100000);
-    EB2Monitor[7] = make_tuple(5, 6, 0b11000000);
-    EB2Monitor[8] = make_tuple(3, 4, 0b11000000);
-    EB2Monitor[9] = make_tuple(1, 2, 0b11000000);
-    EB2Monitor[10] = make_tuple(1, 2, 0b01100000);
-    EB2Monitor[11] = make_tuple(0, 1, 0b01100000);
-    EB2Monitor[12] = make_tuple(0, 1, 0b00011000);
-    EB2Monitor[13] = make_tuple(0, 1, 0b00000110);
-    EB2Monitor[14] = make_tuple(1, 2, 0b00000110);
-    EB2Monitor[15] = make_tuple(1, 2, 0b00000011);
-}
+    //
+    //   0 1 2 3 4 5 6 7
+    //___________________
+    //0| 0 * * * * * * 0
+    //1| * * * * * * * *
+    //2| * * * 0 0 * * *
+    //3| * * 0 0 0 0 * *
+    //4| * * 0 0 0 0 * *
+    //5| * * * 0 0 * * *
+    //6| * * * * * * * *
+    //7| 0 * * * * * * 0
+    //
 
-void SimpleCXMonitor::init()
-{
-    if(chip.max7219Setup(1, 1000000) == -1)
+    SimpleCXMonitor::SimpleCXMonitor()
     {
-        exit(1);
+        EB2Monitor[0] = make_tuple(3, 4, 0b00000011);
+        EB2Monitor[1] = make_tuple(5, 6, 0b00000011);
+        EB2Monitor[2] = make_tuple(5, 6, 0b00000110);
+        EB2Monitor[3] = make_tuple(6, 7, 0b00000110);
+        EB2Monitor[4] = make_tuple(6, 7, 0b00011000);
+        EB2Monitor[5] = make_tuple(6, 7, 0b01100000);
+        EB2Monitor[6] = make_tuple(5, 6, 0b01100000);
+        EB2Monitor[7] = make_tuple(5, 6, 0b11000000);
+        EB2Monitor[8] = make_tuple(3, 4, 0b11000000);
+        EB2Monitor[9] = make_tuple(1, 2, 0b11000000);
+        EB2Monitor[10] = make_tuple(1, 2, 0b01100000);
+        EB2Monitor[11] = make_tuple(0, 1, 0b01100000);
+        EB2Monitor[12] = make_tuple(0, 1, 0b00011000);
+        EB2Monitor[13] = make_tuple(0, 1, 0b00000110);
+        EB2Monitor[14] = make_tuple(1, 2, 0b00000110);
+        EB2Monitor[15] = make_tuple(1, 2, 0b00000011);
     }
-    chip.setShutdown(EXIT_SHUTDOWN);
-    chip.setDecode(BCD_DECODE_NONE);
-    chip.setLimit(SCAN_LIMIT_NONE);
-    chip.setTest(EXIT_DISPLAY_TEST);
-    chip.setBrightness(BRIGHTNESS_MAX);
-    chip.flush();
-}
 
-void SimpleCXMonitor::flush()
-{
-    chip.flush();
-}
-
-void SimpleCXMonitor::showBump(std::queue<int> location)
-{
-    while(!location.empty())
+    void SimpleCXMonitor::init()
     {
-        auto bump = location.front();
-        cout<<"bump: "<<bump<<' ';
-        location.pop();
-        auto startROW = get<0>(EB2Monitor.at(bump));
-        auto endROW = get<1>(EB2Monitor.at(bump));
-        cout<<startROW<<','<<endROW<<endl;
-        for(int i=startROW; i<=endROW; ++i)
+        if(chip.max7219Setup(1, 1000000) == -1)
         {
-            chip.setROW(i, get<2>(EB2Monitor.at(bump)));
+            exit(1);
+        }
+        chip.setShutdown(EXIT_SHUTDOWN);
+        chip.setDecode(BCD_DECODE_NONE);
+        chip.setLimit(SCAN_LIMIT_NONE);
+        chip.setTest(EXIT_DISPLAY_TEST);
+        chip.setBrightness(BRIGHTNESS_MAX);
+        chip.flush();
+    }
+
+    void SimpleCXMonitor::flush()
+    {
+        chip.flush();
+    }
+
+    void SimpleCXMonitor::showBump(std::queue<int> location)
+    {
+        while(!location.empty())
+        {
+            auto bump = location.front();
+            cout<<"bump: "<<bump<<' ';
+            location.pop();
+            auto startROW = get<0>(EB2Monitor.at(bump));
+            auto endROW = get<1>(EB2Monitor.at(bump));
+            cout<<startROW<<','<<endROW<<endl;
+            for(int i=startROW; i<=endROW; ++i)
+            {
+                chip.setROW(i, get<2>(EB2Monitor.at(bump)));
+            }
         }
     }
-}
+
+#endif
