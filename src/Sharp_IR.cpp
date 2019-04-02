@@ -20,11 +20,11 @@
 
 using namespace std;
 
-SharpIR::SharpIR() : chipChan(0)
-{
-    cout<<"Warning: ADC is undefined.Default chipChan=0"<<endl;
-}
+//SharpIR::SharpIR() : chipChan(0)
+//{
+//    cout<<"Warning: ADC is undefined.Default chipChan=0"<<endl;
+//}
 
-SharpIR::SharpIR(const ADC& mcp3008, int sensorID) : adc(mcp3008), chipChan(sensorID)
+SharpIR::SharpIR(ADC& inter, int sensorID) : interface(inter), chipChan(sensorID)
 {}
 
