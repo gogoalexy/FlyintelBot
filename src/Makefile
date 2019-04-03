@@ -3,7 +3,7 @@ SHELL = /bin/sh
 .PHONY: clean
 
 CXX=g++
-CXXFLAGS= -I/usr/include/libusb-1.0 -I../../../gitrepos/pixy2/src/host/libpixyusb2/include -I../../../gitrepos/pixy2/src/host/arduino/libraries/Pixy2 -DDEBUG -DPI
+CXXFLAGS= -std=c++14 -I/usr/include/libusb-1.0 -I../../../gitrepos/pixy2/src/host/libpixyusb2/include -I../../../gitrepos/pixy2/src/host/arduino/libraries/Pixy2 -DDEBUG -DPI
 INC=-I/
 LDLIBS=-lwiringPi ../../../gitrepos/pixy2/build/libpixyusb2/libpixy2.a -lusb-1.0
 OPT=-O1

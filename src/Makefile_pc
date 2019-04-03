@@ -3,7 +3,7 @@ SHELL = /bin/sh
 .PHONY: clean
 
 CXX=g++
-CXXFLAGS=-DDEBUG
+CXXFLAGS= -std=c++14 -DDEBUG
 INC=-I/
 OPT=-O1
 
