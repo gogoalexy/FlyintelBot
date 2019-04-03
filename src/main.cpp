@@ -24,6 +24,16 @@ enum TargetLocation{NA = -1, CL = 15, CC =0, CR = 1};
 
 int main()
 {
+    #ifdef DEBUG
+        cout<<"========================================"<<'\n'
+            <<"[Initializing Flyintel in DEBUG mode...]"<<'\n'
+            <<"========================================"<<endl;
+    #else
+        cout<<"========================================"<<'\n'
+            <<"[        Initializing Flyintel ...     ]"<<'\n'
+            <<"========================================"<<endl;
+    #endif
+
     #ifdef PI
         //wiringPi init in BCM pinout
         wiringPiSetupGpio();
@@ -41,7 +51,6 @@ int main()
 
     TargetLocation viewField = NA;
     Actions state = Stop;
-
 
     //log file
     #ifdef DEBUG
@@ -147,7 +156,7 @@ int main()
         #else
             //artificial target
             float area = 3000;
-            float dx = 0; 
+            float dx = 0;
             viewField = CC;
         #endif
 
@@ -263,11 +272,11 @@ int main()
             {
                 SendFreq("TS1", (9000-(9000/90.0)*(400-irR)));
             }
-            
+
             #ifdef DEBUG
                 cout<<"IR: "<<irL<<", "<<irR<<", "<<irFL<<", "<<irFR<<endl;
             #endif
-            
+
         #else
             //artificial inputs
         #endif
@@ -310,7 +319,7 @@ int main()
             fp<<endl;
             cout<<endl;
         #endif
-        
+
         #ifdef PI
             //homing stage
             if(round == 281)
@@ -375,7 +384,9 @@ int main()
                 rear.stop();
             #endif
             state = Backward;
-            cout<<'B'<<endl;
+            #ifdef DEBUG
+                cout<<'B'<<endl;
+            #endif
         }
         else if(dir & 0x04)
         {
@@ -387,7 +398,9 @@ int main()
                 rear.stop();
             #endif
             state = Left;
-            cout<<'L'<<endl;
+            #ifdef DEBUG
+                cout<<'L'<<endl;
+            #endif
         }
         else if(dir & 0x08)
         {
@@ -399,7 +412,9 @@ int main()
                 rear.stop();
             #endif
             state = Right;
-            cout<<'R'<<endl;
+            #ifdef DEBUG
+                cout<<'R'<<endl;
+            #endif
         }
         else
         {
@@ -408,7 +423,9 @@ int main()
                 rear.stop();
             #endif
             state = Stop;
-            cout<<'S'<<endl;
+            #ifdef DEBUG
+                cout<<'S'<<endl;
+            #endif
         }
 
         #ifdef DEBUG
