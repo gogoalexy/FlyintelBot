@@ -289,7 +289,6 @@ int main()
 
         Spikes = ActiveSimGetSpike("530");
         cout<<"receving\n";
-        //cout<<"Spikes:"<<endl<<Spikes<<endl;
         #ifdef DEBUG
             fp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
         #endif
@@ -297,6 +296,9 @@ int main()
         //c-string to int array
         handler.clear();
         handler.cstoi(Spikes);
+        #ifdef DEBUG
+            handler.printSpikesLog(fp);
+        #endif
 //==============================================================================
 
         //Decode CX
