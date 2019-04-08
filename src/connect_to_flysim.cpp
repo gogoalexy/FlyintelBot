@@ -1,9 +1,5 @@
 #include "connect_to_flysim.h"
 
-#ifdef DEBUG
-    #define DEBUG(x) cout<<__FILE__<<" "<<__LINE__<<" "<<__PRETTY_FUNCTION__<<" : "<<x<<endl
-#endif
-
 using namespace std;
 
 TypeFreqModule::TypeFreqModule()
@@ -239,14 +235,10 @@ char *ActiveSimGetSpike(string RunTime)
         <<endl;*/
         return (char*)"-3";
     }
+    //port -1
     CltInit();
-    #ifdef DEBUG
-        DEBUG("open port -1");
-    #endif
+    //port -2
     CltInit();
-    #ifdef DEBUG
-        DEBUG("open port -2");
-    #endif
     string ProString="";
 
     char cmd1[]="FILE_WRITE";
@@ -262,9 +254,6 @@ char *ActiveSimGetSpike(string RunTime)
     char defaultconfname[]="network.conf";
     char defaultproname[]="network.pro";
 
-    #ifdef DEBUG
-        DEBUG(Round);
-    #endif
     if(Round==0)
     {
         char *ForSendConf=nullptr;
@@ -274,7 +263,7 @@ char *ActiveSimGetSpike(string RunTime)
         CltCmd(cmd7,defaultconfname,ForSendConf);
         CltCmd(cmd3,defaultconfname,ForSendConf);
         #ifdef DEBUG
-            DEBUG("ADD_WORM-1");
+            cout<<"ADD_WORM-1"<<'\n';
         #endif
         Round++;
         ProString+=ProFile.TypeMem;
@@ -284,8 +273,8 @@ char *ActiveSimGetSpike(string RunTime)
         ProFile.TypeFreq.clear();
 
         #ifdef DEBUG
-        DEBUG("ProFile checking");
-        cout<<ProString<<endl;
+            cout<<"ProFile checking"<<'\n';
+            cout<<ProString<<endl;
         #endif
 
     char *ForSendPro=GetChAry(ProString);
