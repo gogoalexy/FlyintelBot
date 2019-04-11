@@ -89,7 +89,7 @@ int main()
     #endif
 
     //open conf pro files
-    string conf_file = "./networks/network32.conf", pro_file = "./networks/network32.pro";
+    string conf_file = "./networks/forage-risk.conf", pro_file = "./networks/forage-risk.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
@@ -104,10 +104,10 @@ int main()
         #endif
 
         //baseline activity
-        SendFreq("random1", 1400);
-        SendFreq("random2", 1400);
-        SendFreq("random3", 1300);
-        SendFreq("random4", 1400);
+        SendFreq("random1", 100);
+        SendFreq("random2", 100);
+        SendFreq("random3", 100);
+        SendFreq("random4", 100);
 
 //------------------------------------------------------------------------------
         #ifdef PI
