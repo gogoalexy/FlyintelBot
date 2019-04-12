@@ -89,7 +89,7 @@ int main()
     #endif
 
     //open conf pro files
-    string conf_file = "./networks/forage-risk.conf", pro_file = "./networks/forage-risk.pro";
+    string conf_file = "./networks/network34.conf", pro_file = "./networks/network34.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
