@@ -29,16 +29,16 @@ void Flyintel::sortingHat(const SpikesHandler &spikesData)
     {
         switch(spikesData.spiketrain[i])
         {
-            case 75:
+            case 76:
                 count.forward++;
                 break;
-            case 76:
+            case 77:
                 count.backward++;
                 break;
-            case 77:
+            case 78:
                 count.left++;
                 break;
-            case 78:
+            case 79:
                 count.right++;
                 break;
             default:
