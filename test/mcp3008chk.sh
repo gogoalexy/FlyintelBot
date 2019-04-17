@@ -8,4 +8,6 @@ echo "test IR ch2"
 gpio -x mcp3004:100:0 aread 102
 echo "test IR ch3"
 gpio -x mcp3004:100:0 aread 103
+echo "test IR ch4"
+gpio -x mcp3004:100:0 aread 104
 echo "completed"
