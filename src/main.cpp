@@ -47,7 +47,8 @@ int main()
     bool holdTarget = false;
     bool newTarget = false;
     int pastNew = -1;
-    int newTargetInterval = 3;
+    int newTargetInterval = 0;
+    unsigned char homing = 0x00;
 
     TargetLocation viewField = NA;
     Actions state = Stop;
@@ -98,6 +99,7 @@ int main()
     //main loop
     for(int round=0; round<250; ++round)
     {
+delay(1900);
         #ifdef DEBUG
             fp<<"Round:"<<round<<'\n';
             chrono::steady_clock::time_point timer1;
@@ -124,39 +126,45 @@ int main()
             {
                 area = 5000;
             }
-            else if(area >= 2500 && area < 4000)
+            else if(area >= 3000 && area < 4000)
             {
                 area = 3000;
             }
-
-            if(dx > 90)
-            {
-                SendFreq("FS1", 2000);
-                SendFreq("FS3", 2000);
-                SendFreq("FS4", area);
-                viewField = CR;
-            }
-            else if(dx < -90)
-            {
-                SendFreq("FS1", 2000);
-                SendFreq("FS3", area);
-                SendFreq("FS4", 2000);
-                viewField = CL;
-            }
             else
             {
-                SendFreq("FS1", area);
-                SendFreq("FS3", 2000);
-                SendFreq("FS4", 2000);
-                viewField = CC;
+                area = 0;
             }
 
+            if(area)
+            {
+                if(dx > 90)
+                {
+                    SendFreq("FS1", 2000);
+                    SendFreq("FS3", 2000);
+                    SendFreq("FS4", area);
+                    viewField = CR;
+                }
+                else if(dx < -90)
+                {
+                    SendFreq("FS1", 2000);
+                    SendFreq("FS3", area);
+                    SendFreq("FS4", 2000);
+                    viewField = CL;
+                }
+                else
+                {
+                    SendFreq("FS1", area);
+                    SendFreq("FS3", 2000);
+                    SendFreq("FS4", 2000);
+                    viewField = CC;
+                }
+            }
             #ifdef DEBUG
                 cout<<"area="<<area<<", dx"<<dx<<endl;
             #endif
         #else
             //artificial target
-            float area = 3000;
+            //float area = 3000;
             float dx = 0;
             viewField = CC;
         #endif
@@ -178,21 +186,26 @@ int main()
 //==============================================================================
 
         //scheduler
-        if(pastNew >= 0)
+        if(!newTargetInterval && (pastNew >= 0))
         {
             cout<<"******Pastnew"<<pastNew<<'\n';
-            //CXsti.rmAllSti();
-            CXsti.stiLoc(pastNew, 0);
+            //CXsti.stiLoc(pastNew, 0);
             pastNew = -1;
             holdTarget = true;
+        }
+        else if(newTargetInterval && ( pastNew >= 0) )
+        {
+            cout<<"------------------------Sustain"<<'\n';
+            --newTargetInterval;
+            //CXsti.stiLoc(pastNew, 200);
         }
         else if(newTarget)
         {
             cout<<"*****NewTar"<<'\n';
-            //CXsti.rmAllSti();
-            CXsti.stiLoc(static_cast<int>(viewField), 400);
+           //CXsti.stiLoc(static_cast<int>(viewField), 200);
             newTarget = false;
             holdTarget = false;
+            newTargetInterval = 3;
             pastNew = static_cast<int>(viewField);
         }
         else if(holdTarget)
@@ -200,34 +213,35 @@ int main()
             if(state == Stop)
             {
                 cout<<"stop"<<'\n';
-                CXsti.switchState();
+               // CXsti.switchState();
             }
             else if(state == Forward)
             {
                 cout<<"straight"<<'\n';
-                CXsti.switchState();
+                //CXsti.switchState();
             }
             else if(state == Backward)
             {
                 cout<<"back"<<'\n';
-                CXsti.switchState();
+                //CXsti.switchState();
             }
             else if(state == Left)
             {
                 cout<<"left"<<'\n';
-                CXsti.switchState();
-                CXsti.shiftRight(200);
+                //CXsti.switchState();
+                //CXsti.shiftRight(250);
             }
             else if(state == Right)
             {
                 cout<<"right"<<'\n';
-                CXsti.switchState();
-                CXsti.shiftLeft(200);
+                //CXsti.switchState();
+                //CXsti.shiftLeft(250);
             }
         }
         else
         {
-            cout<<"No sti"<<'\n';
+            cout<<"======================No sti"<<'\n';
+            //CXsti.switchState();
         }
 
 //==============================================================================
@@ -250,7 +264,7 @@ int main()
                 SendFreq("TS1", 0);
             }
 
-            if(irFC > 250)
+            if(irFC > 300)
             {
                 SendFreq("TS2", 5000);
             }
@@ -300,10 +314,19 @@ int main()
             chrono::steady_clock::time_point timer2;
             timerStart(timer2);
         #endif
+	if(homing & 0b1111)
+        {
+            if(homing & 0x01)
+                SendFreq("FS1", 4000);
+            if(homing & 0x04)
+                SendFreq("FS3", 4000);
+            if(homing & 0x08)
+                SendFreq("FS4", 4000);
+        }
 
         Spikes = ActiveSimGetSpike("530");
         cout<<"receving\n";
-        cout<<Spikes<<endl;
+        //cout<<Spikes<<endl;
         #ifdef DEBUG
             fp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
         #endif
@@ -319,12 +342,12 @@ int main()
         //Decode CX
         auto tmp = CXdecode.sortingHat(handler);
 
-        #ifdef DEBUG
+        //#ifdef DEBUG
             for(auto it=tmp.cbegin(); it!=tmp.cend(); ++it)
             {
-                fp<<*it<<' ';
+                cout<<*it<<' ';
             }
-        #endif
+        //#endif
 
         auto ans (CXdecode.findBump());
         #ifdef PI
@@ -339,32 +362,39 @@ int main()
 
         #ifdef PI
             //homing stage
-            if(round == 281)
+            if(round == 201)
             {
                 //homing starts
                 delay(2000);
                 digitalWrite(20, HIGH);
             }
-            if(round > 280)
+            if(round > 200)
             {
-                if( ans.front() == 0)
-                    return 0;
+                if( ans.front() == 0 && irFC > 400)
+                {
+                     digitalWrite(16, HIGH);
+                     delay(1000);
+                     return 0;
+                }
                 digitalWrite(20, HIGH);
                 while(!ans.empty())
                 {
                     if(ans.front() == 0 || ans.front() == 1 || ans.front() == 15)
                     {
-                        SendFreq("FS1", 4000);
+                        //SendFreq("FS1", 4000);
+                        homing = 0x01;
                         break;
                     }
                     else if(ans.front() < 8)
                     {
-                        SendFreq("FS4", 4000);
+                        //SendFreq("FS4", 4000);
+                        homing = 0x08;
                         ans.pop();
                     }
                     else if(ans.front() >= 8)
                     {
-                        SendFreq("FS3", 4000);
+                        //SendFreq("FS3", 4000);
+                        homing = 0x04;
                         ans.pop();
                     }
                 }
