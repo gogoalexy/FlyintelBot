@@ -66,6 +66,7 @@ int main()
         SharpIR rescue2(mcp3008, 1);
         SharpIR rescue3(mcp3008, 2);
         SharpIR rescue4(mcp3008, 3);
+	SharpIR rescue5(mcp3008, 4);
         PixyCam eye;
         eye.init();
     #endif
@@ -89,7 +90,7 @@ int main()
     #endif
 
     //open conf pro files
-    string conf_file = "./networks/network34.conf", pro_file = "./networks/network34.pro";
+    string conf_file = "./networks/network35.conf", pro_file = "./networks/network35.pro";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
 
@@ -104,10 +105,10 @@ int main()
         #endif
 
         //baseline activity
-        SendFreq("random1", 100);
-        SendFreq("random2", 100);
-        SendFreq("random3", 100);
-        SendFreq("random4", 100);
+        SendFreq("FS1", 2000);
+        SendFreq("FS2", 2000);
+        SendFreq("FS3", 2000);
+        SendFreq("FS4", 2000);
 
 //------------------------------------------------------------------------------
         #ifdef PI
@@ -121,32 +122,32 @@ int main()
 
             if(area > 5500)
             {
-                area = 5500;
+                area = 2000;
             }
             else if(area >= 2500 && area < 4000)
             {
-                area = 4000;
+                area = 2000;
             }
 
             if(dx > 90)
             {
-                SendFreq("FS1", 0);
-                SendFreq("FS3", 0);
+                SendFreq("FS1", 2000);
+                SendFreq("FS3", 2000);
                 SendFreq("FS4", area);
                 viewField = CR;
             }
             else if(dx < -90)
             {
-                SendFreq("FS1", 0);
+                SendFreq("FS1", 2000);
                 SendFreq("FS3", area);
-                SendFreq("FS4", 0);
+                SendFreq("FS4", 2000);
                 viewField = CL;
             }
             else
             {
                 SendFreq("FS1", area);
-                SendFreq("FS3", 0);
-                SendFreq("FS4", 0);
+                SendFreq("FS3", 2000);
+                SendFreq("FS4", 2000);
                 viewField = CC;
             }
 
@@ -233,49 +234,62 @@ int main()
 
         //IR
         #ifdef PI
-            float irL = rescue1.IRrange();
-            float irR = rescue2.IRrange();
-            float irFL = rescue3.IRrange();
-            float irFR = rescue4.IRrange();
-            if(irL > 400)
+            float irFL = rescue1.IRrange();
+            float irFC = rescue2.IRrange();
+            float irFR = rescue3.IRrange();
+            float irBL = rescue4.IRrange();
+            float irBR = rescue5.IRrange();
+
+            if(irFL > 250)
             {
-                SendFreq("TS2", 9000);
+                SendFreq("TS1", 5000);
             }
             else
             {
-                SendFreq("TS2", 9000-(9000/90.0)*(400-irL));
+                //SendFreq("TS3", 6000-(6000/100.0)*(500-irL));
+                SendFreq("TS1", 0);
             }
 
-            if(irR > 400)
+            if(irFC > 250)
             {
-                SendFreq("TS3", 9000);
+                SendFreq("TS2", 5000);
             }
             else
             {
-                SendFreq("TS3", (9000-(9000/90.0)*(400-irR)));
+                SendFreq("TS2", 0);
             }
 
-            if(irFL > 400)
+            if(irFR > 250)
             {
-                SendFreq("TS0", 9000);
+                SendFreq("TS3", 5000);
             }
             else
             {
-                SendFreq("TS0", (9000-(9000/90.0)*(400-irR)));
+                //SendFreq("TS4", (6000-(6000/100.0)*(500-irR)));
+                SendFreq("TS3", 0);
             }
 
-            if(irFR > 400)
+            if(irBL > 250)
             {
-                SendFreq("TS1", 9000);
+                SendFreq("TS4", 5000);
             }
             else
             {
-                SendFreq("TS1", (9000-(9000/90.0)*(400-irR)));
+                //SendFreq("TS1", (6000-(6000/100.0)*(500-irR)));
+                SendFreq("TS4", 0);
             }
 
-            #ifdef DEBUG
-                cout<<"IR: "<<irL<<", "<<irR<<", "<<irFL<<", "<<irFR<<endl;
-            #endif
+            if(irBR > 250)
+            {
+                SendFreq("TS5", 5000);
+            }
+            else
+            {
+               // SendFreq("TS2", (6000-(6000/100.0)*(500-irR)));
+                SendFreq("TS5", 0);
+            }
+
+            cout<<"IR: "<<irFL<<", "<<irFC<<", "<<irFR<<", "<<irBL<<", "<<irBR<<endl;
 
         #else
             //artificial inputs
@@ -289,6 +303,7 @@ int main()
 
         Spikes = ActiveSimGetSpike("530");
         cout<<"receving\n";
+        cout<<Spikes<<endl;
         #ifdef DEBUG
             fp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
         #endif
@@ -386,9 +401,7 @@ int main()
                 rear.stop();
             #endif
             state = Backward;
-            #ifdef DEBUG
-                cout<<'B'<<endl;
-            #endif
+            cout<<'B'<<endl;
         }
         else if(dir & 0x04)
         {
@@ -400,9 +413,7 @@ int main()
                 rear.stop();
             #endif
             state = Left;
-            #ifdef DEBUG
-                cout<<'L'<<endl;
-            #endif
+            cout<<'L'<<endl;
         }
         else if(dir & 0x08)
         {
@@ -414,20 +425,17 @@ int main()
                 rear.stop();
             #endif
             state = Right;
-            #ifdef DEBUG
-                cout<<'R'<<endl;
-            #endif
+            cout<<'R'<<endl;
         }
         else
         {
             #ifdef PI
                 front.stop();
+		delay(200);
                 rear.stop();
             #endif
             state = Stop;
-            #ifdef DEBUG
-                cout<<'S'<<endl;
-            #endif
+            cout<<'S'<<endl;
         }
 
         #ifdef DEBUG
