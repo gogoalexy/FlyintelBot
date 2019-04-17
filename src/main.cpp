@@ -20,7 +20,7 @@ using namespace std;
 char *Spikes = nullptr;
 
 enum Actions{Stop, Forward, Backward, Left, Right};
-enum TargetLocation{NA = -1, CL = 15, CC =0, CR = 1};
+enum TargetLocation{NA = -1, CL = 15, CC = 0, CR = 1};
 
 int main()
 {
@@ -66,7 +66,7 @@ int main()
         SharpIR rescue2(mcp3008, 1);
         SharpIR rescue3(mcp3008, 2);
         SharpIR rescue4(mcp3008, 3);
-	SharpIR rescue5(mcp3008, 4);
+        SharpIR rescue5(mcp3008, 4);
         PixyCam eye;
         eye.init();
     #endif
@@ -96,7 +96,7 @@ int main()
 
 //==============================================================================
     //main loop
-    for(int round=0; round<400; ++round)
+    for(int round=0; round<250; ++round)
     {
         #ifdef DEBUG
             fp<<"Round:"<<round<<'\n';
@@ -120,13 +120,13 @@ int main()
             float dx = retina[0].second - PIXY2_CENTER_X;
             float area = retina[0].first;
 
-            if(area > 5500)
+            if(area > 5000)
             {
-                area = 2000;
+                area = 5000;
             }
             else if(area >= 2500 && area < 4000)
             {
-                area = 2000;
+                area = 3000;
             }
 
             if(dx > 90)
