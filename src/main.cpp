@@ -99,7 +99,6 @@ int main()
     //main loop
     for(int round=0; round<250; ++round)
     {
-delay(1900);
         #ifdef DEBUG
             fp<<"Round:"<<round<<'\n';
             chrono::steady_clock::time_point timer1;
@@ -122,13 +121,13 @@ delay(1900);
             float dx = retina[0].second - PIXY2_CENTER_X;
             float area = retina[0].first;
 
-            if(area > 5000)
+            //if(area > 5000)
+            //{
+            //    area = 5000;
+            //}
+            if(area >= 2200)
             {
-                area = 5000;
-            }
-            else if(area >= 3000 && area < 4000)
-            {
-                area = 3000;
+                area = 2200;
             }
             else
             {
@@ -189,7 +188,7 @@ delay(1900);
         if(!newTargetInterval && (pastNew >= 0))
         {
             cout<<"******Pastnew"<<pastNew<<'\n';
-            //CXsti.stiLoc(pastNew, 0);
+            CXsti.stiLoc(pastNew, 0);
             pastNew = -1;
             holdTarget = true;
         }
@@ -197,12 +196,13 @@ delay(1900);
         {
             cout<<"------------------------Sustain"<<'\n';
             --newTargetInterval;
-            //CXsti.stiLoc(pastNew, 200);
+            CXsti.stiLoc(pastNew, 200);
         }
         else if(newTarget)
         {
             cout<<"*****NewTar"<<'\n';
-           //CXsti.stiLoc(static_cast<int>(viewField), 200);
+            CXsti.switchState();
+            CXsti.stiLoc(static_cast<int>(viewField), 400);
             newTarget = false;
             holdTarget = false;
             newTargetInterval = 3;
@@ -213,29 +213,29 @@ delay(1900);
             if(state == Stop)
             {
                 cout<<"stop"<<'\n';
-               // CXsti.switchState();
+                CXsti.switchState();
             }
             else if(state == Forward)
             {
                 cout<<"straight"<<'\n';
-                //CXsti.switchState();
+                CXsti.switchState();
             }
             else if(state == Backward)
             {
                 cout<<"back"<<'\n';
-                //CXsti.switchState();
+                CXsti.switchState();
             }
             else if(state == Left)
             {
                 cout<<"left"<<'\n';
-                //CXsti.switchState();
-                //CXsti.shiftRight(250);
+                CXsti.switchState();
+                CXsti.shiftRight(300);
             }
             else if(state == Right)
             {
                 cout<<"right"<<'\n';
-                //CXsti.switchState();
-                //CXsti.shiftLeft(250);
+                CXsti.switchState();
+                CXsti.shiftLeft(300);
             }
         }
         else
@@ -254,9 +254,9 @@ delay(1900);
             float irBL = rescue4.IRrange();
             float irBR = rescue5.IRrange();
 
-            if(irFL > 250)
+            if(irFL > 280)
             {
-                SendFreq("TS1", 5000);
+                SendFreq("TS1", 7000);
             }
             else
             {
@@ -266,16 +266,16 @@ delay(1900);
 
             if(irFC > 300)
             {
-                SendFreq("TS2", 5000);
+                SendFreq("TS2", 7000);
             }
             else
             {
                 SendFreq("TS2", 0);
             }
 
-            if(irFR > 250)
+            if(irFR > 280)
             {
-                SendFreq("TS3", 5000);
+                SendFreq("TS3", 7000);
             }
             else
             {
@@ -285,7 +285,7 @@ delay(1900);
 
             if(irBL > 250)
             {
-                SendFreq("TS4", 5000);
+                SendFreq("TS4", 7000);
             }
             else
             {
@@ -295,7 +295,7 @@ delay(1900);
 
             if(irBR > 250)
             {
-                SendFreq("TS5", 5000);
+                SendFreq("TS5", 7000);
             }
             else
             {
@@ -314,7 +314,7 @@ delay(1900);
             chrono::steady_clock::time_point timer2;
             timerStart(timer2);
         #endif
-	if(homing & 0b1111)
+	if(homing & 0xFF)
         {
             if(homing & 0x01)
                 SendFreq("FS1", 4000);
@@ -365,7 +365,9 @@ delay(1900);
             if(round == 201)
             {
                 //homing starts
-                delay(2000);
+                digitalWrite(16, HIGH);
+                delay(5000);
+                digitalWrite(16, LOW);
                 digitalWrite(20, HIGH);
             }
             if(round > 200)
