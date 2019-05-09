@@ -8,7 +8,7 @@ class ADXL335
 {
 public:
     ADXL335();
-    ADXL335(const ADC&, int);
+    ADXL335(ADC&, int);
     inline int readAcceleration()
     {
         return adc.readChan(chipChan);
@@ -22,7 +22,7 @@ public:
             return 0;
     };
 private:
-    ADC adc;
+    ADC& adc;
     const int chipChan;
     const int voltage_0g;
     const int threshold;
