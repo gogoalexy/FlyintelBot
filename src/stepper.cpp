@@ -11,7 +11,7 @@ STEPS(number_of_steps), IN1(pin1), IN2(pin2), IN3(pin3), IN4(pin4)
 
 void Stepper::setSpeed(int rpm)
 {
-    step_interval = 60*1000*1000 / (rpm * STEPS)
+    step_interval = 60*1000*1000 / (rpm * STEPS);
 }
 
 void Stepper::step(int do_steps)
@@ -25,15 +25,15 @@ void Stepper::step(int do_steps)
 
         if(this_step_time - last_step_time >= step_interval)
         {
-            last_step_time = now;
+            last_step_time = this_step_time;
             if(do_steps > 0)
             {
                 ++phase;
-                if(phase == STEPS) {phase = 0}
+                if(phase == STEPS) {phase = 0;}
             }
             else
             {
-                if(phase == 0) {phase = STEPS}
+                if(phase == 0) {phase = STEPS;}
                 --phase;
             }
         }
