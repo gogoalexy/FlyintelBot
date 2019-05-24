@@ -24,7 +24,7 @@
 class i2cADC : public ADC
 {
 public:
-    biADC();
+    i2cADC();
     bool initI2C();
     bool initI2C(int, int);
     inline bool isInit() override
@@ -39,7 +39,7 @@ public:
     {
         return analogRead(pinBase + chipChan);
     }
-    inline void writeChan(int value) override
+    inline void writeChan(int value)
     {
         analogWrite(pinBase, value);
     }
