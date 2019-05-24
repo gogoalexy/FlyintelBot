@@ -20,13 +20,13 @@
 
 using namespace std;
 
-i2cADC::i2cADC() : pinBaseDefault(77), i2cChanDefault(0x48)
+i2cADC::i2cADC() : pinBaseDefault(77), i2cAddressDefault(0x48)
 {}
 
 bool i2cADC::initI2C()
 {
     this->pinBase = pinBaseDefault;
-    this->i2cChan = i2cChanDefault;
+    this->i2cChan = i2cAddressDefault;
     if(pcf8591Setup(pinBase, i2cChan))
     {
         init = true;

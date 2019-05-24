@@ -13,7 +13,7 @@ OBJS=$(patsubst %.cpp,%.o,$(SRCS))
 
 BUILD_DIR=../build
 
-$(BUILD_DIR)/main.out: $(BUILD_DIR)/spikesHandler.o $(BUILD_DIR)/SCXmodel.o $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/max7219.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
+$(BUILD_DIR)/main.out: $(BUILD_DIR)/spikesHandler.o $(BUILD_DIR)/SCXmodel.o $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/max7219.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/I2Cadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
 	$(CXX) $(INC) $(CXXFLAGS) $^ -o $@ $(LDLIBS) -Wall $(OPT)
 
 $(BUILD_DIR)/main.o: main.cpp timer.h
@@ -48,6 +48,9 @@ $(BUILD_DIR)/cltcmd.o: cltcmd.cpp cltcmd.h
 
 $(BUILD_DIR)/SPIadc.o: SPIadc.cpp SPIadc.h adc.h
 	$(CXX) -c $< -o $(BUILD_DIR)/SPIadc.o $(CXXFLAGS) $(OPT)
+
+$(BUILD_DIR)/I2Cadc.o: I2Cadc.cpp I2Cadc.h adc.h
+	$(CXX) -c $< -o $(BUILD_DIR)/I2Cadc.o $(CXXFLAGS) $(OPT)
 
 $(BUILD_DIR)/DCmotor.o: DCmotor.cpp DCmotor.h
 	$(CXX) -c $< -o $(BUILD_DIR)/DCmotor.o $(CXXFLAGS) $(OPT)
