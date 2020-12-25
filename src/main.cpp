@@ -62,7 +62,7 @@ int main()
     #ifdef PI
         //init sensors
         spiADC mcp3008;
-            mcp3008.initSPI(88, 0);
+        mcp3008.initSPI(88, 0);
         SharpIR rescue1(mcp3008, 0);
         SharpIR rescue2(mcp3008, 1);
         SharpIR rescue3(mcp3008, 2);
@@ -112,6 +112,7 @@ int main()
         SendFreq("FS4", 2000);
 
 //------------------------------------------------------------------------------
+        float area = 0;
         #ifdef PI
             //pixy cam
             eye.refresh();
@@ -119,7 +120,7 @@ int main()
             array<Obj, 2> retina;
             retina = eye.pickLarge();
             float dx = retina[0].second - PIXY2_CENTER_X;
-            float area = retina[0].first;
+            area = retina[0].first;
 
             //if(area > 5000)
             //{
