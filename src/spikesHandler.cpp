@@ -26,7 +26,6 @@ int SpikesHandler::cstoi(char* Spikes)
 
 void SpikesHandler::printSpikesLog(fstream& logFd)
 {
-    logFd<<"Spikes:"<<'\n';
     for(int i=0; i<maxDataBytes; ++i)
     {
         logFd<<spiketrain[i]<<' ';
