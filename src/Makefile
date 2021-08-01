@@ -16,8 +16,14 @@ BUILD_DIR=../build
 $(BUILD_DIR)/main.out: $(BUILD_DIR)/spikesHandler.o $(BUILD_DIR)/SCXmodel.o $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/main.o $(BUILD_DIR)/pixycam.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/max7219.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/I2Cadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/HC_SR04.o $(BUILD_DIR)/DCmotor.o
 	$(CXX) $(INC) $(CXXFLAGS) $^ -o $@ $(LDLIBS) -Wall $(OPT)
 
+$(BUILD_DIR)/experimentRisk.out: $(BUILD_DIR)/spikesHandler.o $(BUILD_DIR)/cltcmd.o $(BUILD_DIR)/connect_to_flysim.o $(BUILD_DIR)/experimentRisk.o $(BUILD_DIR)/flyintel.o $(BUILD_DIR)/SPIadc.o $(BUILD_DIR)/I2Cadc.o $(BUILD_DIR)/Sharp_IR.o $(BUILD_DIR)/DCmotor.o
+	$(CXX) $(INC) $(CXXFLAGS) $^ -o $@ $(LDLIBS) -Wall $(OPT)
+
 $(BUILD_DIR)/main.o: main.cpp timer.h
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $(BUILD_DIR)/main.o $(OPT)
+
+$(BUILD_DIR)/experimentRisk.o: experimentRisk.cpp timer.h
+	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $(BUILD_DIR)/experimentRisk.o $(OPT)
 
 $(BUILD_DIR)/pixycam.o: pixycam.cpp pixycam.h
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $(BUILD_DIR)/pixycam.o $(OPT)

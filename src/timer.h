@@ -25,11 +25,11 @@ inline unsigned long timerGetMillis(steadyClock::time_point &m_start)
 
 inline std::string getDateTime()
 {
-    char time[10]
-    auto now = std::time(nullptr);
+    char timestr[10];
+    time_t now = std::time(nullptr);
     auto t = std::localtime(&now);
-    std::strftime(time, 50, "%m%d-%H%M", t);
-    std::string ret(time);
+    std::strftime(timestr, 50, "%m%d-%H%M", t);
+    std::string ret(timestr);
     return ret;
 };
 

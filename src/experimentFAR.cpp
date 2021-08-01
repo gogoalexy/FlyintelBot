@@ -4,14 +4,12 @@
 #include "connect_to_flysim.h"
 #include "spikesHandler.h"
 #include "flyintel.h"
-#include "SCXmodel.h"
 #include "timer.h"
 #ifdef PI
     #include <wiringPi.h>
     #include "adc.h"
     #include "SPIadc.h"
     #include "Sharp_IR.h"
-    #include "pixycam.h"
     #include "DCmotor.h"
 #endif
 
@@ -56,17 +54,11 @@ int main()
         SharpIR rescue3(mcp3008, 2);
         SharpIR rescue4(mcp3008, 3);
         SharpIR rescue5(mcp3008, 4);
-        PixyCam eye;
-        eye.init();
     #endif
 
     //init interface
     Flyintel flyintel;
     SpikesHandler handler;
-    #ifdef PI
-        SimpleCXMonitor CXled;
-        CXled.init();
-    #endif
 
     #ifdef PI
         //init motors
@@ -99,58 +91,6 @@ int main()
         SendFreq("FS2", 2000);
         SendFreq("FS3", 2000);
         SendFreq("FS4", 2000);
-
-//------------------------------------------------------------------------------
-        float area = 0;
-        #ifdef PI
-            //pixy cam
-            eye.refresh();
-            eye.capture();
-            array<Obj, 2> retina;
-            retina = eye.pickLarge();
-            float dx = retina[0].second - PIXY2_CENTER_X;
-            area = retina[0].first;
-
-            if(area >= 2200)
-            {
-                area = 2200;
-            }
-            else
-            {
-                area = 0;
-            }
-
-            if(area)
-            {
-                if(dx > 90)
-                {
-                    SendFreq("FS1", 2000);
-                    SendFreq("FS3", 2000);
-                    SendFreq("FS4", area);
-                    viewField = CR;
-                }
-                else if(dx < -90)
-                {
-                    SendFreq("FS1", 2000);
-                    SendFreq("FS3", area);
-                    SendFreq("FS4", 2000);
-                    viewField = CL;
-                }
-                else
-                {
-                    SendFreq("FS1", area);
-                    SendFreq("FS3", 2000);
-                    SendFreq("FS4", 2000);
-                    viewField = CC;
-                }
-            }
-            #ifdef DEBUG
-                cout<<"area="<<area<<", dx"<<dx<<endl;
-            #endif
-        #else
-            float dx = 0;
-            viewField = CC;
-        #endif
 
 //==============================================================================
 
@@ -305,7 +245,6 @@ int main()
         #endif
     }
     #ifdef PI
-        CXled.flush();
         pwmWrite(19, 0);
         pwmWrite(13, 0);
         digitalWrite(22, LOW);

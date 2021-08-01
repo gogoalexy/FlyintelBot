@@ -6,7 +6,7 @@ FLYSIM=$!
 
 echo ${FLYSIM}
 
-sudo ./build/main.out
+sudo ./build/experimentRisk.out
 FLYINTEL=$!
 
 echo ${FLYINTEL}
