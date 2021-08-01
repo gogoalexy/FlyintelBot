@@ -24,7 +24,7 @@ int SpikesHandler::cstoi(char* Spikes)
     }
 }
 
-void SpikesHandler::printSpikesLog(fstream& logFd)
+void SpikesHandler::printSpikesLog(ofstream& logFd)
 {
     for(int i=0; i<maxDataBytes; ++i)
     {

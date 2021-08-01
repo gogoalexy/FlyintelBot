@@ -20,22 +20,18 @@ char *Spikes = nullptr;
 enum Actions{Stop, Forward, Backward, Left, Right};
 enum TargetLocation{NA = -1, CL = 15, CC = 0, CR = 1};
 
+bool CUTOFF_SENSOR = FALSE;
+
 int main()
 {
-    #ifdef DEBUG
-        cout<<"========================================"<<'\n'
-            <<"[Initializing Flyintel in DEBUG mode...]"<<'\n'
-            <<"========================================"<<endl;
-    #else
-        cout<<"========================================"<<'\n'
-            <<"[        Initializing Flyintel ...     ]"<<'\n'
-            <<"========================================"<<endl;
-    #endif
+    cout<<"========================================"<<'\n'
+        <<"[        Initializing Flyintel ...     ]"<<'\n'
+        <<"========================================"<<endl;
 
     #ifdef PI
         //wiringPi init in BCM pinout
         wiringPiSetupGpio();
-        pinMode(16, OUTPUT);
+        pinMode(16, OUTPUT); //yellow LED
         pinMode(20, OUTPUT);
         digitalWrite(16, LOW);
         digitalWrite(20, LOW);
@@ -73,18 +69,17 @@ int main()
     string conf_file = "./networks/network35.conf", pro_file = "./networks/network35.pro", spike_log = "events-" + t + ".log";
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
-    ofstream fp(spikle_log);
+    ofstream fp(spike_log);
 
 
 //==============================================================================
     //main loop
-    for(int round=0; round<300; ++round)
+    for(int round=0; round<200; ++round)
     {
+        digitalWrite(16, HIGH);
         fp<<"Round:"<<round<<'\n';
-        #ifdef DEBUG
-            chrono::steady_clock::time_point timer1;
-            timerStart(timer1);
-        #endif
+        chrono::steady_clock::time_point timer1;
+        timerStart(timer1);
 
         //baseline activity
         SendFreq("FS1", 2000);
@@ -96,11 +91,20 @@ int main()
 
         //IR
         #ifdef PI
-            float irFL = rescue1.IRrange();
-            float irFC = rescue2.IRrange();
-            float irFR = rescue3.IRrange();
-            float irBL = rescue4.IRrange();
-            float irBR = rescue5.IRrange();
+            if(CUTOFF){
+                float irFL = 0.0;
+                float irFC = 0.0;
+                float irFR = 0.0;
+                float irBL = 0.0;
+                float irBR = 0.0;
+            }else{
+                float irFL = rescue1.IRrange();
+                float irFC = rescue2.IRrange();
+                float irFR = rescue3.IRrange();
+                float irBL = rescue4.IRrange();
+                float irBR = rescue5.IRrange();
+            }
+        #endif
 
             if(irFL > 280)
             {
@@ -151,10 +155,8 @@ int main()
                 SendFreq("TS5", 0);
             }
 
-            cout<<"IR: "<<irFL<<", "<<irFC<<", "<<irFR<<", "<<irBL<<", "<<irBR<<endl;
+            fp<<"IR: "<<irFL<<", "<<irFC<<", "<<irFR<<", "<<irBL<<", "<<irBR<<endl;
 
-        #else
-            //artificial inputs
         #endif
 
 //==============================================================================
@@ -240,9 +242,9 @@ int main()
             cout<<'S'<<endl;
         }
 
-        #ifdef DEBUG
-            fp<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<'\n';
-        #endif
+
+        fp<<"TIME iteration: "<<timerGetMillis(timer1)<<" ms"<<'\n';
+
     }
     #ifdef PI
         pwmWrite(19, 0);
@@ -256,6 +258,7 @@ int main()
         digitalWrite(1, LOW);
         digitalWrite(5, LOW);
         digitalWrite(20, LOW);
+        digitalWrite(16, LOW);
     #endif
     CloseSim();
 

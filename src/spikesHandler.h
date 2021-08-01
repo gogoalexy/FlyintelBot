@@ -8,7 +8,7 @@ class SpikesHandler
 {
 public:
     int cstoi(char*);
-    void printSpikesLog(std::fstream&);
+    void printSpikesLog(std::ofstream&);
     void clear();
 
     int spiketrain[7000];
