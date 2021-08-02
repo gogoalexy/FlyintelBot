@@ -10,6 +10,7 @@
     #include "adc.h"
     #include "SPIadc.h"
     #include "Sharp_IR.h"
+    #include "pixycam.h"
     #include "DCmotor.h"
 #endif
 
@@ -18,8 +19,9 @@ using namespace std;
 char *Spikes = nullptr;
 
 enum Actions{Stop, Forward, Backward, Left, Right};
+enum TargetLocation{NA = -1, CL = 15, CC = 0, CR = 1};
 
-const bool CUTOFF_SENSOR = FALSE;
+const bool CUTOFF_PIXY = FALSE;
 
 int main()
 {
@@ -36,6 +38,8 @@ int main()
         digitalWrite(20, LOW);
     #endif
 
+
+    TargetLocation viewField = NA;
     Actions state = Stop;
 
     #ifdef PI
@@ -47,6 +51,8 @@ int main()
         SharpIR rescue3(mcp3008, 2);
         SharpIR rescue4(mcp3008, 3);
         SharpIR rescue5(mcp3008, 4);
+        PixyCam eye;
+        eye.init();
     #endif
 
     //init interface
@@ -57,7 +63,7 @@ int main()
         //init motors
         DCmotor front(22, 23, 24, 25, 13, 19);
         DCmotor rear(4, 0, 1, 5, 13, 19);
-        front.velocity(1000, 1000);//400 for carpet
+        front.velocity(1000, 1000);
         rear.velocity(1000, 1000);
     #endif
 
@@ -85,22 +91,73 @@ int main()
         SendFreq("FS4", 2000);
 
 //==============================================================================
+        float area = 0;
+        if(CUTOFF_PIXY)
+        {
+            area = 0;
+            float dx = 0;
+            viewField = CC;
+        }
+        else
+        {
+            #ifdef PI
+            //pixy cam
+                eye.refresh();
+                eye.capture();
+                array<Obj, 2> retina;
+                retina = eye.pickLarge();
+                float dx = retina[0].second - PIXY2_CENTER_X;
+                area = retina[0].first;
+
+                if(area >= 2200)
+                {
+                    area = 2200;
+                }
+                else
+                {
+                    area = 0;
+                }
+
+            #else
+                //artificial target
+                //float area = 3000;
+                float dx = 0;
+                viewField = CC;
+            #endif
+        }
+        fp<<"area="<<area<<", dx"<<dx<<endl;
+        if(area)
+        {
+            if(dx > 90)
+            {
+                SendFreq("FS1", 2000);
+                SendFreq("FS3", 2000);
+                SendFreq("FS4", area);
+                viewField = CR;
+            }
+            else if(dx < -90)
+            {
+                SendFreq("FS1", 2000);
+                SendFreq("FS3", area);
+                SendFreq("FS4", 2000);
+                viewField = CL;
+            }
+            else
+            {
+                SendFreq("FS1", area);
+                SendFreq("FS3", 2000);
+                SendFreq("FS4", 2000);
+                viewField = CC;
+            }
+        }
 
         //IR
         #ifdef PI
-            if(CUTOFF_SENSOR){
-                float irFL = 0.0;
-                float irFC = 0.0;
-                float irFR = 0.0;
-                float irBL = 0.0;
-                float irBR = 0.0;
-            }else{
-                float irFL = rescue1.IRrange();
-                float irFC = rescue2.IRrange();
-                float irFR = rescue3.IRrange();
-                float irBL = rescue4.IRrange();
-                float irBR = rescue5.IRrange();
-                }
+            float irFL = rescue1.IRrange();
+            float irFC = rescue2.IRrange();
+            float irFR = rescue3.IRrange();
+            float irBL = rescue4.IRrange();
+            float irBR = rescue5.IRrange();
         #endif
 
             if(irFL > 280)
@@ -157,16 +214,8 @@ int main()
         #endif
 
 //==============================================================================
-        #ifdef DEBUG
-            chrono::steady_clock::time_point timer2;
-            timerStart(timer2);
-        #endif
-
         Spikes = ActiveSimGetSpike("530");
         cout<<"receving\n";
-        #ifdef DEBUG
-            fp<<"TIME simulation: "<<timerGetMillis(timer2)<<" ms"<<'\n';
-        #endif
 
         //c-string to int array
         handler.clear();
