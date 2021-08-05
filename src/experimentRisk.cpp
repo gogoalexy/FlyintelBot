@@ -87,74 +87,71 @@ int main()
 //==============================================================================
 
         //IR
-        #ifdef PI
-            if(CUTOFF_SENSOR){
-                float irFL = 0.0;
-                float irFC = 0.0;
-                float irFR = 0.0;
-                float irBL = 0.0;
-                float irBR = 0.0;
-            }else{
-                float irFL = rescue1.IRrange();
-                float irFC = rescue2.IRrange();
-                float irFR = rescue3.IRrange();
-                float irBL = rescue4.IRrange();
-                float irBR = rescue5.IRrange();
-                }
-        #endif
+        float irFL = 0.0;
+        float irFC = 0.0;
+        float irFR = 0.0;
+        float irBL = 0.0;
+        float irBR = 0.0;
+        if(CUTOFF_SENSOR)
+        {
+        }else{
+            irFL = rescue1.IRrange();
+            irFC = rescue2.IRrange();
+            irFR = rescue3.IRrange();
+            irBL = rescue4.IRrange();
+            irBR = rescue5.IRrange();
+        }
 
-            if(irFL > 280)
-            {
-                SendFreq("TS1", 7000);
-            }
-            else
-            {
-                //SendFreq("TS3", 6000-(6000/100.0)*(500-irL));
-                SendFreq("TS1", 0);
-            }
+        if(irFL > 280)
+        {
+            SendFreq("TS1", 7000);
+        }
+        else
+        {
+            //SendFreq("TS3", 6000-(6000/100.0)*(500-irL));
+            SendFreq("TS1", 0);
+        }
 
-            if(irFC > 300)
-            {
-                SendFreq("TS2", 7000);
-            }
-            else
-            {
-                SendFreq("TS2", 0);
-            }
+        if(irFC > 300)
+        {
+            SendFreq("TS2", 7000);
+        }
+        else
+        {
+            SendFreq("TS2", 0);
+        }
 
-            if(irFR > 280)
-            {
-                SendFreq("TS3", 7000);
-            }
-            else
-            {
-                //SendFreq("TS4", (6000-(6000/100.0)*(500-irR)));
-                SendFreq("TS3", 0);
-            }
+        if(irFR > 280)
+        {
+            SendFreq("TS3", 7000);
+        }
+        else
+        {
+            //SendFreq("TS4", (6000-(6000/100.0)*(500-irR)));
+            SendFreq("TS3", 0);
+        }
 
-            if(irBL > 250)
-            {
-                SendFreq("TS4", 7000);
-            }
-            else
-            {
-                //SendFreq("TS1", (6000-(6000/100.0)*(500-irR)));
-                SendFreq("TS4", 0);
-            }
+        if(irBL > 250)
+        {
+            SendFreq("TS4", 7000);
+        }
+        else
+        {
+            //SendFreq("TS1", (6000-(6000/100.0)*(500-irR)));
+            SendFreq("TS4", 0);
+        }
 
-            if(irBR > 250)
-            {
-                SendFreq("TS5", 7000);
-            }
-            else
-            {
-               // SendFreq("TS2", (6000-(6000/100.0)*(500-irR)));
-                SendFreq("TS5", 0);
-            }
+        if(irBR > 250)
+        {
+            SendFreq("TS5", 7000);
+        }
+        else
+        {
+           // SendFreq("TS2", (6000-(6000/100.0)*(500-irR)));
+           SendFreq("TS5", 0);
+        }
 
-            fp<<"IR: "<<irFL<<", "<<irFC<<", "<<irFR<<", "<<irBL<<", "<<irBR<<endl;
-
-        #endif
+        fp<<"IR: "<<irFL<<", "<<irFC<<", "<<irFR<<", "<<irBL<<", "<<irBR<<endl;
 
 //==============================================================================
         #ifdef DEBUG
