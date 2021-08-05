@@ -21,6 +21,28 @@ enum Actions{Stop, Forward, Backward, Left, Right};
 
 const bool CUTOFF_SENSOR = FALSE;
 
+
+float irLinear(float raw)
+{
+    const float irTop = 900, irBtm = 400;
+    const float extHigh = 5000, extLow = 0;
+    float ret = 0.0;
+    if(raw > irTop)
+    {
+        ret = extHigh;
+    }
+    else if(raw < irBtm)
+    {
+        ret = extLow;
+    }
+    else
+    {
+        ret = ((raw - irBtm)/(irTop - irBtm))*(extHigh - extLow);
+    }
+    return ret;
+}
+
+
 int main()
 {
     cout<<"========================================"<<'\n'
@@ -102,52 +124,53 @@ int main()
             irBR = rescue5.IRrange();
         }
 
-        if(irFL > 280)
+        if(irFL > 450)
         {
-            SendFreq("TS1", 7000);
+            float extFL = irLinear(irFL);
+            SendFreq("TS1", 6000);
         }
         else
         {
-            //SendFreq("TS3", 6000-(6000/100.0)*(500-irL));
             SendFreq("TS1", 0);
         }
 
-        if(irFC > 300)
+        if(irFC > 450)
         {
-            SendFreq("TS2", 7000);
+            float extFC = irLinear(irFC);
+            SendFreq("TS2", 6000);
         }
         else
         {
             SendFreq("TS2", 0);
         }
 
-        if(irFR > 280)
+        if(irFR > 450)
         {
-            SendFreq("TS3", 7000);
+            float extFR  = irLinear(irFR);
+            SendFreq("TS3", 6000);
         }
         else
         {
-            //SendFreq("TS4", (6000-(6000/100.0)*(500-irR)));
             SendFreq("TS3", 0);
         }
 
-        if(irBL > 250)
+        if(irBL > 350)
         {
-            SendFreq("TS4", 7000);
+            float extBL = irLinear(irBL);
+            SendFreq("TS4", 6000);
         }
         else
         {
-            //SendFreq("TS1", (6000-(6000/100.0)*(500-irR)));
             SendFreq("TS4", 0);
         }
 
-        if(irBR > 250)
+        if(irBR > 350)
         {
-            SendFreq("TS5", 7000);
+            float extBR = irLinear(irBR);
+            SendFreq("TS5", 6000);
         }
         else
         {
-           // SendFreq("TS2", (6000-(6000/100.0)*(500-irR)));
            SendFreq("TS5", 0);
         }
 
