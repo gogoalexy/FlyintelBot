@@ -89,7 +89,9 @@ int main()
     int ErrorNumFromReadFile = ReadFile(conf_file, pro_file);
     cout<<"ErrorNumFromReadFile="<<ErrorNumFromReadFile<<endl<<endl;
     ofstream fp(spike_log);
-
+    fp << "Experiment Risk" << endl;
+    fp << "CUTOFF_IR " << CUTOFF_SENSOR << endl;
+    fp << "Config: " << conf_file << ", " << "Protocol: " << pro_file <<", +100 IR" << endl;
 
 //==============================================================================
     //main loop
@@ -124,50 +126,50 @@ int main()
             irBR = rescue5.IRrange();
         }
 
-        if(irFL > 450)
+        if(irFL > 550) //450
         {
             float extFL = irLinear(irFL);
-            SendFreq("TS1", 6000);
+            SendFreq("TS1", 7000);
         }
         else
         {
             SendFreq("TS1", 0);
         }
 
-        if(irFC > 450)
+        if(irFC > 500) //400
         {
             float extFC = irLinear(irFC);
-            SendFreq("TS2", 6000);
+            SendFreq("TS2", 7000);
         }
         else
         {
             SendFreq("TS2", 0);
         }
 
-        if(irFR > 450)
+        if(irFR > 550) //450
         {
             float extFR  = irLinear(irFR);
-            SendFreq("TS3", 6000);
+            SendFreq("TS3", 7000);
         }
         else
         {
             SendFreq("TS3", 0);
         }
 
-        if(irBL > 350)
+        if(irBL > 450) //350
         {
             float extBL = irLinear(irBL);
-            SendFreq("TS4", 6000);
+            SendFreq("TS4", 7000);
         }
         else
         {
             SendFreq("TS4", 0);
         }
 
-        if(irBR > 350)
+        if(irBR > 450) //350
         {
             float extBR = irLinear(irBR);
-            SendFreq("TS5", 6000);
+            SendFreq("TS5", 7000);
         }
         else
         {

@@ -255,7 +255,7 @@ int main()
             float irBL = rescue4.IRrange();
             float irBR = rescue5.IRrange();
 
-            if(irFL > 280)
+            if(irFL > 280) //280
             {
                 SendFreq("TS1", 7000);
             }
@@ -265,7 +265,7 @@ int main()
                 SendFreq("TS1", 0);
             }
 
-            if(irFC > 300)
+            if(irFC > 300) //300
             {
                 SendFreq("TS2", 7000);
             }
@@ -274,7 +274,7 @@ int main()
                 SendFreq("TS2", 0);
             }
 
-            if(irFR > 280)
+            if(irFR > 280) //280
             {
                 SendFreq("TS3", 7000);
             }
@@ -284,7 +284,7 @@ int main()
                 SendFreq("TS3", 0);
             }
 
-            if(irBL > 250)
+            if(irBL > 250) //250
             {
                 SendFreq("TS4", 7000);
             }
@@ -294,7 +294,7 @@ int main()
                 SendFreq("TS4", 0);
             }
 
-            if(irBR > 250)
+            if(irBR > 250) //250
             {
                 SendFreq("TS5", 7000);
             }
